@@ -1,0 +1,69 @@
+{
+  "hotels": [
+    {
+      "id": "HTL001",
+      "name": "Le Grand Hotel Paris",
+      "location": "Paris",
+      "address": "12 Rue de la Paix, 75002 Paris, France",
+      "rating": 4.8,
+      "price_per_night": 350.00,
+      "currency": "USD",
+      "amenities": ["WiFi", "Breakfast", "Gym", "Spa", "Restaurant", "Room Service", "Concierge"],
+      "room_type": "Deluxe Double Room",
+      "description": "Luxurious hotel in the heart of Paris, steps from the Opera and Louvre Museum",
+      "images": []
+    },
+    {
+      "id": "HTL002",
+      "name": "Tokyo Bay Luxury Hotel",
+      "location": "Tokyo",
+      "address": "1-9-1 Higashi-Shinagawa, Shinagawa-ku, Tokyo 140-0002, Japan",
+      "rating": 4.7,
+      "price_per_night": 280.00,
+      "currency": "USD",
+      "amenities": ["WiFi", "Breakfast", "Gym", "Pool", "Restaurant", "Bar", "Business Center"],
+      "room_type": "Premium Bay View Room",
+      "description": "Modern hotel with stunning Tokyo Bay views and excellent transportation links",
+      "images": []
+    },
+    {
+      "id": "HTL003",
+      "name": "Burj Al Arab Jumeirah",
+      "location": "Dubai",
+      "address": "Jumeirah Street, Dubai, UAE",
+      "rating": 5.0,
+      "price_per_night": 1500.00,
+      "currency": "USD",
+      "amenities": ["WiFi", "Breakfast", "Private Beach", "Spa", "Multiple Restaurants", "Butler Service", "Helicopter Tours"],
+      "room_type": "Panoramic Suite",
+      "description": "World's most luxurious hotel offering unparalleled service and experiences",
+      "images": []
+    },
+    {
+      "id": "HTL004",
+      "name": "Santorini Blue Domes Resort",
+      "location": "Santorini",
+      "address": "Oia, Santorini 847 02, Greece",
+      "rating": 4.9,
+      "price_per_night": 420.00,
+      "currency": "USD",
+      "amenities": ["WiFi", "Breakfast", "Infinity Pool", "Spa", "Restaurant", "Wine Tasting", "Sunset Views"],
+      "room_type": "Cave Suite with Caldera View",
+      "description": "Romantic resort with iconic blue domes and breathtaking caldera views",
+      "images": []
+    },
+    {
+      "id": "HTL005",
+      "name": "Bali Rainforest Villa",
+      "location": "Bali",
+      "address": "Jalan Raya Ubud, Ubud, Bali 80571, Indonesia",
+      "rating": 4.6,
+      "price_per_night": 200.00,
+      "currency": "USD",
+      "amenities": ["WiFi", "Breakfast", "Private Pool", "Spa", "Yoga Classes", "Cooking Classes", "Shuttle Service"],
+      "room_type": "Private Villa with Pool",
+      "description": "Tranquil villa nestled in lush rainforest, perfect for relaxation and wellness",
+      "images": []
+    }
+  ]
+}

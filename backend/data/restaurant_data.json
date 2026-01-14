@@ -1,0 +1,2802 @@
+{
+    "search_metadata": {
+        "id": "686b8ec6a3f7300fb0c24a99",
+        "status": "Success",
+        "json_endpoint": "https://serpapi.com/searches/03de97d489bd1ef1/686b8ec6a3f7300fb0c24a99.json",
+        "created_at": "2025-07-07 09:09:26 UTC",
+        "processed_at": "2025-07-07 09:09:26 UTC",
+        "google_maps_url": "https://www.google.com/maps/search/veg+restaurants/@20.35640,85.82400,14z?hl=en",
+        "raw_html_file": "https://serpapi.com/searches/03de97d489bd1ef1/686b8ec6a3f7300fb0c24a99.html",
+        "total_time_taken": 1.62
+    },
+    "search_parameters": {
+        "engine": "google_maps",
+        "type": "search",
+        "q": "veg restaurants",
+        "ll": "@20.35640, 85.82400,14z",
+        "google_domain": "google.com",
+        "hl": "en"
+    },
+    "search_information": {
+        "local_results_state": "Results for exact spelling",
+        "query_displayed": "veg restaurants"
+    },
+    "local_results": [
+        {
+            "position": 1,
+            "title": "Kake Di Hatti - Patia, Bhubaneswar",
+            "place_id": "ChIJ3yswPtcJGToRzbpZN1iTb-M",
+            "data_id": "0x3a1909d73e302bdf:0xe36f93583759bacd",
+            "data_cid": "16388479576119556813",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909d73e302bdf%3A0xe36f93583759bacd&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909d73e302bdf%3A0xe36f93583759bacd&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.353486699999998,
+                "longitude": 85.8256356
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ3yswPtcJGToRzbpZN1iTb-M",
+            "provider_id": "/g/11vt8xtn1z",
+            "rating": 4.8,
+            "reviews": 2484,
+            "price": "₹200–600",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant",
+                "Fine dining restaurant",
+                "North Indian restaurant",
+                "Restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant",
+                "fine_dining_restaurant",
+                "north_indian_restaurant",
+                "restaurant"
+            ],
+            "address": "3rd Floor, OEU Tower, KIIT Rd, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10:45 PM",
+            "hours": "Open ⋅ Closes 10:45 PM",
+            "operating_hours": {
+                "monday": "12–10:45 PM",
+                "tuesday": "12–10:45 PM",
+                "wednesday": "12–10:45 PM",
+                "thursday": "12–10:45 PM",
+                "friday": "12–10:45 PM",
+                "saturday": "12–10:45 PM",
+                "sunday": "12–10:45 PM"
+            },
+            "phone": "+91 82808 46502",
+            "website": "https://www.kakedihatti.com/",
+            "extensions": [
+                {
+                    "service_options": [
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Gender-neutral restroom",
+                        "Restroom",
+                        "Wi-Fi",
+                        "Free Wi-Fi"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "LGBTQ+ friendly"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Lunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "High chairs",
+                        "Kids' menu"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Assistive hearing loop",
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible parking lot"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11vt8xtn1z&g2lbs=AO8LyOIvvNLY-gXfhb-KH2Z3IU9XuCCdhK60lqOcVoB8iv9O7cIWOn6fnJLF56kHls5xvmBu5HIULuqrNAL_G2xBJkrxNrVS2A%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqhjSbfcpCRmAKI8SQp05T6R6l3Q4ubvksM75UVXeLJ7nEGD0QtyWhcjcbls6TfRrMQVtmTmJP4NJJ_wDnazw7nhiapBTuUZRqcshzKOtTbX-CJnu1kZfhHbPDTHlv_DWbTSnEX=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/PKfRBHicBcFbjoIwFADQFVUQEdTEDwfMOPUJVCX-GNsAVym31RaJ7s9FuJs55_sBa7WZOI6EQa9SqpJFa4qHUGgLtD2hGqfShghDjDOLxuDjHW4ZL4WO0ma2_BtliXaHLEgDOUj8lj9rsw6H-0NerGiI89_YTezrCOImuDQBK9PHOjnYhjV0528oPXcxXt5diHC96B_W7k_pXRh4L7eW8ZxEFNt-fSphwXcxW8jnOT5yluE8n3Z9zyMw9khNUP0DBP5Fuw"
+        },
+        {
+            "position": 2,
+            "title": "Malva Restaurant",
+            "place_id": "ChIJVY_zWEgJGToRMXMlPZwiJyY",
+            "data_id": "0x3a19094858f38f55:0x2627229c3d257331",
+            "data_cid": "2749204151969084209",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19094858f38f55%3A0x2627229c3d257331&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19094858f38f55%3A0x2627229c3d257331&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3675837,
+                "longitude": 85.831446
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJVY_zWEgJGToRMXMlPZwiJyY",
+            "provider_id": "/g/1q6j4sy81",
+            "rating": 4.3,
+            "reviews": 4222,
+            "price": "$$$",
+            "type": "Family restaurant",
+            "types": [
+                "Family restaurant",
+                "Chinese restaurant",
+                "Thai restaurant"
+            ],
+            "type_id": "family_restaurant",
+            "type_ids": [
+                "family_restaurant",
+                "chinese_restaurant",
+                "thai_restaurant"
+            ],
+            "address": "Plot No. 1307, 3B, Ground Floor, EXPO TOWER, KIIT, Nandankanan Rd, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10:45 PM",
+            "hours": "Open ⋅ Closes 10:45 PM",
+            "operating_hours": {
+                "monday": "12–10:45 PM",
+                "tuesday": "12–10:45 PM",
+                "wednesday": "12–11:30 PM",
+                "thursday": "12–10:45 PM",
+                "friday": "12–11:30 PM",
+                "saturday": "12–11:30 PM",
+                "sunday": "12–11:30 PM"
+            },
+            "phone": "+91 90400 96077",
+            "website": "http://www.fb.com/malvarestaurantbbsr",
+            "description": "Relaxed venue for regional & global fare. Regional & international meals & desserts are offered at this unpretentious destination.",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great beer selection",
+                        "Great dessert",
+                        "Great wine list"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible parking lot",
+                        "Wheelchair accessible restroom",
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Alcohol",
+                        "All you can eat",
+                        "Beer",
+                        "Cocktails",
+                        "Coffee",
+                        "Halal food",
+                        "Happy hour drinks",
+                        "Happy hour food",
+                        "Hard liquor",
+                        "Late-night food",
+                        "Private dining room",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Wine"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Gender-neutral restroom",
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Quiet",
+                        "Romantic",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Brunch reservations recommended",
+                        "Lunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Good for kids birthday"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "reserve_a_table": "https://www.google.com/maps/reserve/v/dine/c/CzGflC0LY78?source=pa&opi=79508299&hl=en-US&gei=xo5raK3hGO-qwbkP-LSlGA&sourceurl=https://www.google.com/service/MapsSearchService/Search?hl%3Den%26authuser%3D0%26gl%3Dus%26q%3Dveg%2Brestaurants%26tbm%3Dmap",
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/1q6j4sy81&g2lbs=AO8LyOLGOlg4JQtNSa9t6vBPAGDmBgF6CK9aqhGfzptE6XnlVgJsXPtEpatyvVBDDyfROdEgxuX6S8rIyJXoaTDQO0GkGtBlcw%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"All the ordered items, both veg and non veg, were delicious.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipN3Qg472B1WhWNH08mcNEXTvqpNcHe_ypCdmpLo=w138-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/QyvzznicuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFngZxyYbmJu5GQYnhHu52FgkZvs5xoRUlZY4JfskRpfWeCcklvgk29bbmhsoZthaaSbrZuXDwCSIyEm"
+        },
+        {
+            "position": 3,
+            "title": "Marwari Rasoi",
+            "place_id": "ChIJAWyU5T0JGToRJwf9pcOBKJI",
+            "data_id": "0x3a19093de5946c01:0x922881c3a5fd0727",
+            "data_cid": "10531810405909333799",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19093de5946c01%3A0x922881c3a5fd0727&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19093de5946c01%3A0x922881c3a5fd0727&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.346858599999997,
+                "longitude": 85.80733239999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJAWyU5T0JGToRJwf9pcOBKJI",
+            "provider_id": "/g/12xqsl_6r",
+            "rating": 4.1,
+            "reviews": 2543,
+            "price": "₹200–400",
+            "type": "Rajasthani restaurant",
+            "types": [
+                "Rajasthani restaurant",
+                "Indian restaurant",
+                "North Indian restaurant",
+                "Vegetarian restaurant"
+            ],
+            "type_id": "rajasthani_restaurant",
+            "type_ids": [
+                "rajasthani_restaurant",
+                "indian_restaurant",
+                "north_indian_restaurant",
+                "vegetarian_restaurant"
+            ],
+            "address": "Marwari Rasoi Stone Palace B-23, Chandaka Industrial Estate, C.S Pur Infosys TCS Road,Near DLF Cyber City, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 4 PM ⋅ Reopens 6 PM",
+            "hours": "Open ⋅ Closes 4 PM ⋅ Reopens 6 PM",
+            "operating_hours": {
+                "monday": "12–4 PM, 6–10 PM",
+                "tuesday": "12–4 PM, 6–10 PM",
+                "wednesday": "12–4 PM, 6–10 PM",
+                "thursday": "12–4 PM, 6–10 PM",
+                "friday": "12–4 PM, 6–10 PM",
+                "saturday": "12–4 PM, 6–10 PM",
+                "sunday": "12–4 PM, 6–10 PM"
+            },
+            "phone": "+91 90400 26651",
+            "description": "Basic vegetarian Marwari food. Small, no-frills outlet serving vegetarian Marwari & Rajasthani regional cuisine.",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Gender-neutral restroom",
+                        "Restroom",
+                        "Wi-Fi",
+                        "Free Wi-Fi"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Quiet",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                },
+                {
+                    "pets": [
+                        "Dogs allowed inside",
+                        "Dogs allowed outside"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "service_options": [
+                        "Onsite services"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible parking lot"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/12xqsl_6r&g2lbs=AO8LyOJvi1Lmdj5w7oSUN9nj-4n5G1kd2p8yipkD4oMFxZ158ODkr5WYfSXE7jVgaGCLrH1XKkh_lFdGOHHpLka582I0oVNBHg%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"Excellent vegetarian food and good attendants.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4np-3AKz8qA32W8vBIJ7-1j5jTo-E1wIbYXLoiM9g9Jc4bYIHBgAB4_co0MZIteGdh6F8dm8tzBE9CKMpW5zYhmG-hqudjAH49sug6DPLgHrDx-OEF7AR7xNePH3fvzQ-YWdc8zh=w184-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/_Jjrf3icBcHdDoIgGADQJ_oykxLausCytLS_tZndtIUEWYoGVuP9eojepnN-X2lMo8eO85BeTyglHrzT_MlUbXhtekxVjmg0MA3aoVMiUd2AR1cWt9QbZPgVxEsf3HJYHhSE7ju-5MdE3VIiyJKhSx5HgaABOjPVT0-x4YtCjua4qLCxQUimq7TJhjaX1QJk2xUljRDRnRjNtomInrMPbMK5T_f-Z823kXd92R3kWcGwlZO3ixFIMoA71OoPzmNCRw"
+        },
+        {
+            "position": 4,
+            "title": "IDLI BHAVAN",
+            "place_id": "ChIJuUCukBEJGToRPRBhvsFZAhw",
+            "data_id": "0x3a19091190ae40b9:0x1c0259c1be61103d",
+            "data_cid": "2018274271672995901",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19091190ae40b9%3A0x1c0259c1be61103d&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19091190ae40b9%3A0x1c0259c1be61103d&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3426358,
+                "longitude": 85.8222883
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJuUCukBEJGToRPRBhvsFZAhw",
+            "provider_id": "/g/11bw51crkn",
+            "rating": 3.8,
+            "reviews": 3482,
+            "price": "₹1–200",
+            "type": "South Indian restaurant",
+            "types": [
+                "South Indian restaurant",
+                "Breakfast restaurant",
+                "North Indian restaurant",
+                "Restaurant",
+                "Vegetarian restaurant"
+            ],
+            "type_id": "south_indian_restaurant",
+            "type_ids": [
+                "south_indian_restaurant",
+                "breakfast_restaurant",
+                "north_indian_restaurant",
+                "restaurant",
+                "vegetarian_restaurant"
+            ],
+            "address": "Ground Floor, Hotel Sai Prabha Building Infocity Road, Square, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10:30 PM",
+            "hours": "Open ⋅ Closes 10:30 PM",
+            "operating_hours": {
+                "monday": "7:30 AM–10:30 PM",
+                "tuesday": "7:30 AM–10:30 PM",
+                "wednesday": "7:30 AM–10:30 PM",
+                "thursday": "7:30 AM–10:30 PM",
+                "friday": "7:30 AM–10:30 PM",
+                "saturday": "7:30 AM–10:30 PM",
+                "sunday": "7:30 AM–10:30 PM"
+            },
+            "phone": "+91 63723 33258",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great coffee",
+                        "Great tea selection"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Organic dishes",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Quiet",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "LGBTQ+ friendly",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Brunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible parking lot",
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "reserve_a_table": "https://www.google.com/maps/reserve/v/dine/c/c9lpsSpldRA?source=pa&opi=79508299&hl=en-US&gei=xo5raK3hGO-qwbkP-LSlGA&sourceurl=https://www.google.com/service/MapsSearchService/Search?hl%3Den%26authuser%3D0%26gl%3Dus%26q%3Dveg%2Brestaurants%26tbm%3Dmap",
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11bw51crkn&g2lbs=AO8LyOL88EIusn1nwzwStMJO0-bngzUSAO5vHyu7SobqemQCnnMThz8l4YyG8wEudiGXLgjF1Lx6Vgf_-2xz-b5mJFoeYFofjA%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"Try veg biryani and paneer handi if you are a spicy lover\"",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipPGKkmY2qKCME4gmzkAsBChcrEK2dmUunp6oZ5v=w138-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/SDZBbnicuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFkQ4O6dnRtpVOjt7Otqkp5ble1Y7OSckVzk6m2Ukhtamldglh9lWmZbbmhsoZthaaSbrZuXDwCveyGc"
+        },
+        {
+            "position": 5,
+            "title": "Rameswar South Kitchen",
+            "place_id": "ChIJ44BqjBkJGToRPdgQE7r7_8g",
+            "data_id": "0x3a1909198c6a80e3:0xc8fffbba1310d83d",
+            "data_cid": "14483571703249164349",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909198c6a80e3%3A0xc8fffbba1310d83d&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909198c6a80e3%3A0xc8fffbba1310d83d&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3263565,
+                "longitude": 85.817202
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ44BqjBkJGToRPdgQE7r7_8g",
+            "provider_id": "/g/11wxfgckmf",
+            "rating": 4.8,
+            "reviews": 176,
+            "price": "₹1–200",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant"
+            ],
+            "address": "Ground Floor, 140, Niladri Vihar Rd, District Center, Chandrasekharpur, Bhubaneswar, Odisha 751016, India",
+            "open_state": "Open ⋅ Closes 10:30 PM",
+            "hours": "Open ⋅ Closes 10:30 PM",
+            "operating_hours": {
+                "monday": "7:30 AM–10:30 PM",
+                "tuesday": "7:30 AM–10:30 PM",
+                "wednesday": "7:30 AM–10:30 PM",
+                "thursday": "7:30 AM–10:30 PM",
+                "friday": "7:30 AM–10:30 PM",
+                "saturday": "7:30 AM–10:30 PM",
+                "sunday": "7:30 AM–10:30 PM"
+            },
+            "extensions": [
+                {
+                    "service_options": [
+                        "Curbside pickup",
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great coffee",
+                        "Sports"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Coffee",
+                        "Happy hour drinks",
+                        "Happy hour food",
+                        "Organic dishes",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Counter service",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "Family-friendly",
+                        "Groups",
+                        "LGBTQ+ friendly"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Has changing table(s)",
+                        "Kids' menu"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                },
+                {
+                    "pets": [
+                        "Dogs allowed outside"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nofecX1wG71YtLzxdzOT9IQzKYd9Gptp7GJzgVVnN64CjR6nSAMQWdd5HguWRNZSX_-R699m2X7lRdm21_kVAfCLu0ToGrN2YlmTHcCZsd4Stk8yz4-GWTk0l7TMg_2RjREi1El=w125-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/O56OmHicBcFdboMgAADgE1ELszqW7MGYBru1LkXi34sPYLGKYAqmLffbIXqbft_rf3BusV9BoIaPjTRGqn61_Y0b7XrtNtzMgVws4BbYIEnxEGpz6XkN7ySGjTv6h_B_DB_O_rcRmCxuicmPl2Wp8yhMRxrpIjmdKyF2mVwrmrdF3QEaYTyjOlZUzAh2U5lc0uO6ZYbcctSomWU8ba0ICzd9Pn0ISMWmrYrZSXaIjnR_hXv1fYdoBwaMwAS0eQOrAUOj"
+        },
+        {
+            "position": 6,
+            "title": "ROYAL'S KITCHEN",
+            "place_id": "ChIJ8Sitj0gJGToRWxTkbvkpstQ",
+            "data_id": "0x3a1909488fad28f1:0xd4b229f96ee4145b",
+            "data_cid": "15326358633179255899",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909488fad28f1%3A0xd4b229f96ee4145b&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909488fad28f1%3A0xd4b229f96ee4145b&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3421624,
+                "longitude": 85.8076
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ8Sitj0gJGToRWxTkbvkpstQ",
+            "provider_id": "/g/11y34_k5j1",
+            "rating": 4.3,
+            "reviews": 284,
+            "price": "₹1–200",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant",
+                "Fine dining restaurant",
+                "North Indian restaurant",
+                "Restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant",
+                "fine_dining_restaurant",
+                "north_indian_restaurant",
+                "restaurant"
+            ],
+            "address": "Plot -F, 5/A, SQUARE, Chandaka Industrial Estate, industrial area, Infocity, Chandrasekharpur, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10:30 PM",
+            "hours": "Open ⋅ Closes 10:30 PM",
+            "operating_hours": {
+                "monday": "9 AM–10:30 PM",
+                "tuesday": "9 AM–10:30 PM",
+                "wednesday": "9 AM–10:30 PM",
+                "thursday": "9 AM–10:30 PM",
+                "friday": "9 AM–10:30 PM",
+                "saturday": "9 AM–10:30 PM",
+                "sunday": "9 AM–10:30 PM"
+            },
+            "phone": "+91 82493 77899",
+            "website": "https://www.facebook.com/myroyalskitchen",
+            "extensions": [
+                {
+                    "from_the_business": [
+                        "Identifies as women-owned"
+                    ]
+                },
+                {
+                    "service_options": [
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "LGBTQ+ friendly"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11y34_k5j1&g2lbs=AO8LyOKqDzu9ZbxghzyRJn7FyT30QR7qInDCXtbO02nrC9iERVeL2HO4L913JKsCCzj40P2vMD8uhrxsDaSjCCuBc3QZz3N8mA%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipMzU0saYB2BeGM1ZhIRbQgIiNGbs0QDQDxMPnzd=w80-h106-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/mYD39nicuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFngWxVqUJwY6WTklOruaxiV4RmUFJjumennnlRsEOgS6FLhG5BXlWJbbmGgm2FoYKabrZuXDwCf3CEd"
+        },
+        {
+            "position": 7,
+            "title": "Rajasthani Rasoi",
+            "place_id": "ChIJOzbCKQAJGToRzhUHMrtRPdU",
+            "data_id": "0x3a19090029c2363b:0xd53d51bb320715ce",
+            "data_cid": "15365527368098059726",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19090029c2363b%3A0xd53d51bb320715ce&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19090029c2363b%3A0xd53d51bb320715ce&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3532658,
+                "longitude": 85.8242686
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJOzbCKQAJGToRzhUHMrtRPdU",
+            "provider_id": "/g/11vrmjbn6q",
+            "rating": 4.5,
+            "reviews": 1488,
+            "price": "₹200–400",
+            "type": "Rajasthani restaurant",
+            "types": [
+                "Rajasthani restaurant"
+            ],
+            "type_id": "rajasthani_restaurant",
+            "type_ids": [
+                "rajasthani_restaurant"
+            ],
+            "address": "KIIT Rd, near dominos pizza, opposite burger king, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 11 PM",
+            "hours": "Open ⋅ Closes 11 PM",
+            "operating_hours": {
+                "monday": "11 AM–11 PM",
+                "tuesday": "11 AM–11 PM",
+                "wednesday": "11 AM–11 PM",
+                "thursday": "11 AM–11 PM",
+                "friday": "11 AM–11 PM",
+                "saturday": "11 AM–11 PM",
+                "sunday": "11 AM–11 PM"
+            },
+            "phone": "+91 98270 29103",
+            "extensions": [
+                {
+                    "service_options": [
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true
+            },
+            "reserve_a_table": "https://www.google.com/maps/reserve/v/dine/c/BqEBX24LwSM?source=pa&opi=79508299&hl=en-US&gei=xo5raK3hGO-qwbkP-LSlGA&sourceurl=https://www.google.com/service/MapsSearchService/Search?hl%3Den%26authuser%3D0%26gl%3Dus%26q%3Dveg%2Brestaurants%26tbm%3Dmap",
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11vrmjbn6q&g2lbs=AO8LyOJEol1T8A7y__uSLv8EILmRNB3FmrD86umdZ0G5yQ1GWidGTzk2fg38BDH7FDPvepvLKUFpcodT7AKbJ_ocPi_I9BYm6Q%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"Food was very impressive and awesome taste for veg\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqFrWSpQIOoYGz9meKq_XLIgvq9YdYNvTqHTI7_6IDkqlPrlaJ-r7qm4YZ35XX6iK7Jq8QDsvRVBMci9Vb1FT9qjq46ps8_m_3__ezcrkLCxPqWlWBi2Q6Z2u0139nrqBtPp653zA=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/sw-v5HicBcFRToMwGADgE3VIy8pq4sPYMmWbCpMM2Euz1QYQaPu3HRou6Bm8jd_399t6b9xjEAwtWTRaN4O8O2mFVl4qvxB6DBrjkHDIBesNayMFO1t-mDx91_XzzEZ5AF4d02YCVn_Wb1MBL0Uac5puexgyO1z3yMYwRvWFLKuKdod4D6t866bTOXkVHTvfwl3B4AsiatyKj5xwLmdh--PmJ4NyKJMO5_SC7w8hYcpC4jNDl2ReP32HGKOWYdQjpf8BgHtFDA"
+        },
+        {
+            "position": 8,
+            "title": "Truptee Legacy - Best Restaurant in Patia",
+            "place_id": "ChIJadWr7g0JGToRFY2b9AuQNms",
+            "data_id": "0x3a19090deeabd569:0x6b36900bf49b8d15",
+            "data_cid": "7725520591823539477",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19090deeabd569%3A0x6b36900bf49b8d15&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19090deeabd569%3A0x6b36900bf49b8d15&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.343264299999998,
+                "longitude": 85.80847519999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJadWr7g0JGToRFY2b9AuQNms",
+            "provider_id": "/g/11j3kn26l7",
+            "rating": 4.2,
+            "reviews": 1260,
+            "price": "₹200–400",
+            "type": "South Indian restaurant",
+            "types": [
+                "South Indian restaurant"
+            ],
+            "type_id": "south_indian_restaurant",
+            "type_ids": [
+                "south_indian_restaurant"
+            ],
+            "address": "A36, 8RV5+89Q, near, Infocity Ave, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10 PM",
+            "hours": "Open ⋅ Closes 10 PM",
+            "operating_hours": {
+                "monday": "7 AM–10 PM",
+                "tuesday": "7 AM–10 PM",
+                "wednesday": "7 AM–10 PM",
+                "thursday": "7 AM–10 PM",
+                "friday": "7 AM–10 PM",
+                "saturday": "7 AM–10 PM",
+                "sunday": "7 AM–10 PM"
+            },
+            "phone": "+91 78946 17777",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great coffee",
+                        "Great dessert",
+                        "Great tea selection"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible restroom",
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Quiet",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Brunch reservations recommended",
+                        "Lunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Good for kids birthday"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11j3kn26l7&g2lbs=AO8LyOIxYDVWI3wkeRNbS-9NNdOw86mraucM1hdibuLYE1gipPSJO2Vi9SakYSL4iHPbVi6C5tNnMbZ-WB2Wsi-28mrul9sdwg%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"Food is good , specially for vegetarian people but service is slow\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nooMxzxMMvTt7YZWgqbbXHuzRGmZuLtTngKNqX24lRyp2sqQslNcNL_3TaCAvsoqrF4rwpN9_4Q6l4bj55CFQKqgkxL4nyNpd1Wzwon0zsehHsxVvuCkmX2vW8qUKzu5FqX8Lb0ASLVW52P=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/ANHv5nicBcHdboIwGADQJ0K0FidLdkFImAmlGY4JemMGkjaj9IevBew77gH2Njvn75dbq-E1DAXfb5hSTPQO-qlT0vbSbjo1hkxD0EEAYZLGHEulitWvRTFX9uV6q5lp2-bk_Pl9vDliK8lyahqExfmpEZgSBO0oue-r7zSZQZkpw9OiaXzH5UHg9ieK0qzMDRtWguWT6seu9ouSWw89P8F6mV06jA2a66P5yr2LMtMcSbtNPsmljtDH27JDKOAxCoZAqn8lMEmU"
+        },
+        {
+            "position": 9,
+            "title": "JUGAAD JN. Patia KiiT",
+            "place_id": "ChIJnfMq8D0JGToRQxwPNKReIEc",
+            "data_id": "0x3a19093df02af39d:0x47205ea4340f1c43",
+            "data_cid": "5125200435288677443",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19093df02af39d%3A0x47205ea4340f1c43&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19093df02af39d%3A0x47205ea4340f1c43&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3533828,
+                "longitude": 85.8221695
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJnfMq8D0JGToRQxwPNKReIEc",
+            "provider_id": "/g/11byx82n7_",
+            "rating": 4.2,
+            "reviews": 4101,
+            "price": "₹200–400",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant",
+                "Breakfast restaurant",
+                "Fast food restaurant",
+                "North Indian restaurant",
+                "Rajasthani restaurant",
+                "Restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant",
+                "breakfast_restaurant",
+                "fast_food_restaurant",
+                "north_indian_restaurant",
+                "rajasthani_restaurant",
+                "restaurant"
+            ],
+            "address": "1st floor, 9R3C+8VP, of People's guest house, KIIT Rd, Opposite SBI, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10 PM",
+            "hours": "Open ⋅ Closes 10 PM",
+            "operating_hours": {
+                "monday": "10:30 AM–10 PM",
+                "tuesday": "10:30 AM–10 PM",
+                "wednesday": "10:30 AM–10 PM",
+                "thursday": "10:30 AM–10 PM",
+                "friday": "10:30 AM–10 PM",
+                "saturday": "10:30 AM–10 PM",
+                "sunday": "10:30 AM–10 PM"
+            },
+            "phone": "+91 77355 45031",
+            "website": "https://www.jugaadjn.com/",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Onsite services",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great coffee",
+                        "Great dessert",
+                        "Great tea selection"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Quiet",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Lunch reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Good for kids birthday"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually difficult to find a space"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible parking lot",
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11byx82n7_&g2lbs=AO8LyOI1zlPvknX41cY6_ZP8UgXmPuMqiiP2Ya6BxcuSShlgxsmV19Le2GPXpAUh_LPHkaCTrsgFPw3iZy3HgWQjKypsTWWC_w%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqIMG9166zml1nirkG4irl0Pk6t88GA69M8uvnOUCXHc9HN1_-TcgQ5VzXiKocdb0P996trWpSEXdOYfgJ1FZBi1jiWm7Sa3iPh73wSRjQ7n8Nk3uyRuP5ML6gO0u-3mTaIgEX2Fg=w163-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/cE5qwHicBcHtFoEwAADQJ5qasZpz_IhDvlLkI_44TLaptrSNwwt6Bm_j3t-XG1PrnuOUHLWYUqzMrc4bqqTJpWlRVTms1oBqoJ1gSHhHPqZRSCDGn6qEUjRF2BFN6SYFNr4fBphEvn3KeDvMJpRMlvAENpSturtPJuaKXi9uQgg2zb5OR9k1PtzYDI6PAwHvYl956RmJhHvola7vK0_6ywLZ99om3WiBWexagKrNecpGWXvM-i-IEeCkDQog1R-_AkNU"
+        },
+        {
+            "position": 10,
+            "title": "Misky's Sweet N Sour",
+            "place_id": "ChIJV618MqYJGToRRCZx3bEolEU",
+            "data_id": "0x3a1909a6327cad57:0x459428b1dd712644",
+            "data_cid": "5013677029559707204",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909a6327cad57%3A0x459428b1dd712644&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909a6327cad57%3A0x459428b1dd712644&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3255679,
+                "longitude": 85.81857629999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJV618MqYJGToRRCZx3bEolEU",
+            "provider_id": "/g/11bw4_jvl5",
+            "rating": 4.2,
+            "reviews": 1825,
+            "price": "₹1–200",
+            "type": "South Indian restaurant",
+            "types": [
+                "South Indian restaurant",
+                "Breakfast restaurant",
+                "Candy store",
+                "Fast food restaurant",
+                "Snack bar",
+                "Vegetarian restaurant"
+            ],
+            "type_id": "south_indian_restaurant",
+            "type_ids": [
+                "south_indian_restaurant",
+                "breakfast_restaurant",
+                "candy_store",
+                "fast_food_restaurant",
+                "snack_bar",
+                "vegetarian_restaurant"
+            ],
+            "address": "Plot No 114, Lane Number 4, District Center, Chandrasekharpur, Bhubaneswar, Odisha 751016, India",
+            "open_state": "Open ⋅ Closes 10:30 PM",
+            "hours": "Open ⋅ Closes 10:30 PM",
+            "operating_hours": {
+                "monday": "8 AM–10:30 PM",
+                "tuesday": "8 AM–10:30 PM",
+                "wednesday": "8 AM–10:30 PM",
+                "thursday": "8 AM–10:30 PM",
+                "friday": "8 AM–10:30 PM",
+                "saturday": "8 AM–10:30 PM",
+                "sunday": "8 AM–10:30 PM"
+            },
+            "phone": "+91 93380 94381",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert",
+                        "Great tea selection"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "user_review": "\"It is a veg restaurant which also has breakfast,lunch and dinner options.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nq0Pxw_lvDpUWbMorW3ekWly2ocilGOWOUuv0M0N-VfbLwKdy7zDleZOCiC2rsneYjgM7wOlIX2S1wSFygF3WdgQMFOiFPjiBIBSo5gai6z1ZYwNs--bvfWC7wfuqHVsTGGlI4=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/H18s1nicBcH_EoEwAADgJ1o_Fjru_EGudGRcGP5xqrVWs6VVk-fzEt7G9_2-RdvWamaavHAMKiXlpFOkSaVoiWiNVD5NWiuQKqDMhTctRuJl7d_6zvtVfcJJJBvskArzAcqU8QBhdOp6K7J24JwnW73JBvez4uSGPObBRglyLWnkasTDC4xtHfsD9R2c0UPkI-bvS7YMl7Ec0webfOzbVe8UAEmfY8_Vefdan9UxCHg4mmsbQlBMIaiAkH8R_UVE"
+        },
+        {
+            "position": 11,
+            "title": "Brothers Kitchen",
+            "place_id": "ChIJYUEpmgMJGToRDCH2vxFgwag",
+            "data_id": "0x3a1909039a294161:0xa8c16011bff6210c",
+            "data_cid": "12160106098228338956",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909039a294161%3A0xa8c16011bff6210c&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909039a294161%3A0xa8c16011bff6210c&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3627167,
+                "longitude": 85.8324695
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJYUEpmgMJGToRDCH2vxFgwag",
+            "provider_id": "/g/11ptnlb94g",
+            "rating": 4.8,
+            "reviews": 220,
+            "price": "₹200–400",
+            "type": "North Indian restaurant",
+            "types": [
+                "North Indian restaurant",
+                "Catering food and drink supplier",
+                "Children's party buffet",
+                "Delivery Chinese restaurant",
+                "Takeout Restaurant",
+                "Wedding buffet"
+            ],
+            "type_id": "north_indian_restaurant",
+            "type_ids": [
+                "north_indian_restaurant",
+                "catering_food_and_drink_supplies",
+                "childrens_party_buffet",
+                "delivery_chinese_restaurant",
+                "meal_takeaway",
+                "wedding_buffet"
+            ],
+            "address": "Purusottam Enclave Rd, Nandan Vihar, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 11 PM",
+            "hours": "Open ⋅ Closes 11 PM",
+            "operating_hours": {
+                "monday": "10 AM–11 PM",
+                "tuesday": "10 AM–11 PM",
+                "wednesday": "10 AM–11 PM",
+                "thursday": "10 AM–11 PM",
+                "friday": "10 AM–11 PM",
+                "saturday": "10 AM–11 PM",
+                "sunday": "10 AM–11 PM"
+            },
+            "phone": "+91 96204 00055",
+            "website": "https://www.facebook.com/brotherskitchenNV/",
+            "extensions": [
+                {
+                    "service_options": [
+                        "Curbside pickup",
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Halal food",
+                        "Happy hour food",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Lunch",
+                        "Dinner",
+                        "Catering"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "Groups"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Reservations required",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Kids' menu"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible parking lot",
+                        "Wheelchair accessible restroom",
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11ptnlb94g&g2lbs=AO8LyOKEUgHu5aFEIcNuKtwjOEh7obXdM33ktOSbir4DobIg6RWDJzCRAE687w7PAzEAMpZVpZCmOH47ip1cvKzNU7PtbV03oQ%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"We have mostly tried vegetarian dishes and they all tasted awesome.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipNXo6G-rGR-v9gjnc-FWXpKx9HJCF6DubWpBFH7=w92-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/VpfuCXicuxmbUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFngF5Fv5q5b5B6kW2aZnpWXrOsWHlHgXWHp4eXsZuZSmhRe4OTmYW5bbmmkmwHE2bp5-QBzxyBc"
+        },
+        {
+            "position": 12,
+            "title": "Hotel Sriyaram",
+            "place_id": "ChIJzR9FtSIJGToRpgTqeut8b8Y",
+            "data_id": "0x3a190922b5451fcd:0xc66f7ceb7aea04a6",
+            "data_cid": "14298784692745929894",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a190922b5451fcd%3A0xc66f7ceb7aea04a6&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a190922b5451fcd%3A0xc66f7ceb7aea04a6&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.353958199999997,
+                "longitude": 85.81786149999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJzR9FtSIJGToRpgTqeut8b8Y",
+            "provider_id": "/g/11g_2prq7",
+            "rating": 3.9,
+            "reviews": 1297,
+            "price": "₹1–200",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant"
+            ],
+            "address": "KIIT Rd, near Kalinga Institute of Industrial Technology, Chandaka Industrial Estate, University, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10 PM",
+            "hours": "Open ⋅ Closes 10 PM",
+            "operating_hours": {
+                "monday": "12–10 PM",
+                "tuesday": "12–10 PM",
+                "wednesday": "12–10 PM",
+                "thursday": "12–10 PM",
+                "friday": "12–10 PM",
+                "saturday": "12–10 PM",
+                "sunday": "12–10 PM"
+            },
+            "phone": "+91 90404 06515",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance",
+                        "Wheelchair accessible parking lot",
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npyk9wfUdGwsWRRAzFLwV2u-ntqKfQIE_swTPG5J0NqqF-eiMd1VTRPO0WKd6SV-2at0DsrxurcuxPA_n4OC2_pn8zOBu7ItenVXGk9N_VGZ9uXbFoVKji46bSw3EPL4OALR3r8=w163-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/oVotFHicDc1tEoFAAADQE23f0prxI1GTooTN-NPQt9itdncW93MIt-Fd4H0_DWM9ncnyvdGlmpD6XnJajjnBrMRMyslDrnsKcgqobDuwMXD_6qCojoUnaJok9tsNBdI4wGwIqp2_yqg4xN5krWyHwQVluylUdEjiSEmDwtwjoF2YsqTjk485f8Z2ho3I0bIeW-9owaf-f0Unr4PbDHlnyE9Xl6Dg1hrmdS_0VRwakR0m-mjNhWrqoIEa6AAmPwAnRFA"
+        },
+        {
+            "position": 13,
+            "title": "Udupi Kitchen",
+            "place_id": "ChIJSy9SIHQJGToRzU2conNvRbA",
+            "data_id": "0x3a19097420522f4b:0xb0456f73a29c4dcd",
+            "data_cid": "12701680866508426701",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19097420522f4b%3A0xb0456f73a29c4dcd&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19097420522f4b%3A0xb0456f73a29c4dcd&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3392078,
+                "longitude": 85.8099783
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJSy9SIHQJGToRzU2conNvRbA",
+            "provider_id": "/g/11n0znvwb3",
+            "rating": 4.2,
+            "reviews": 985,
+            "price": "₹1–200",
+            "type": "Odia restaurant",
+            "types": [
+                "Odia restaurant",
+                "Family restaurant"
+            ],
+            "type_id": "odia_restaurant",
+            "type_ids": [
+                "odia_restaurant",
+                "family_restaurant"
+            ],
+            "address": "F, 7, Sailashree Vihar, Chandrasekharpur, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 4 PM ⋅ Reopens 7:30 PM",
+            "hours": "Open ⋅ Closes 4 PM ⋅ Reopens 7:30 PM",
+            "operating_hours": {
+                "monday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "tuesday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "wednesday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "thursday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "friday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "saturday": "11:15 AM–4 PM, 7:30–10:30 PM",
+                "sunday": "11:15 AM–4 PM, 7:30–10:30 PM"
+            },
+            "phone": "+91 94381 20506",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Halal food",
+                        "Late-night food",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Table service"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Usually a wait"
+                    ]
+                },
+                {
+                    "payments": [
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible seating"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "user_review": "\"Must try - Mix Veg Fried Rice, Paratha and Thalis.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npE360YayHIZgL_qSMqtscwlctCiI2JzdN4_Djw_JmzNRnT_MEK0cLzIAoe6rehu1kjDMVZYD8XmfAaO1RSeVps7qLJ9tZS5lzTcPmWT3yNiyjkltHlAqAkN1K9rmKYLcHR7W7d=w80-h106-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/-i05aXicBcHbCoIwAADQL1pqlmbQw0jBe6FS6YvIWi7dRd1C9P_6iP6mc35fotQgj5pGiblphWgp_kg8IcEV5mqDBNPaQQIkgdTg2SE7PnimpZfN4gdVG9djnoxKopkidX4H23B9prva7eY6ZGua8aJOvEhH8RpAga0Jk4_Rd25yq0r38GAv2FyMLMe3QdpjHDqqyvd0LdCV3QtzSd9L11PlUzjCPjUiZ2JRGSM_s-_28zQfdEAM3QI94OIPMBhFgA"
+        },
+        {
+            "position": 14,
+            "title": "Bharpoor",
+            "place_id": "ChIJmT8q-fMJGToRPGnEATuEbHM",
+            "data_id": "0x3a1909f3f92a3f99:0x736c843b01c4693c",
+            "data_cid": "8317168000814049596",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909f3f92a3f99%3A0x736c843b01c4693c&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909f3f92a3f99%3A0x736c843b01c4693c&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3564142,
+                "longitude": 85.83493899999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJmT8q-fMJGToRPGnEATuEbHM",
+            "provider_id": "/g/11q8swtzsj",
+            "rating": 4.2,
+            "reviews": 204,
+            "price": "₹200–400",
+            "type": "Takeout Restaurant",
+            "types": [
+                "Takeout Restaurant"
+            ],
+            "type_id": "meal_takeaway",
+            "type_ids": [
+                "meal_takeaway"
+            ],
+            "address": "1st Floor, Laxmipriya Enclave, Flat 103, Patia-Kalarahanga Rd, beside Kripalu, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 1 AM",
+            "hours": "Open ⋅ Closes 1 AM",
+            "operating_hours": {
+                "monday": "12 PM–1 AM",
+                "tuesday": "12 PM–1 AM",
+                "wednesday": "12 PM–1 AM",
+                "thursday": "12 PM–1 AM",
+                "friday": "12 PM–1 AM",
+                "saturday": "12 PM–1 AM",
+                "sunday": "12 PM–1 AM"
+            },
+            "phone": "+91 73279 87620",
+            "extensions": [
+                {
+                    "from_the_business": [
+                        "Identifies as women-owned"
+                    ]
+                },
+                {
+                    "service_options": [
+                        "Curbside pickup",
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Coffee",
+                        "Halal food",
+                        "Late-night food",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Gender-neutral restroom",
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Trendy"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Family-friendly",
+                        "Groups",
+                        "LGBTQ+ friendly"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Kids' menu"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "curbside_pickup": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11q8swtzsj&g2lbs=AO8LyOKFyLzEPkoraCf-xwrpFAoTxvd9ejKnZBgMoGIvzB6TTIZEozc6i9-kZwKox2XwDyJNKEg7vKzD_hPNCAGLwltziax1Qw%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"... great vegetarian Chinese, try out veg clear soup and veg dimsums.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrgEYm0kx89RmWuPvAFa-ZN7KOmG5zfBckckSpThW_KFeoavJvJQiZ62rPXK9u_t56Pi2LQrRGkwoy2R7Mim0VaSsIp8A86FHXphFYp_KAamlOf52VNsff5JApnKVHeYl7IAhwyKQ=w199-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/BGRXEXicBcHbboIwAADQL6q4Oi418aFbhko3BVxQfCGkKZSUXkILqD_oN_g3nvN6cueMXXtez1eLVuu2Z6NlA9XKMeUWVEuvNRZQC6yHvxH_VEP7U8qluEUol-cxnXBcg-shJEe59R_NFxVUnMw_P1ckZrqekinJumsAh_RC0Fg5P0g7-JsN-VbM-g7z8K-Ty6I-2b2JcBTEu4vhcWkqgmvZHxsfFgfbNH6CjSLFjpV9uMd8vpNsM38gBDiCQACl33NKRWU"
+        },
+        {
+            "position": 15,
+            "title": "Sripuram Restaurant",
+            "place_id": "ChIJ011mJaYJGToRZs36ZWfLVBM",
+            "data_id": "0x3a1909a625665dd3:0x1354cb6765facd66",
+            "data_cid": "1392961829717331302",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909a625665dd3%3A0x1354cb6765facd66&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909a625665dd3%3A0x1354cb6765facd66&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3252012,
+                "longitude": 85.81813149999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ011mJaYJGToRZs36ZWfLVBM",
+            "provider_id": "/g/11b5zvgnww",
+            "rating": 3.9,
+            "reviews": 874,
+            "price": "₹200–400",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant",
+                "Chinese restaurant",
+                "Fast food restaurant",
+                "Indian restaurant",
+                "South Indian restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant",
+                "chinese_restaurant",
+                "fast_food_restaurant",
+                "indian_restaurant",
+                "south_indian_restaurant"
+            ],
+            "address": "Niladri Vihar Rd, District Center, Chandrasekharpur, Bhubaneswar, Odisha 751016, India",
+            "open_state": "Closes soon ⋅ 3 PM ⋅ Reopens 4 PM",
+            "hours": "Closes soon ⋅ 3 PM ⋅ Reopens 4 PM",
+            "operating_hours": {
+                "monday": "7 AM–3 PM, 4–10:30 PM",
+                "tuesday": "7 AM–3 PM, 4–10:30 PM",
+                "wednesday": "7 AM–3 PM, 4–10:30 PM",
+                "thursday": "7 AM–3 PM, 4–10:30 PM",
+                "friday": "7 AM–3 PM, 4–10:30 PM",
+                "saturday": "7 AM–3 PM, 4–10:30 PM",
+                "sunday": "7 AM–3 PM, 4–10:30 PM"
+            },
+            "phone": "+91 674 274 7230",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible entrance"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Happy hour food",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "Family-friendly",
+                        "Groups"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "Google Pay",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11b5zvgnww&g2lbs=AO8LyOK4xTFxSHXdEPm8eOfolvb4VEzOn_igXzkaikJK6d_ylBhoFsdgUrVPayGDMpEg3a_RG2SNoS6H5PNoYyLiuLK661hNaQ%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqh4H2mRNiCBNOafx1ngMfgis-JMnZlYaiR-sa1sCeaP9FTwjoSg-kPiEgiEK3FbAOPcUp6iM4uSkmzsHwXrf0TWeuBv_rVcWFsLiRhWV1dDQZ4hWQrjj-yv2T6z9Ih8ZwASjw=w194-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/Z5Z4xXicBcFbcoIwFADQFV0pmHGazvQDqYzVoghUlJ8OxpCER0K5YKrr6ya6m57z9yvHsccXx2nlfCaMES2fkA_M6JHrccZM54gegSGg4wdUEv0tydrrkp0Klrt9Wf24WkSVUAibSBftuVQJYOliwMuYhpmtTSqgidVKqNV2Hl78fcw--4WKyJQ23QPX9jRUT1nOp-XtaziyPMQPlcj86F7fDgWR-WGoa7jfvGzxoO_yubB-WttX61ICknrQgDb_z8dFSg"
+        },
+        {
+            "position": 16,
+            "title": "Himgiris - Authentic North Indian Pure Veg Comfort Food",
+            "place_id": "ChIJudThAFcJGToR125Gy9VTMaY",
+            "data_id": "0x3a19095700e1d4b9:0xa63153d5cb466ed7",
+            "data_cid": "11975445061858389719",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19095700e1d4b9%3A0xa63153d5cb466ed7&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19095700e1d4b9%3A0xa63153d5cb466ed7&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.343448199999997,
+                "longitude": 85.810926
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJudThAFcJGToR125Gy9VTMaY",
+            "provider_id": "/g/11x6ryy8k7",
+            "rating": 5,
+            "reviews": 71,
+            "price": "₹1–200",
+            "type": "Vegetarian restaurant",
+            "types": [
+                "Vegetarian restaurant"
+            ],
+            "type_id": "vegetarian_restaurant",
+            "type_ids": [
+                "vegetarian_restaurant"
+            ],
+            "address": "Shop No. 8, Plot No. 3, Infocity Ave, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10 PM",
+            "hours": "Open ⋅ Closes 10 PM",
+            "operating_hours": {
+                "monday": "10 AM–10 PM",
+                "tuesday": "10 AM–10 PM",
+                "wednesday": "10 AM–10 PM",
+                "thursday": "10 AM–10 PM",
+                "friday": "10 AM–10 PM",
+                "saturday": "10 AM–10 PM",
+                "sunday": "10 AM–10 PM"
+            },
+            "extensions": [
+                {
+                    "service_options": [
+                        "Curbside pickup",
+                        "No-contact delivery",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "Vegetarian options",
+                        "Vegetarian options only"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Usually plenty of parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11x6ryy8k7&g2lbs=AO8LyOJpia6GAw-vYzlRj1JO3DwZmohhxOThZXth2NOvcO_OJtEniH26O9nmGSK7JoQPVfwJNul3znjDELx-vTLe9g6eYEy8Ug%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipMS1OUXxcYzOuD8hgRMGOYQweTLsd6u9OmXKgMJ=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/IrolV3icuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFngG2zoHxpRkRxZ5V_qYpGRHuTr7h8ZWJ4a4lOcYlZq6Z8b4Z3u62VbbmhkpJthaaSbrZuXDwCwMiF0"
+        },
+        {
+            "position": 17,
+            "title": "Vishwa'S Kitchen Bhubaneswar , VKB",
+            "place_id": "ChIJae8ZxysJGToRgH0-BLtxSlA",
+            "data_id": "0x3a19092bc719ef69:0x504a71bb043e7d80",
+            "data_cid": "5785561719354850688",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19092bc719ef69%3A0x504a71bb043e7d80&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19092bc719ef69%3A0x504a71bb043e7d80&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.365972,
+                "longitude": 85.83648199999999
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJae8ZxysJGToRgH0-BLtxSlA",
+            "provider_id": "/g/11tbwg620q",
+            "rating": 4.9,
+            "reviews": 24,
+            "price": "₹1–200",
+            "type": "Box lunch supplier",
+            "types": [
+                "Box lunch supplier",
+                "Catering food and drink supplier",
+                "Fast food restaurant",
+                "Indian restaurant",
+                "North Indian restaurant",
+                "Vegetarian restaurant"
+            ],
+            "type_id": "box_lunch_supplier",
+            "type_ids": [
+                "box_lunch_supplier",
+                "catering_food_and_drink_supplies",
+                "fast_food_restaurant",
+                "indian_restaurant",
+                "north_indian_restaurant",
+                "vegetarian_restaurant"
+            ],
+            "address": "I, VKB Head office, Block 001, Nageswar Residency Rd, Nandan Vihar, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 11 PM",
+            "hours": "Open ⋅ Closes 11 PM",
+            "operating_hours": {
+                "monday": "7 AM–11 PM",
+                "tuesday": "7 AM–11 PM",
+                "wednesday": "7 AM–11 PM",
+                "thursday": "7 AM–11 PM",
+                "friday": "7 AM–11 PM",
+                "saturday": "7 AM–11 PM",
+                "sunday": "7 AM–11 PM"
+            },
+            "phone": "+91 95566 58851",
+            "website": "https://www.instagram.com/invites/contact/?i=12qjrdrqv6xt7&utm_content=1x3xa78",
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Wi-Fi",
+                        "Free Wi-Fi"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "LGBTQ+ friendly"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Debit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "no_contact_delivery": true
+            },
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipOEuElvqv0ZI-LYFz7-Ll3auVCBwOK0JgURXSyH=w203-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/mYWew3icuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFng71rqmlNWWGYQ5anrE-lWZa7rk2OcWBrm7FTu723glR4aFBFc6WFbbmRgrJthaaSbrZuXDwCiJSD4"
+        },
+        {
+            "position": 18,
+            "title": "Vishwa'S Kitchen Bhubaneswar , VKB",
+            "place_id": "ChIJFVwP7MMJGToRLsChwWI2Sy8",
+            "data_id": "0x3a1909c3ec0f5c15:0x2f4b3662c1a1c02e",
+            "data_cid": "3407877340819210286",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909c3ec0f5c15%3A0x2f4b3662c1a1c02e&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909c3ec0f5c15%3A0x2f4b3662c1a1c02e&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3632842,
+                "longitude": 85.8290011
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJFVwP7MMJGToRLsChwWI2Sy8",
+            "provider_id": "/g/11d_8hb6x9",
+            "rating": 4.3,
+            "reviews": 542,
+            "price": "₹1–200",
+            "type": "Fast food restaurant",
+            "types": [
+                "Fast food restaurant",
+                "Indian restaurant"
+            ],
+            "type_id": "fast_food_restaurant",
+            "type_ids": [
+                "fast_food_restaurant",
+                "indian_restaurant"
+            ],
+            "address": "Patia , Nandan Vihar Chock , 3th Shop Patia, Nandan Vihar, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 11 PM",
+            "hours": "Open ⋅ Closes 11 PM",
+            "operating_hours": {
+                "monday": "7 AM–11 PM",
+                "tuesday": "7 AM–11 PM",
+                "wednesday": "7 AM–11 PM",
+                "thursday": "7 AM–11 PM",
+                "friday": "7 AM–11 PM",
+                "saturday": "7 AM–11 PM",
+                "sunday": "7 AM–11 PM"
+            },
+            "website": "https://www.youtube.com/channel/UCvU3HADO6X7eAEReTdGVt9g",
+            "extensions": [
+                {
+                    "service_options": [
+                        "Outdoor seating",
+                        "Delivery",
+                        "Drive-through",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Halal food",
+                        "Late-night food",
+                        "Quick bite",
+                        "Vegan options",
+                        "Vegetarian options"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Wi-Fi",
+                        "Free Wi-Fi"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "Family-friendly",
+                        "Groups"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Debit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Kids' menu"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "drive_through": true,
+                "delivery": true
+            },
+            "user_review": "\"Taste wise average, I tried with Veg noodles, Veg Manchurian & Aloo Parata.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/p/AF1QipM2p-f1_5nCpir8mLMOIIk3w5Au9i-zPRUXiyk1=w203-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/2VlEIHicuxmXUVJSUGylr5-TYayXnp-fnpNaWpxalJyfV5KaV6KXnJ-rX6Dv6GYYmFnga1Sgm2YYb5rnXJBZZJHr4-vv6ZltXG7qWGqZqVsVEBQakVmZbWhbbmRgrJthaaSbrZuXDwCZgyDv"
+        },
+        {
+            "position": 19,
+            "title": "Kake Da Minar",
+            "place_id": "ChIJh1kckfcJGToR-v5Pb8zhOBA",
+            "data_id": "0x3a1909f7911c5987:0x1038e1cc6f4ffefa",
+            "data_cid": "1168932371459735290",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a1909f7911c5987%3A0x1038e1cc6f4ffefa&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a1909f7911c5987%3A0x1038e1cc6f4ffefa&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3263467,
+                "longitude": 85.8174129
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJh1kckfcJGToR-v5Pb8zhOBA",
+            "provider_id": "/g/11qp0z0jgr",
+            "rating": 4.5,
+            "reviews": 5405,
+            "price": "₹200–600",
+            "type": "Punjabi restaurant",
+            "types": [
+                "Punjabi restaurant"
+            ],
+            "type_id": "punjabi_restaurant",
+            "type_ids": [
+                "punjabi_restaurant"
+            ],
+            "address": "139, Niladri Vihar Rd, District Center, Chandrasekharpur, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 10:30 PM",
+            "hours": "Open ⋅ Closes 10:30 PM",
+            "operating_hours": {
+                "monday": "12–10:30 PM",
+                "tuesday": "12–10:30 PM",
+                "wednesday": "12–10:30 PM",
+                "thursday": "12–10:30 PM",
+                "friday": "12–10:30 PM",
+                "saturday": "12–10:30 PM",
+                "sunday": "12–10:30 PM"
+            },
+            "extensions": [
+                {
+                    "service_options": [
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great dessert"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "accessibility": [
+                        "Wheelchair accessible restroom"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Halal food",
+                        "Happy hour food",
+                        "Late-night food",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Catering",
+                        "Dessert",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Brunch reservations recommended",
+                        "Lunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations",
+                        "Usually a wait"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids",
+                        "Good for kids birthday"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking"
+                    ]
+                }
+            ],
+            "unsupported_extensions": [
+                {
+                    "accessibility": [
+                        "Wheelchair accessible seating"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11qp0z0jgr&g2lbs=AO8LyOJXc3v9uphebuEM6J4jQdam3DyMCGPMkcOvFGEmKXXxeffd1Rs1XHsm_qq8Q3PqzRAAxZ8XBnSt3uq1uo4RfkTleleI3A%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"Enjoyed the Veg platter there, including Paneer Tikki!\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4npMUpIvxvGXwOYEbyuWVEWEOp9bBz75KNT6PeQskD7sZTALDMHaCoOutqIUuM1pvK9x6Fm06Fubxbn1GIGG3h_JPXNdERUhQtMnI9lCiJ2y44dmzGhcmHGigvCaspIqO_OjIFUiXw=w163-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/kdSsIXicBcH_EoEwAADgJ5qk5ObOH6RmqOFE_OOUrkVty7Z-eEHP4G183-9LlRJyahgltQY553mZaZm9U85UxtQg5ZWRCwlSCaQxdyG1mQgigZuuQXFLLl7S6_PJO3tEwGTxmYw34dHZZXv5Wk7k9TjfLoPV3eVEqxpHOjBFs4Gd41dDx9dJlzATYYQselvv4vDhHSK6VwHDsHSL9ai37Uf1QTStVqjIG_cuBa7JjTyxHxVxO2tNxwIUjsALMP4HiUtF4A"
+        },
+        {
+            "position": 20,
+            "title": "Hermit's Zingiber- KIIT Square",
+            "place_id": "ChIJ6QGqDT0JGToR10lqGTgYoqw",
+            "data_id": "0x3a19093d0daa01e9:0xaca21838196a49d7",
+            "data_cid": "12439531749974362583",
+            "reviews_link": "https://serpapi.com/search.json?data_id=0x3a19093d0daa01e9%3A0xaca21838196a49d7&engine=google_maps_reviews&hl=en",
+            "photos_link": "https://serpapi.com/search.json?data_id=0x3a19093d0daa01e9%3A0xaca21838196a49d7&engine=google_maps_photos&hl=en",
+            "gps_coordinates": {
+                "latitude": 20.3545159,
+                "longitude": 85.824011
+            },
+            "place_id_search": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&place_id=ChIJ6QGqDT0JGToR10lqGTgYoqw",
+            "provider_id": "/g/11h12f9dn2",
+            "rating": 4.4,
+            "reviews": 1334,
+            "price": "$$",
+            "type": "South Indian restaurant",
+            "types": [
+                "South Indian restaurant"
+            ],
+            "type_id": "south_indian_restaurant",
+            "type_ids": [
+                "south_indian_restaurant"
+            ],
+            "address": "House no, 14, KIIT Rd, Aryapalli, Patia, Bhubaneswar, Odisha 751024, India",
+            "open_state": "Open ⋅ Closes 11 PM",
+            "hours": "Open ⋅ Closes 11 PM",
+            "operating_hours": {
+                "monday": "7 AM–11 PM",
+                "tuesday": "7 AM–11 PM",
+                "wednesday": "7 AM–11 PM",
+                "thursday": "7 AM–11 PM",
+                "friday": "7 AM–11 PM",
+                "saturday": "7 AM–11 PM",
+                "sunday": "7 AM–11 PM"
+            },
+            "phone": "+91 83288 24551",
+            "website": "https://www.hermithome.co/zingiberrestaurant",
+            "description": "Classic cuisine in a simple eatery. Typical dishes like biryani & curry are served along with European desserts at this unfussy venue.",
+            "extensions": [
+                {
+                    "service_options": [
+                        "Outdoor seating",
+                        "No-contact delivery",
+                        "Delivery",
+                        "Takeout",
+                        "Dine-in"
+                    ]
+                },
+                {
+                    "highlights": [
+                        "Great coffee",
+                        "Great dessert",
+                        "Great tea selection"
+                    ]
+                },
+                {
+                    "popular_for": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner",
+                        "Solo dining"
+                    ]
+                },
+                {
+                    "offerings": [
+                        "All you can eat",
+                        "Coffee",
+                        "Quick bite",
+                        "Small plates",
+                        "Vegan options",
+                        "Vegetarian options"
+                    ]
+                },
+                {
+                    "dining_options": [
+                        "Breakfast",
+                        "Brunch",
+                        "Lunch",
+                        "Dinner",
+                        "Dessert",
+                        "Seating",
+                        "Table service"
+                    ]
+                },
+                {
+                    "amenities": [
+                        "Restroom"
+                    ]
+                },
+                {
+                    "atmosphere": [
+                        "Casual",
+                        "Cozy",
+                        "Quiet",
+                        "Trendy",
+                        "Upscale"
+                    ]
+                },
+                {
+                    "crowd": [
+                        "College students",
+                        "Groups",
+                        "Tourists"
+                    ]
+                },
+                {
+                    "planning": [
+                        "Brunch reservations recommended",
+                        "Lunch reservations recommended",
+                        "Dinner reservations recommended",
+                        "Accepts reservations"
+                    ]
+                },
+                {
+                    "payments": [
+                        "Credit cards",
+                        "Debit cards",
+                        "NFC mobile payments"
+                    ]
+                },
+                {
+                    "children": [
+                        "Good for kids"
+                    ]
+                },
+                {
+                    "parking": [
+                        "Free parking lot",
+                        "Free street parking",
+                        "Usually difficult to find a space"
+                    ]
+                }
+            ],
+            "service_options": {
+                "dine_in": true,
+                "takeout": true,
+                "no_contact_delivery": true
+            },
+            "order_online": "https://www.google.com/viewer/chooseprovider?mid=/g/11h12f9dn2&g2lbs=AO8LyOKcXQ9H17faNuS-Ku4mUNH48S7GYD2RcxKB_jPkX6I85_HlBESkeE77fmQnmkI33mLbP-rcp9K02Z_H0gRMXxNWi9nbig%3D%3D&hl=en-US&gl=us&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=xo5raK3hGO-qwbkP-LSlGA&ei=xo5raK3hGO-qwbkP-LSlGA&fo_s=OA,SOE&opi=79508299&orderType=1&ebb=1&cs=0&foub=mcpp",
+            "user_review": "\"All vegetarian foods are delicious 😋 must visit places in Bhubaneswar.\"",
+            "thumbnail": "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nr-iBQwSG9m7_mEX2b2U6bT8dLULSnuQdWSVQxPlXNOfbNF32GP_M_TE8PZM4c9mEtt-EVeDn58RE2RMlrjvMyp4Qe36rSXm_2VG_0kmCRckS1MRrm8ba9m16nzljtvs-3VwW_IIg=w122-h92-k-no",
+            "serpapi_thumbnail": "https://serpapi.com/images/url/9utSXnicBcHbboIwAADQL6qMgoya7MFLR0ysA6pIfGmkVlB6IW2VbT_oN_g3nvN6dt4PbhYEsosmrTGtFHcnLDfaC-0n3KigHRzgDrhgvkRdrC24LoqRZkh9MoVr2MB90uzS82a_ofpenA-0Kn5zWW9_Ls32O4JZzgjb4TQ_kpgjhb0HuBIrPU1LDEsi7e1B_oa4EFFiaa0YrDL20atlyXsaktKqtDkhFSb6X978w4GoGg9svW6_xhBC0CEIeqDNG96ORDw"
+        }
+    ],
+    "serpapi_pagination": {
+        "next": "https://serpapi.com/search.json?engine=google_maps&google_domain=google.com&hl=en&ll=%4020.35640%2C+85.82400%2C14z&q=veg+restaurants&start=20&type=search"
+    }
+}
