@@ -74,6 +74,21 @@ Always be friendly, helpful, and considerate of dietary needs."""
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # External API Keys (optional - system works without them but with limited functionality)
+    # Restaurant APIs
+    GOOGLE_PLACES_API_KEY: Optional[str] = os.getenv("GOOGLE_PLACES_API_KEY")
+    YELP_API_KEY: Optional[str] = os.getenv("YELP_API_KEY")
+    GEOAPIFY_API_KEY: Optional[str] = os.getenv("GEOAPIFY_API_KEY")
+    
+    # Travel APIs
+    AMADEUS_API_KEY: Optional[str] = os.getenv("AMADEUS_API_KEY")
+    AMADEUS_API_SECRET: Optional[str] = os.getenv("AMADEUS_API_SECRET")
+    
+    # Web Search APIs
+    TAVILY_API_KEY: Optional[str] = os.getenv("TAVILY_API_KEY")
+    AZURE_BING_SEARCH_KEY: Optional[str] = os.getenv("AZURE_BING_SEARCH_KEY")
+    AZURE_BING_SEARCH_ENDPOINT: Optional[str] = os.getenv("AZURE_BING_SEARCH_ENDPOINT")
+
     class Config:
         env_file = ".env"
         case_sensitive = True

@@ -26,8 +26,8 @@ async def search_flights(request: FlightSearchRequest, user_id: Optional[str] = 
     """
     try:
         if not travel_agent.agent:
-            # Use local service
-            flights = travel_service.search_flights(
+            # Use local service with real APIs
+            flights = await travel_service.search_flights(
                 origin=request.origin,
                 destination=request.destination,
                 departure_date=request.departure_date,
@@ -73,9 +73,11 @@ async def search_hotels(request: HotelSearchRequest, user_id: Optional[str] = No
     """
     try:
         if not travel_agent.agent:
-            # Use local service
-            hotels = travel_service.search_hotels(
+            # Use local service with real APIs
+            hotels = await travel_service.search_hotels(
                 location=request.location,
+                latitude=request.latitude if hasattr(request, 'latitude') else None,
+                longitude=request.longitude if hasattr(request, 'longitude') else None,
                 check_in=request.check_in,
                 check_out=request.check_out,
                 guests=request.guests,
@@ -291,7 +293,7 @@ async def get_destinations():
     Get all available destinations
     """
     try:
-        destinations = travel_service.get_all_destinations()
+        destinations = await travel_service.get_all_destinations()
 
         return {
             "destinations": destinations,
@@ -306,10 +308,10 @@ async def get_destinations():
 @router.get("/destinations/{destination_name}")
 async def get_destination_info(destination_name: str):
     """
-    Get detailed information about a destination
+    Get detailed information about a destination using web search
     """
     try:
-        info = travel_service.get_destination_info(destination_name)
+        info = await travel_service.get_destination_info(destination_name)
 
         if not info:
             raise HTTPException(status_code=404, detail="Destination not found")
@@ -324,12 +326,22 @@ async def get_destination_info(destination_name: str):
 
 
 @router.get("/activities/{location}")
-async def get_activities(location: str, activity_type: Optional[str] = None):
+async def get_activities(
+    location: str, 
+    activity_type: Optional[str] = None,
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None
+):
     """
-    Get activities for a location
+    Get activities for a location using web search
     """
     try:
-        activities = travel_service.get_activities(location, activity_type)
+        activities = await travel_service.get_activities(
+            location, 
+            latitude=latitude,
+            longitude=longitude,
+            activity_type=activity_type
+        )
 
         return {
             "activities": activities,

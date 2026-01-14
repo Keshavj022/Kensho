@@ -87,6 +87,8 @@ class RestaurantQuery(BaseModel):
     """Restaurant query model"""
     query: str
     location: Optional[str] = None
+    latitude: Optional[float] = Field(None, ge=-90, le=90, description="Latitude coordinate")
+    longitude: Optional[float] = Field(None, ge=-180, le=180, description="Longitude coordinate")
     cuisine: Optional[str] = None
     dietary_type: Optional[DietaryType] = None
     max_results: int = Field(default=10, ge=1, le=50)

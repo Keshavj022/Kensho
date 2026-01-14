@@ -130,11 +130,12 @@ async def get_recommendations(
             # For development, use local restaurant service
             logger.warning("Agent not initialized, using local search")
 
-            # Parse query for filters
-            restaurants = restaurant_service.search_restaurants(
+            # Parse query for filters - use location from user profile or request
+            location = user.profile.location if user and user.profile.location else None
+            restaurants = await restaurant_service.search_restaurants(
                 query=request.user_query,
-                location=user.profile.location,
-                dietary_type=user.dietary.type.value,
+                location=location,
+                dietary_type=user.dietary.type.value if user else None,
                 max_results=5,
             )
 
@@ -190,12 +191,14 @@ async def get_recommendations(
 @router.post("/search")
 async def search_restaurants(query: RestaurantQuery, user_id: Optional[str] = None):
     """
-    Search restaurants based on query
+    Search restaurants based on query with location support
     """
     try:
-        restaurants = restaurant_service.search_restaurants(
+        restaurants = await restaurant_service.search_restaurants(
             query=query.query,
             location=query.location,
+            latitude=query.latitude if hasattr(query, 'latitude') else None,
+            longitude=query.longitude if hasattr(query, 'longitude') else None,
             cuisine=query.cuisine,
             dietary_type=query.dietary_type.value if query.dietary_type else None,
             max_results=query.max_results,
@@ -235,7 +238,7 @@ async def search_restaurants(query: RestaurantQuery, user_id: Optional[str] = No
 async def get_cuisines():
     """Get all available cuisines"""
     try:
-        cuisines = restaurant_service.get_all_cuisines()
+        cuisines = await restaurant_service.get_all_cuisines()
         return {"cuisines": cuisines}
     except Exception as e:
         logger.error(f"Error getting cuisines: {str(e)}")
@@ -244,10 +247,10 @@ async def get_cuisines():
 
 @router.get("/locations")
 async def get_locations():
-    """Get all available locations"""
+    """Get all available locations (deprecated - use geocoding instead)"""
     try:
-        locations = restaurant_service.get_all_locations()
-        return {"locations": locations}
+        locations = await restaurant_service.get_all_locations()
+        return {"locations": locations, "note": "Use geocoding API for location search"}
     except Exception as e:
         logger.error(f"Error getting locations: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

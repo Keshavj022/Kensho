@@ -151,6 +151,8 @@ class FlightSearchRequest(BaseModel):
 class HotelSearchRequest(BaseModel):
     """Hotel search request"""
     location: str
+    latitude: Optional[float] = Field(None, ge=-90, le=90, description="Latitude coordinate")
+    longitude: Optional[float] = Field(None, ge=-180, le=180, description="Longitude coordinate")
     check_in: str
     check_out: str
     guests: int = 1

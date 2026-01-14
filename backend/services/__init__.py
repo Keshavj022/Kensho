@@ -7,6 +7,8 @@ from .vision_service import vision_service, VisionService
 from .knowledge_graph_service import knowledge_graph_service, KnowledgeGraphService
 from .auth_service import auth_service, AuthService
 from .rag_service import rag_service, RAGService
+from .location_service import location_service, LocationService
+from .external_api_service import external_api_service, ExternalAPIService
 
 __all__ = [
     "user_service",
@@ -27,4 +29,8 @@ __all__ = [
     "AuthService",
     "rag_service",
     "RAGService",
+    "location_service",
+    "LocationService",
+    "external_api_service",
+    "ExternalAPIService",
 ]

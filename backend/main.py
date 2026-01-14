@@ -15,6 +15,7 @@ from .api.multimodal_routes import router as multimodal_router
 from .api.knowledge_graph_routes import router as kg_router
 from .api.auth_routes import router as auth_router
 from .api.rag_routes import router as rag_router
+from .api.location_routes import router as location_router
 from .agents import restaurant_agent, travel_agent
 from .services import knowledge_graph_service, rag_service
 
@@ -105,6 +106,7 @@ app.include_router(voice_router, prefix=settings.API_PREFIX)
 app.include_router(multimodal_router, prefix=settings.API_PREFIX)
 app.include_router(kg_router, prefix=settings.API_PREFIX)
 app.include_router(rag_router, prefix=settings.API_PREFIX)
+app.include_router(location_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")
