@@ -5,12 +5,6 @@ import json
 import os
 from typing import Optional, List, Dict, Any
 from azure.ai.projects import AIProjectClient
-from azure.ai.projects.models import (
-    Agent,
-    AgentThread,
-    MessageTextContent,
-    FilePurpose,
-)
 from azure.identity import DefaultAzureCredential
 from loguru import logger
 
@@ -28,9 +22,9 @@ class TravelAgent:
     def __init__(self):
         """Initialize the travel agent"""
         self.client: Optional[AIProjectClient] = None
-        self.agent: Optional[Agent] = None
+        self.agent: Optional[Any] = None
         self.vector_store_id: Optional[str] = None
-        self.active_threads: Dict[str, AgentThread] = {}
+        self.active_threads: Dict[str, Any] = {}
 
     async def initialize(self):
         """Initialize the Azure AI travel agent"""
@@ -125,7 +119,7 @@ Be friendly, enthusiastic about travel, and provide realistic, achievable plans.
                     with open(file_path, "rb") as f:
                         file_upload = self.client.agents.upload_file(
                             file=f,
-                            purpose=FilePurpose.ASSISTANTS,
+                            purpose="assistants",  # Use string instead of FilePurpose enum
                         )
 
                     self.client.agents.create_vector_store_file(
@@ -238,9 +232,25 @@ This user is looking for travel recommendations and planning assistance."""
 
             # Extract text content
             response_text = ""
-            for content in latest_message.content:
-                if isinstance(content, MessageTextContent):
-                    response_text += content.text.value
+            if hasattr(latest_message, 'content'):
+                for content in latest_message.content:
+                    # Handle different content types
+                    if hasattr(content, 'text'):
+                        # MessageTextContent-like object
+                        if hasattr(content.text, 'value'):
+                            response_text += content.text.value
+                        elif isinstance(content.text, str):
+                            response_text += content.text
+                    elif isinstance(content, dict):
+                        # Dictionary format
+                        if 'text' in content:
+                            text_obj = content['text']
+                            if isinstance(text_obj, dict) and 'value' in text_obj:
+                                response_text += text_obj['value']
+                            elif isinstance(text_obj, str):
+                                response_text += text_obj
+                    elif isinstance(content, str):
+                        response_text += content
 
             return response_text
 

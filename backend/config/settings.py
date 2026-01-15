@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     # Model Configuration
     DEFAULT_MODEL: str = "gpt-4o"
     EMBEDDING_MODEL: str = "text-embedding-3-large"
+    
+    # Azure OpenAI Configuration (for RAG embeddings)
+    AZURE_OPENAI_ENDPOINT: Optional[str] = os.getenv("AZURE_OPENAI_ENDPOINT") or os.getenv("AZURE_OPENAI_ENDPOINT_URL")
+    AZURE_OPENAI_API_KEY: Optional[str] = os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("AZURE_OPENAI_KEY")
+    AZURE_OPENAI_API_VERSION: str = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
+    AZURE_OPENAI_DEPLOYMENT_NAME: Optional[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
 
     # API Configuration
     API_HOST: str = "0.0.0.0"

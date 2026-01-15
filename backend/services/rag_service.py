@@ -69,33 +69,36 @@ class RAGService:
             self.chroma_client = None
 
     def _initialize_embeddings(self):
-        """Initialize embedding client"""
-        # Try OpenAI first (for local development)
-        if OPENAI_AVAILABLE:
-            api_key = os.getenv("OPENAI_API_KEY")
-            if api_key:
-                try:
-                    self.embedding_client = OpenAI(api_key=api_key)
-                    logger.info("OpenAI embedding client initialized")
-                    return
-                except Exception as e:
-                    logger.warning(f"Could not initialize OpenAI client: {str(e)}")
-
-        # Try Azure OpenAI
-        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
-        azure_key = os.getenv("AZURE_OPENAI_KEY")
+        """Initialize embedding client - Uses Azure OpenAI as primary"""
+        # Try Azure OpenAI first (primary option)
+        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT") or os.getenv("AZURE_OPENAI_ENDPOINT_URL")
+        azure_key = os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("AZURE_OPENAI_KEY")
+        azure_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
+        
         if azure_endpoint and azure_key:
             try:
                 from openai import AzureOpenAI
                 self.embedding_client = AzureOpenAI(
                     api_key=azure_key,
-                    api_version="2024-02-15-preview",
+                    api_version=azure_api_version,
                     azure_endpoint=azure_endpoint
                 )
                 logger.info("Azure OpenAI embedding client initialized")
                 return
             except Exception as e:
                 logger.warning(f"Could not initialize Azure OpenAI client: {str(e)}")
+
+        # Fallback to OpenAI (for local development only)
+        if OPENAI_AVAILABLE:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if api_key:
+                try:
+                    self.embedding_client = OpenAI(api_key=api_key)
+                    logger.warning("Using OpenAI as fallback. Consider configuring Azure OpenAI for production.")
+                    logger.info("OpenAI embedding client initialized")
+                    return
+                except Exception as e:
+                    logger.warning(f"Could not initialize OpenAI client: {str(e)}")
 
         logger.warning("No embedding client available. RAG will use keyword matching.")
 
@@ -120,14 +123,17 @@ class RAGService:
             return None
 
     def _generate_embedding(self, text: str) -> Optional[List[float]]:
-        """Generate embedding for text"""
+        """Generate embedding for text using Azure OpenAI"""
         if not self.embedding_client:
             return None
 
         try:
-            # Use the embedding model from settings
+            # Get deployment name from settings or use embedding model name
+            deployment_name = settings.AZURE_OPENAI_DEPLOYMENT_NAME or settings.EMBEDDING_MODEL
+            
+            # Use the deployment name for Azure OpenAI
             response = self.embedding_client.embeddings.create(
-                model=settings.EMBEDDING_MODEL,
+                model=deployment_name,
                 input=text
             )
             return response.data[0].embedding
