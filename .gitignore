@@ -50,9 +50,14 @@ logs/
 htmlcov/
 .tox/
 
-# ChromaDB
+# ChromaDB / vector store
 chromadb_data/
+chroma_data/
+
+# Databases (sqlite app db + langgraph checkpointer)
 *.db
+*.sqlite
+*.sqlite3
 
 # Azure
 .azure/
@@ -62,3 +67,6 @@ chromadb_data/
 *.temp
 temp/
 tmp/
+
+# ruflo / claude-flow local tooling state
+.claude-flow/

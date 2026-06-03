@@ -1,103 +1,147 @@
 """
-Configuration settings for Kensho application
+Configuration settings for Kensho (v2 rewrite).
+
+All secrets and volatile model IDs are environment-driven (never hardcoded).
+Every external integration is optional: a missing key disables only that tool,
+the app still boots and serves every other route (graceful degradation).
 """
-from pydantic_settings import BaseSettings
-from typing import Optional
+from __future__ import annotations
+
 import os
+from typing import Optional
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BACKEND_DIR = os.path.dirname(os.path.dirname(__file__))
+_REPO_ROOT = os.path.dirname(_BACKEND_DIR)
 
 
 class Settings(BaseSettings):
-    """Application settings"""
+    """Application settings, loaded from environment / .env."""
 
-    # Application
+    model_config = SettingsConfigDict(
+        # Look for a .env at the repo root first, then backend/.env.
+        env_file=(os.path.join(_REPO_ROOT, ".env"), os.path.join(_BACKEND_DIR, ".env")),
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        extra="ignore",  # tolerate stray legacy env vars without crashing
+    )
+
+    # ------------------------------------------------------------------ App
     APP_NAME: str = "Kensho"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "2.0.0"
     DEBUG: bool = True
 
-    # Azure AI Foundry
-    AZURE_AI_PROJECT_CONNECTION_STRING: Optional[str] = None
-    AZURE_SUBSCRIPTION_ID: Optional[str] = None
-    AZURE_RESOURCE_GROUP: Optional[str] = None
-    AZURE_PROJECT_NAME: Optional[str] = None
-
-    # Azure Speech Services
-    AZURE_SPEECH_KEY: Optional[str] = None
-    AZURE_SPEECH_REGION: str = "eastus"
-
-    # Azure Vision Services
-    AZURE_VISION_KEY: Optional[str] = None
-    AZURE_VISION_ENDPOINT: Optional[str] = None
-
-    # Model Configuration
-    DEFAULT_MODEL: str = "gpt-4o"
-    EMBEDDING_MODEL: str = "text-embedding-3-large"
-    
-    # Azure OpenAI Configuration (for RAG embeddings)
-    AZURE_OPENAI_ENDPOINT: Optional[str] = os.getenv("AZURE_OPENAI_ENDPOINT") or os.getenv("AZURE_OPENAI_ENDPOINT_URL")
-    AZURE_OPENAI_API_KEY: Optional[str] = os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("AZURE_OPENAI_KEY")
-    AZURE_OPENAI_API_VERSION: str = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
-    AZURE_OPENAI_DEPLOYMENT_NAME: Optional[str] = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME")
-
-    # API Configuration
     API_HOST: str = "0.0.0.0"
     API_PORT: int = 8000
     API_PREFIX: str = "/api/v1"
 
-    # CORS
-    CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:5173"]
+    # CORS is a plain comma-separated string in .env; use .cors_origins for the list.
+    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
-    # Data Paths
-    DATA_DIR: str = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-    USER_DATA_PATH: str = os.path.join(DATA_DIR, "user_data.json")
-    RESTAURANT_DATA_PATH: str = os.path.join(DATA_DIR, "restaurant_data.json")
+    # ------------------------------------------------------------------ LLM (Gemini)
+    GEMINI_API_KEY: Optional[str] = None
+    # Default to a current GA Flash model; override via .env (e.g. gemini-3.5-flash).
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    # Stronger model used to escalate hard / low-quality menu OCR.
+    GEMINI_PRO_MODEL: str = "gemini-2.5-pro"
+    # Gemini embedding model used for all Chroma collections (one vector space).
+    GEMINI_EMBEDDING_MODEL: str = "models/gemini-embedding-001"
+    GEMINI_TEMPERATURE: float = 0.2
 
-    # Vector Store Configuration
-    VECTOR_STORE_TYPE: str = "azure"  # "azure" or "chromadb"
-    CHROMADB_PATH: str = "./chromadb_data"
+    # ------------------------------------------------------------------ Tool backbone
+    # Google Places API (New). GOOGLE_MAPS_API_KEY is canonical; legacy fallback below.
+    GOOGLE_MAPS_API_KEY: Optional[str] = None
+    SERPAPI_API_KEY: Optional[str] = None
+    TAVILY_API_KEY: Optional[str] = None
 
-    # Agent Configuration
-    AGENT_NAME: str = "RestaurantAgent"
-    AGENT_DESCRIPTION: str = "An AI agent that provides personalized restaurant recommendations"
-    AGENT_INSTRUCTIONS: str = """You are a helpful restaurant recommendation agent.
-Your role is to:
-1. Understand user preferences, dietary restrictions, and location
-2. Provide personalized restaurant recommendations
-3. Suggest specific dishes based on user preferences
-4. Answer questions about restaurants, menus, and food
-5. Respect dietary restrictions and allergies
-6. Provide contextual information about restaurants
+    # ------------------------------------------------------------------ Voice
+    ELEVENLABS_API_KEY: Optional[str] = None
+    ELEVENLABS_VOICE_ID: str = "JBFqnCBsd6RMkjVDRZzb"  # default ElevenLabs voice
+    ELEVENLABS_TTS_MODEL: str = "eleven_multilingual_v2"
+    ELEVENLABS_STT_MODEL: str = "scribe_v2"
+    ELEVENLABS_OUTPUT_FORMAT: str = "mp3_44100_128"
+    # Offline STT fallback (faster-whisper). Disabled unless the package is installed.
+    WHISPER_MODEL: str = "small"
+    WHISPER_DEVICE: str = "cpu"
+    WHISPER_COMPUTE_TYPE: str = "int8"
 
-Always be friendly, helpful, and considerate of dietary needs."""
+    # ------------------------------------------------------------------ Knowledge graph (Neo4j)
+    NEO4J_URI: Optional[str] = "bolt://localhost:7687"
+    NEO4J_USERNAME: Optional[str] = "neo4j"
+    NEO4J_PASSWORD: Optional[str] = None
 
-    # Neo4j Configuration
-    NEO4J_URI: Optional[str] = os.getenv("NEO4J_URI", "bolt://localhost:7687")
-    NEO4J_USERNAME: Optional[str] = os.getenv("NEO4J_USERNAME", "neo4j")
-    NEO4J_PASSWORD: Optional[str] = os.getenv("NEO4J_PASSWORD")
+    # ------------------------------------------------------------------ Vector store (Chroma)
+    CHROMA_PATH: str = os.path.join(_REPO_ROOT, "chroma_data")
 
-    # JWT Configuration
-    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production-use-env-var")
+    # ------------------------------------------------------------------ Relational DB + checkpointer
+    DATABASE_URL: str = "sqlite:///./kensho.db"
+    CHECKPOINTER_DB_PATH: str = os.path.join(_REPO_ROOT, "kensho_checkpoints.db")
+
+    # ------------------------------------------------------------------ Auth / JWT
+    JWT_SECRET_KEY: str = "dev-insecure-change-me"  # MUST be overridden in production
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    # External API Keys (optional - system works without them but with limited functionality)
-    # Restaurant APIs
-    GOOGLE_PLACES_API_KEY: Optional[str] = os.getenv("GOOGLE_PLACES_API_KEY")
-    YELP_API_KEY: Optional[str] = os.getenv("YELP_API_KEY")
-    GEOAPIFY_API_KEY: Optional[str] = os.getenv("GEOAPIFY_API_KEY")
-    
-    # Travel APIs
-    AMADEUS_API_KEY: Optional[str] = os.getenv("AMADEUS_API_KEY")
-    AMADEUS_API_SECRET: Optional[str] = os.getenv("AMADEUS_API_SECRET")
-    
-    # Web Search APIs
-    TAVILY_API_KEY: Optional[str] = os.getenv("TAVILY_API_KEY")
-    AZURE_BING_SEARCH_KEY: Optional[str] = os.getenv("AZURE_BING_SEARCH_KEY")
-    AZURE_BING_SEARCH_ENDPOINT: Optional[str] = os.getenv("AZURE_BING_SEARCH_ENDPOINT")
+    # ------------------------------------------------------------------ Caching / pipeline tuning
+    MENU_CACHE_TTL_DAYS: int = 30
+    SERPAPI_CACHE_TTL_HOURS: int = 6
+    PLACES_CACHE_TTL_HOURS: int = 24
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    # ------------------------------------------------------------------ Legacy-compat fields
+    # Consumed by services not yet migrated (rag_service / kg_service / auth / user).
+    DATA_DIR: str = os.path.join(_BACKEND_DIR, "data")
+    USER_DATA_PATH: str = os.path.join(_BACKEND_DIR, "data", "user_data.json")
+    RESTAURANT_DATA_PATH: str = os.path.join(_BACKEND_DIR, "data", "restaurant_data.json")
+    CHROMADB_PATH: Optional[str] = None  # filled from CHROMA_PATH in __init__
+    EMBEDDING_MODEL: str = "models/gemini-embedding-001"
+    GOOGLE_PLACES_API_KEY: Optional[str] = None  # legacy name; falls back to GOOGLE_MAPS_API_KEY
+    # Azure OpenAI deployment name referenced by the un-migrated rag_service (unused now).
+    AZURE_OPENAI_DEPLOYMENT_NAME: Optional[str] = None
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Keep the legacy CHROMADB_PATH alias pointed at the canonical path.
+        if not self.CHROMADB_PATH:
+            self.CHROMADB_PATH = self.CHROMA_PATH
+        # Allow GOOGLE_PLACES_API_KEY to satisfy the Places key if MAPS not set.
+        if not self.GOOGLE_MAPS_API_KEY and self.GOOGLE_PLACES_API_KEY:
+            self.GOOGLE_MAPS_API_KEY = self.GOOGLE_PLACES_API_KEY
+
+    # ------------------------------------------------------------------ Derived helpers
+    @property
+    def cors_origins(self) -> list[str]:
+        return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+
+    @property
+    def places_api_key(self) -> Optional[str]:
+        return self.GOOGLE_MAPS_API_KEY or self.GOOGLE_PLACES_API_KEY
+
+    # Per-integration configuration flags (used by tools/health for graceful degradation).
+    @property
+    def gemini_configured(self) -> bool:
+        return bool(self.GEMINI_API_KEY)
+
+    @property
+    def serpapi_configured(self) -> bool:
+        return bool(self.SERPAPI_API_KEY)
+
+    @property
+    def places_configured(self) -> bool:
+        return bool(self.places_api_key)
+
+    @property
+    def tavily_configured(self) -> bool:
+        return bool(self.TAVILY_API_KEY)
+
+    @property
+    def elevenlabs_configured(self) -> bool:
+        return bool(self.ELEVENLABS_API_KEY)
+
+    @property
+    def neo4j_configured(self) -> bool:
+        return bool(self.NEO4J_PASSWORD)
 
 
 # Global settings instance

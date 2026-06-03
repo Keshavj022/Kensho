@@ -1,53 +1,48 @@
-# Azure AI Foundry SDK
-azure-ai-projects>=1.0.0
-azure-identity>=1.19.0
-azure-core>=1.32.0
+# Kensho backend (v2) — LangChain 1.0 + LangGraph multi-agent stack.
+# All Azure dependencies removed. Pin to current majors; minimums encode the
+# verified-current API surface (LangChain 1.x, langchain-google-genai 2.x+,
+# chromadb 1.x, elevenlabs 2.x).
 
-# Azure Speech Services
-azure-cognitiveservices-speech>=1.40.0
-
-# Azure Vision Services
-azure-ai-vision-imageanalysis>=1.0.0
-Pillow>=10.0.0
-
-# Web Framework
+# --- Web / API ---
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
+python-multipart>=0.0.20
 pydantic>=2.10.0
 pydantic-settings>=2.7.0
+email-validator>=2.2.0
 
-# HTTP Client
+# --- LLM / Agents (LangChain 1.x + LangGraph) ---
+langchain>=1.0.0
+langgraph>=1.0.0
+langgraph-supervisor>=0.0.27
+langchain-google-genai>=2.0.0
+langchain-tavily>=0.1.0
+langchain-chroma>=0.2.0
+langgraph-checkpoint-sqlite>=1.0.0
+
+# --- External tools ---
+# SerpApi is called via httpx against serpapi.com/search (no SDK lock-in).
 httpx>=0.28.0
-aiohttp>=3.11.0
 
-# Location and External APIs (httpx already included above)
-# No additional packages needed - using standard libraries and httpx
-
-# Data Processing
-python-multipart>=0.0.20
-python-dotenv>=1.0.0
-
-# Database (for future Neo4j integration)
+# --- Data stores ---
 neo4j>=5.27.0
-
-# Vector Database (ChromaDB for local development)
 chromadb>=0.6.0
+sqlalchemy>=2.0.0
 
-# Embeddings (OpenAI or Azure OpenAI)
-openai>=1.12.0
-
-# Async Support
-asyncio>=3.4.3
-
-# Logging
-loguru>=0.7.3
-
-# Authentication
+# --- Auth ---
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
-python-multipart>=0.0.20
 
-# Testing
+# --- Voice ---
+elevenlabs>=2.0.0
+# Optional offline STT fallback (heavy: pulls ctranslate2). Install on demand:
+#   pip install "faster-whisper>=1.0.0"
+
+# --- Utils ---
+loguru>=0.7.3
+python-dotenv>=1.0.0
+
+# --- Tests ---
 pytest>=8.3.0
 pytest-asyncio>=0.24.0
-httpx>=0.28.0
+respx>=0.21.0

@@ -1,36 +1,11 @@
-from .user_service import user_service, UserService
-from .restaurant_service import restaurant_service, RestaurantService
-from .travel_service import travel_service, TravelService
-from .itinerary_service import itinerary_service, ItineraryService
-from .voice_service import voice_service, VoiceService
-from .vision_service import vision_service, VisionService
-from .knowledge_graph_service import knowledge_graph_service, KnowledgeGraphService
-from .auth_service import auth_service, AuthService
-from .rag_service import rag_service, RAGService
-from .location_service import location_service, LocationService
-from .external_api_service import external_api_service, ExternalAPIService
+"""
+Services package.
 
-__all__ = [
-    "user_service",
-    "UserService",
-    "restaurant_service",
-    "RestaurantService",
-    "travel_service",
-    "TravelService",
-    "itinerary_service",
-    "ItineraryService",
-    "voice_service",
-    "VoiceService",
-    "vision_service",
-    "VisionService",
-    "knowledge_graph_service",
-    "KnowledgeGraphService",
-    "auth_service",
-    "AuthService",
-    "rag_service",
-    "RAGService",
-    "location_service",
-    "LocationService",
-    "external_api_service",
-    "ExternalAPIService",
-]
+NOTE: this __init__ intentionally imports nothing. The legacy version eagerly
+imported every service (including the Azure ones), which makes a single missing
+dependency crash the whole app at import time. Import the specific service module
+you need directly, e.g.:
+
+    from backend.services.knowledge_graph_service import knowledge_graph_service
+    from backend.services.llm import get_llm
+"""
