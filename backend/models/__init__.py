@@ -47,18 +47,6 @@ from .voice_schemas import (
     VoiceName,
 )
 
-from .multimodal_schemas import (
-    ImageAnalysisRequest,
-    ImageAnalysisResponse,
-    FoodImageRequest,
-    FoodImageResponse,
-    TravelImageRequest,
-    TravelImageResponse,
-    MultimodalChatRequest,
-    MultimodalChatResponse,
-    AnalysisFeature,
-)
-
 from .auth_schemas import (
     UserRegister,
     UserLogin,
@@ -111,15 +99,6 @@ __all__ = [
     "VoiceChatResponse",
     "VoiceLanguage",
     "VoiceName",
-    "ImageAnalysisRequest",
-    "ImageAnalysisResponse",
-    "FoodImageRequest",
-    "FoodImageResponse",
-    "TravelImageRequest",
-    "TravelImageResponse",
-    "MultimodalChatRequest",
-    "MultimodalChatResponse",
-    "AnalysisFeature",
     "UserRegister",
     "UserLogin",
     "TokenResponse",

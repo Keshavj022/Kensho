@@ -199,12 +199,14 @@ class KnowledgeGraphService:
         WHERE old_level IS NOT NULL AND old_level <> $preference_level
         CREATE (ph:PreferenceHistory {
             timestamp: datetime(),
+            item: f.name,
+            item_type: 'food',
             old_level: old_level,
             new_level: $preference_level,
             old_weight: old_weight,
             new_weight: $weight
         })
-        CREATE (p)-[:HAS_HISTORY]->(ph)
+        CREATE (u)-[:HAS_HISTORY]->(ph)
         """
 
         try:
@@ -251,12 +253,14 @@ class KnowledgeGraphService:
         WHERE old_level IS NOT NULL AND old_level <> $preference_level
         CREATE (ph:PreferenceHistory {
             timestamp: datetime(),
+            item: c.name,
+            item_type: 'cuisine',
             old_level: old_level,
             new_level: $preference_level,
             old_weight: old_weight,
             new_weight: $weight
         })
-        CREATE (p)-[:HAS_HISTORY]->(ph)
+        CREATE (u)-[:HAS_HISTORY]->(ph)
         """
 
         try:
@@ -558,8 +562,8 @@ class KnowledgeGraphService:
         query = """
         MATCH (u:User {user_id: $user_id})
         OPTIONAL MATCH (u)-[p:PREFERS|LIKES_CUISINE]->(item)
-        OPTIONAL MATCH (p)-[:HAS_HISTORY]->(ph:PreferenceHistory)
-        WHERE ph.timestamp >= datetime() - duration({days: $days})
+        OPTIONAL MATCH (u)-[:HAS_HISTORY]->(ph:PreferenceHistory)
+        WHERE ph.item = item.name AND ph.timestamp >= datetime() - duration({days: $days})
         
         WITH u, p, ph, item
         ORDER BY ph.timestamp DESC
@@ -615,7 +619,8 @@ class KnowledgeGraphService:
 
         query = f"""
         MATCH (u:User {{user_id: $user_id}})-[p:{rel_type}]->(item:{node_type} {{name: $item_name}})
-        OPTIONAL MATCH (p)-[:HAS_HISTORY]->(ph:PreferenceHistory)
+        OPTIONAL MATCH (u)-[:HAS_HISTORY]->(ph:PreferenceHistory)
+        WHERE ph.item = $item_name
         
         WITH p, ph, item
         ORDER BY COALESCE(ph.timestamp, p.created_at) ASC

@@ -1,4 +1,8 @@
-from .restaurant_agent import restaurant_agent, RestaurantAgent
-from .travel_agent import travel_agent, TravelAgent
+"""
+Agents package.
 
-__all__ = ["restaurant_agent", "RestaurantAgent", "travel_agent", "TravelAgent"]
+Imports nothing at package level (the legacy version eagerly imported the Azure
+agents). Import the supervisor entry point directly:
+
+    from backend.agents.supervisor import get_supervisor
+"""

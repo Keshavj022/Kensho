@@ -1,235 +1,152 @@
 """
-Itinerary planning service
-"""
-import json
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timedelta
-from loguru import logger
-import uuid
+Trip planner (rebuilt).
 
-from ..models import (
-    TravelItinerary,
-    DayItinerary,
-    Activity,
-    Flight,
-    Hotel,
-    ItineraryRequest,
-)
-from .travel_service import travel_service
+The legacy version was synchronous but called async coroutines without awaiting
+them (a hard bug). This rewrite is fully synchronous and composes the new tool
+layer (SerpApi flights/hotels + Tavily activities) — search-only, no booking.
+Every section degrades independently: a missing key disables that section but the
+day-by-day skeleton is still returned.
+
+Callers (the /travel/itinerary route, the plan_trip tool) wrap plan_trip in a
+threadpool so the event loop is never blocked.
+"""
+from __future__ import annotations
+
+import uuid
+from datetime import datetime, timedelta
+from typing import Any, Optional
+
+from loguru import logger
+
+from ..tools import search_tools, serpapi_tools
+
+# Activities scheduled per day, by pace (preserved from the legacy logic).
+ACTIVITIES_PER_DAY = {"relaxed": 2, "moderate": 3, "packed": 4}
+_TIME_SLOTS = ["09:00", "13:00", "18:00", "20:30"]
+_MEALS = [
+    {"type": "breakfast", "time": "08:00", "suggestion": "Hotel breakfast or a local cafe"},
+    {"type": "lunch", "time": "12:30", "suggestion": "Local restaurant near the day's activities"},
+    {"type": "dinner", "time": "19:30", "suggestion": "Recommended restaurant in the area"},
+]
+
+
+def _parse_date(d: str) -> datetime:
+    return datetime.fromisoformat(d[:10])
 
 
 class ItineraryService:
-    """Service for creating and managing travel itineraries"""
+    """Builds + stores search-derived trip plans (no booking)."""
 
-    def __init__(self):
-        """Initialize itinerary service"""
-        self.itineraries: Dict[str, TravelItinerary] = {}
+    def __init__(self) -> None:
+        self._store: dict[str, dict[str, Any]] = {}
 
-    def create_itinerary(
+    def plan_trip(
         self,
-        request: ItineraryRequest,
-    ) -> TravelItinerary:
-        """Create a comprehensive travel itinerary"""
+        destination: str,
+        start_date: str,
+        end_date: str,
+        origin: Optional[str] = None,
+        travelers: int = 1,
+        pace: str = "moderate",
+        interests: Optional[list[str]] = None,
+    ) -> dict[str, Any]:
+        """Assemble a day-by-day plan from live search data. Returns a dict."""
         try:
-            # Parse dates
-            start_date = datetime.fromisoformat(request.start_date)
-            end_date = datetime.fromisoformat(request.end_date)
-            total_days = (end_date - start_date).days + 1
+            start = _parse_date(start_date)
+            end = _parse_date(end_date)
+        except Exception:
+            return {"status": "error", "message": "Dates must be YYYY-MM-DD"}
+        nights = max(0, (end - start).days)
+        total_days = max(1, nights if nights > 0 else 1)
 
-            # Initialize itinerary
-            itinerary_id = str(uuid.uuid4())[:8]
-
-            # Search for flights if requested
-            flights = []
-            if request.include_flights and request.origin:
-                flight_results = travel_service.search_flights(
-                    origin=request.origin,
-                    destination=request.destination,
-                    departure_date=request.start_date,
-                    return_date=request.end_date,
-                )
-                if flight_results:
-                    flights = [flight_results[0]]  # Take best match
-
-            # Search for hotels if requested
-            hotels = []
-            if request.include_hotels:
-                hotel_results = travel_service.search_hotels(
-                    location=request.destination,
-                    check_in=request.start_date,
-                    check_out=request.end_date,
-                    guests=request.travelers,
-                )
-                if hotel_results:
-                    # Sort by rating and take top hotels
-                    sorted_hotels = sorted(
-                        hotel_results,
-                        key=lambda x: x.get("rating", 0),
-                        reverse=True
-                    )
-                    hotels = sorted_hotels[:1]  # Take best hotel
-
-            # Get destination activities
-            all_activities = travel_service.get_activities(request.destination)
-
-            # Filter activities by interests
-            filtered_activities = all_activities
-            if request.interests:
-                filtered_activities = [
-                    act for act in all_activities
-                    if act["type"] in [i.value for i in request.interests]
-                ]
-
-            # Create daily itinerary
-            daily_itinerary = self._create_daily_itinerary(
-                start_date=start_date,
-                total_days=total_days,
-                destination=request.destination,
-                activities=filtered_activities,
-                pace=request.pace,
-                hotels=hotels,
+        # --- Flights (optional; requires origin + SerpApi) ---
+        flights: dict[str, Any] = {"status": "skipped", "reason": "no origin provided"}
+        if origin:
+            flights = serpapi_tools.search_flights.invoke(
+                {
+                    "origin": origin,
+                    "destination": destination,
+                    "departure_date": start_date,
+                    "return_date": end_date,
+                    "adults": travelers,
+                }
             )
 
-            # Calculate total cost
-            total_cost = 0.0
+        # --- Hotels (SerpApi) ---
+        hotels = serpapi_tools.search_hotels.invoke(
+            {"location": destination, "check_in": start_date, "check_out": end_date, "guests": travelers}
+        )
 
-            # Add flight costs
-            for flight in flights:
-                total_cost += flight.get("price", 0) * request.travelers
+        # --- Activities (Tavily web search) ---
+        interest_str = " ".join(interests) if interests else ""
+        act = search_tools.web_search.invoke(
+            {"query": f"top attractions and things to do in {destination} {interest_str}".strip()}
+        )
+        activity_pool = (
+            [{"name": r.get("title"), "info": r.get("url"), "summary": (r.get("content") or "")[:160]}
+             for r in act.get("results", [])]
+            if act.get("status") == "ok"
+            else []
+        )
 
-            # Add hotel costs
-            for hotel in hotels:
-                total_cost += hotel.get("total_price", 0)
-
-            # Add activity costs
-            for day in daily_itinerary:
-                for activity in day.get("activities", []):
-                    if activity.get("price"):
-                        total_cost += activity["price"] * request.travelers
-
-            # Create itinerary object
-            itinerary_data = {
-                "id": itinerary_id,
-                "trip_name": f"{request.destination} Adventure",
-                "destination": request.destination,
-                "start_date": request.start_date,
-                "end_date": request.end_date,
-                "total_days": total_days,
-                "travelers": request.travelers,
-                "flights": flights,
-                "hotels": hotels,
-                "daily_itinerary": daily_itinerary,
-                "total_cost": total_cost,
-                "currency": "USD",
-                "created_at": datetime.now().isoformat(),
-                "notes": f"Itinerary created for {request.travelers} traveler(s)",
-            }
-
-            # Store itinerary
-            self.itineraries[itinerary_id] = itinerary_data
-
-            logger.info(f"Created itinerary {itinerary_id} for {request.destination}")
-            return itinerary_data
-
-        except Exception as e:
-            logger.error(f"Error creating itinerary: {str(e)}")
-            raise
-
-    def _create_daily_itinerary(
-        self,
-        start_date: datetime,
-        total_days: int,
-        destination: str,
-        activities: List[Dict[str, Any]],
-        pace: str,
-        hotels: List[Dict[str, Any]],
-    ) -> List[Dict[str, Any]]:
-        """Create daily itinerary based on pace"""
-        daily_plan = []
-
-        # Determine activities per day based on pace
-        activities_per_day = {
-            "relaxed": 2,
-            "moderate": 3,
-            "packed": 4,
-        }.get(pace, 3)
-
+        # --- Build day-by-day plan ---
+        per_day = ACTIVITIES_PER_DAY.get(pace, 3)
+        daily = []
         for day_num in range(total_days):
-            current_date = start_date + timedelta(days=day_num)
-            date_str = current_date.strftime("%Y-%m-%d")
+            current = start + timedelta(days=day_num)
+            day_acts = []
+            if activity_pool:
+                for i in range(per_day):
+                    act_item = dict(activity_pool[(day_num * per_day + i) % len(activity_pool)])
+                    act_item["time"] = _TIME_SLOTS[i] if i < len(_TIME_SLOTS) else None
+                    day_acts.append(act_item)
+            daily.append(
+                {
+                    "day": day_num + 1,
+                    "date": current.strftime("%Y-%m-%d"),
+                    "location": destination,
+                    "activities": day_acts,
+                    "meals": _MEALS,
+                }
+            )
 
-            # Select activities for this day
-            day_activities = []
-            start_idx = day_num * activities_per_day
-            end_idx = min(start_idx + activities_per_day, len(activities))
+        # --- Cost estimate (best-effort, search-derived) ---
+        est = 0.0
+        currency = "INR"
+        if isinstance(flights, dict) and flights.get("cheapest"):
+            est += (flights["cheapest"].get("price") or 0) * travelers
+            currency = flights.get("currency", currency)
+        cheapest_hotel = hotels.get("cheapest") if isinstance(hotels, dict) else None
+        if cheapest_hotel and cheapest_hotel.get("price_per_night"):
+            est += cheapest_hotel["price_per_night"] * max(1, nights)
+            currency = hotels.get("currency", currency)
 
-            if activities:
-                # Cycle through activities if needed
-                for i in range(activities_per_day):
-                    activity_idx = (start_idx + i) % len(activities)
-                    activity = activities[activity_idx].copy()
+        plan_id = uuid.uuid4().hex[:8]
+        plan = {
+            "status": "ok",
+            "id": plan_id,
+            "trip_name": f"{destination} trip",
+            "origin": origin,
+            "destination": destination,
+            "start_date": start_date,
+            "end_date": end_date,
+            "nights": nights,
+            "travelers": travelers,
+            "pace": pace,
+            "flights": flights,
+            "hotel": cheapest_hotel,
+            "hotels_searched": hotels.get("count") if isinstance(hotels, dict) else 0,
+            "daily": daily,
+            "estimated_cost": round(est, 2) if est else None,
+            "currency": currency,
+            "note": "Search-only planner — surface deep links/price context; no booking.",
+        }
+        self._store[plan_id] = plan
+        logger.info(f"Planned trip {plan_id}: {destination} ({total_days} day(s))")
+        return plan
 
-                    # Assign time slots
-                    time_slots = ["09:00 AM", "01:00 PM", "06:00 PM"]
-                    if i < len(time_slots):
-                        activity["time_slot"] = time_slots[i]
-
-                    day_activities.append(activity)
-
-            # Add meals
-            meals = [
-                {"type": "breakfast", "time": "08:00 AM", "suggestion": "Hotel breakfast or local cafe"},
-                {"type": "lunch", "time": "12:30 PM", "suggestion": "Local restaurant near activities"},
-                {"type": "dinner", "time": "07:30 PM", "suggestion": "Recommended restaurant in the area"},
-            ]
-
-            # Get hotel for this day
-            hotel = hotels[0] if hotels else None
-
-            day_plan = {
-                "day_number": day_num + 1,
-                "date": date_str,
-                "location": destination,
-                "activities": day_activities,
-                "meals": meals,
-                "accommodation": hotel,
-                "notes": f"Day {day_num + 1} in {destination}",
-            }
-
-            daily_plan.append(day_plan)
-
-        return daily_plan
-
-    def get_itinerary(self, itinerary_id: str) -> Optional[Dict[str, Any]]:
-        """Get itinerary by ID"""
-        return self.itineraries.get(itinerary_id)
-
-    def update_itinerary(
-        self,
-        itinerary_id: str,
-        updates: Dict[str, Any],
-    ) -> Optional[Dict[str, Any]]:
-        """Update an existing itinerary"""
-        if itinerary_id not in self.itineraries:
-            return None
-
-        itinerary = self.itineraries[itinerary_id]
-        itinerary.update(updates)
-        logger.info(f"Updated itinerary {itinerary_id}")
-        return itinerary
-
-    def delete_itinerary(self, itinerary_id: str) -> bool:
-        """Delete an itinerary"""
-        if itinerary_id in self.itineraries:
-            del self.itineraries[itinerary_id]
-            logger.info(f"Deleted itinerary {itinerary_id}")
-            return True
-        return False
-
-    def get_all_itineraries(self) -> List[Dict[str, Any]]:
-        """Get all itineraries"""
-        return list(self.itineraries.values())
+    def get_itinerary(self, plan_id: str) -> Optional[dict[str, Any]]:
+        return self._store.get(plan_id)
 
 
-# Global itinerary service instance
 itinerary_service = ItineraryService()

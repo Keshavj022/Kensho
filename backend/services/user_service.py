@@ -1,177 +1,292 @@
 """
-User service for managing user profiles and preferences
+User profile service (DB-backed).
+
+Profiles now live durably in the user_profiles table (was in-memory only) and are
+bridged to Neo4j on write. Maps the relational row <-> the Pydantic User model.
+Public signatures preserved (get_user / create_user / update_user / learn_preference
+/ get_personalized_preferences / get_user_context).
 """
-import json
-from typing import Optional, Dict, Any
+from __future__ import annotations
+
+from typing import Any, Optional
+
 from loguru import logger
 
-from ..config import settings
-from ..models import User, DietaryType, RestrictionType
-from .knowledge_graph_service import knowledge_graph_service
+from ..db.database import SessionLocal, session_scope
+from ..db.models import UserProfileRow
+from ..models.schemas import (
+    DietaryInfo,
+    DietaryRestriction,
+    DietaryType,
+    FoodPreference,
+    RestrictionType,
+    User,
+    UserPreferences,
+    UserProfile,
+)
+
+
+def _row_to_user(row: UserProfileRow) -> User:
+    try:
+        dtype = DietaryType(row.dietary_type)
+    except Exception:
+        dtype = DietaryType.NON_VEGETARIAN
+    restrictions = []
+    for r in row.dietary_restrictions or []:
+        try:
+            restrictions.append(DietaryRestriction(type=RestrictionType(r["type"]), value=r["value"]))
+        except Exception:
+            continue
+    foods = {k: FoodPreference(**v) for k, v in (row.food_preferences or {}).items()}
+    cuisines = {k: FoodPreference(**v) for k, v in (row.cuisine_preferences or {}).items()}
+    return User(
+        profile=UserProfile(name=row.name, age=row.age, location=row.location, dob=row.dob, gender=row.gender),
+        dietary=DietaryInfo(type=dtype, restrictions=restrictions, goals=list(row.dietary_goals or [])),
+        preferences=UserPreferences(foods=foods, cuisines=cuisines),
+    )
+
+
+def _age_from_dob(dob: Optional[str]) -> Optional[int]:
+    if not dob:
+        return None
+    try:
+        from datetime import date
+
+        y, m, d = (int(x) for x in dob[:10].split("-"))
+        today = date.today()
+        return today.year - y - ((today.month, today.day) < (m, d))
+    except Exception:
+        return None
+
+
+def _bridge_to_graph(user_id: str, user: User) -> None:
+    try:
+        from .knowledge_graph_service import knowledge_graph_service
+
+        if not getattr(knowledge_graph_service, "driver", None):
+            return
+        knowledge_graph_service.create_user(
+            user_id=user_id,
+            name=user.profile.name,
+            age=user.profile.age,
+            location=user.profile.location,
+            dietary_type=user.dietary.type.value if user.dietary.type else None,
+        )
+        for r in user.dietary.restrictions:
+            knowledge_graph_service.add_dietary_restriction(user_id, r.type.value, r.value)
+        for goal in user.dietary.goals:
+            knowledge_graph_service.add_dietary_goal(user_id, goal)
+        for name, pref in user.preferences.foods.items():
+            knowledge_graph_service.add_food_preference(user_id, name, pref.preference, pref.weight)
+        for name, pref in user.preferences.cuisines.items():
+            knowledge_graph_service.add_cuisine_preference(user_id, name, pref.preference, pref.weight)
+    except Exception as e:
+        logger.warning(f"Neo4j bridge failed for {user_id}: {e}")
 
 
 class UserService:
-    """Service for managing user data"""
-
-    def __init__(self):
-        """Initialize user service"""
-        self.users_cache: Dict[str, User] = {}
-        self._load_default_user()
-
-    def _load_default_user(self):
-        """Load default user from user_data.json"""
-        try:
-            user_data_path = settings.USER_DATA_PATH
-            with open(user_data_path, "r") as f:
-                data = json.load(f)
-                user = User(**data["user"])
-                self.users_cache["default"] = user
-                logger.info(f"Loaded default user: {user.profile.name}")
-        except FileNotFoundError:
-            logger.warning(f"User data file not found: {settings.USER_DATA_PATH}")
-        except Exception as e:
-            logger.error(f"Error loading user data: {str(e)}")
-
     def get_user(self, user_id: str = "default") -> Optional[User]:
-        """Get user by ID"""
-        return self.users_cache.get(user_id)
+        with SessionLocal() as db:
+            row = db.get(UserProfileRow, user_id)
+            return _row_to_user(row) if row else None
 
     def create_user(self, user_id: str, user: User) -> User:
-        """Create or update user"""
-        self.users_cache[user_id] = user
-        
-        # Store in knowledge graph
-        if knowledge_graph_service.driver:
-            knowledge_graph_service.create_user(
-                user_id=user_id,
-                name=user.profile.name,
-                age=user.profile.age,
-                location=user.profile.location,
-                dietary_type=user.dietary.type.value if user.dietary.type else None
-            )
-            
-            # Add dietary restrictions
-            for restriction in user.dietary.restrictions:
-                knowledge_graph_service.add_dietary_restriction(
-                    user_id=user_id,
-                    restriction_type=restriction.type.value,
-                    restriction_value=restriction.value
-                )
-            
-            # Add dietary goals
-            for goal in user.dietary.goals:
-                knowledge_graph_service.add_dietary_goal(user_id, goal)
-            
-            # Add food preferences
-            for food_name, pref in user.preferences.foods.items():
-                knowledge_graph_service.add_food_preference(
-                    user_id=user_id,
-                    food_name=food_name,
-                    preference_level=pref.preference,
-                    weight=pref.weight
-                )
-            
-            # Add cuisine preferences
-            for cuisine_name, pref in user.preferences.cuisines.items():
-                knowledge_graph_service.add_cuisine_preference(
-                    user_id=user_id,
-                    cuisine_name=cuisine_name,
-                    preference_level=pref.preference,
-                    weight=pref.weight
-                )
-        
-        logger.info(f"User created/updated: {user_id}")
+        """Upsert the profile row AND bridge to Neo4j (shared user_id)."""
+        with session_scope() as db:
+            row = db.get(UserProfileRow, user_id)
+            if row is None:
+                row = UserProfileRow(user_id=user_id)
+                db.add(row)
+            row.name = user.profile.name
+            row.age = user.profile.age
+            row.location = user.profile.location
+            row.dietary_type = user.dietary.type.value if user.dietary.type else "non-vegetarian"
+            row.dietary_restrictions = [{"type": r.type.value, "value": r.value} for r in user.dietary.restrictions]
+            row.dietary_goals = list(user.dietary.goals)
+            row.food_preferences = {k: v.model_dump() for k, v in user.preferences.foods.items()}
+            row.cuisine_preferences = {k: v.model_dump() for k, v in user.preferences.cuisines.items()}
+        _bridge_to_graph(user_id, user)
+        logger.info(f"Profile saved + bridged to graph: {user_id}")
         return user
 
-    def update_user(self, user_id: str, updates: Dict[str, Any]) -> Optional[User]:
-        """Update user data"""
-        user = self.users_cache.get(user_id)
+    def update_user(self, user_id: str, updates: dict[str, Any]) -> Optional[User]:
+        user = self.get_user(user_id)
         if not user:
             return None
-
-        # Apply updates
         for key, value in updates.items():
             if hasattr(user, key):
                 setattr(user, key, value)
+        return self.create_user(user_id, user)
 
-        # Update knowledge graph
-        if knowledge_graph_service.driver and user:
-            knowledge_graph_service.create_user(
-                user_id=user_id,
-                name=user.profile.name,
-                age=user.profile.age,
-                location=user.profile.location,
-                dietary_type=user.dietary.type.value if user.dietary.type else None
-            )
-
-        logger.info(f"User updated: {user_id}")
-        return user
-    
     def learn_preference(
-        self,
-        user_id: str,
-        preference_type: str,  # 'food' or 'cuisine'
-        item_name: str,
-        preference_level: str,  # 'love', 'like', 'neutral', 'dislike', 'hate'
-        weight: int = 3
+        self, user_id: str, preference_type: str, item_name: str, preference_level: str, weight: int = 3
     ) -> bool:
-        """Learn and store user preference"""
-        if not knowledge_graph_service.driver:
-            return False
-        
-        if preference_type == 'food':
-            return knowledge_graph_service.add_food_preference(
-                user_id=user_id,
-                food_name=item_name,
-                preference_level=preference_level,
-                weight=weight
-            )
-        elif preference_type == 'cuisine':
-            return knowledge_graph_service.add_cuisine_preference(
-                user_id=user_id,
-                cuisine_name=item_name,
-                preference_level=preference_level,
-                weight=weight
-            )
-        return False
-    
-    def get_personalized_preferences(self, user_id: str) -> Dict[str, Any]:
-        """Get personalized preferences from knowledge graph"""
-        if not knowledge_graph_service.driver:
-            return {}
-        
-        return knowledge_graph_service.get_user_preferences(user_id)
+        with session_scope() as db:
+            row = db.get(UserProfileRow, user_id)
+            if not row:
+                return False
+            entry = {"preference": preference_level, "weight": weight}
+            if preference_type == "food":
+                prefs = dict(row.food_preferences or {})
+                prefs[item_name] = entry
+                row.food_preferences = prefs
+            elif preference_type == "cuisine":
+                prefs = dict(row.cuisine_preferences or {})
+                prefs[item_name] = entry
+                row.cuisine_preferences = prefs
+            else:
+                return False
+        # Bridge into the graph (best-effort).
+        try:
+            from .knowledge_graph_service import knowledge_graph_service
+
+            if getattr(knowledge_graph_service, "driver", None):
+                if preference_type == "food":
+                    knowledge_graph_service.add_food_preference(user_id, item_name, preference_level, weight)
+                else:
+                    knowledge_graph_service.add_cuisine_preference(user_id, item_name, preference_level, weight)
+        except Exception as e:
+            logger.warning(f"learn_preference graph bridge failed: {e}")
+        return True
+
+    def get_personalized_preferences(self, user_id: str) -> dict[str, Any]:
+        out: dict[str, Any] = {}
+        user = self.get_user(user_id)
+        if user:
+            out["profile"] = user.model_dump()
+        try:
+            from .knowledge_graph_service import knowledge_graph_service
+
+            if getattr(knowledge_graph_service, "driver", None):
+                out["graph"] = knowledge_graph_service.get_user_preferences(user_id)
+        except Exception:
+            pass
+        return out
 
     def get_user_context(self, user_id: str = "default") -> str:
-        """Get formatted user context for agent"""
         user = self.get_user(user_id)
         if not user:
             return ""
-
-        context = f"""
-User Profile:
-- Name: {user.profile.name}
-- Location: {user.profile.location}
-- Dietary Type: {user.dietary.type.value}
-"""
-
+        context = (
+            f"User Profile:\n- Name: {user.profile.name}\n"
+            f"- Location: {user.profile.location}\n- Dietary Type: {user.dietary.type.value}\n"
+        )
         if user.dietary.restrictions:
-            restrictions = [f"{r.type.value}: {r.value}" for r in user.dietary.restrictions]
-            context += f"- Restrictions: {', '.join(restrictions)}\n"
-
+            context += "- Restrictions: " + ", ".join(f"{r.type.value}: {r.value}" for r in user.dietary.restrictions) + "\n"
         if user.dietary.goals:
-            context += f"- Goals: {', '.join(user.dietary.goals)}\n"
-
-        if user.preferences.foods:
-            liked_foods = [
-                food for food, pref in user.preferences.foods.items()
-                if pref.preference in ["love", "like"]
-            ]
-            if liked_foods:
-                context += f"- Favorite Foods: {', '.join(liked_foods[:5])}\n"
-
+            context += "- Goals: " + ", ".join(user.dietary.goals) + "\n"
+        liked = [f for f, p in user.preferences.foods.items() if p.preference in ("love", "like")]
+        if liked:
+            context += "- Favorite Foods: " + ", ".join(liked[:5]) + "\n"
         return context
 
+    # ------------------------------------------------------------ onboarding
+    def save_profile(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
+        """Persist the full onboarding profile and bridge it to Neo4j."""
+        with session_scope() as db:
+            row = db.get(UserProfileRow, user_id)
+            if row is None:
+                row = UserProfileRow(user_id=user_id)
+                db.add(row)
+            if payload.get("name"):
+                row.name = payload["name"]
+            row.dob = payload.get("dob")
+            row.gender = payload.get("gender")
+            row.age = payload.get("age") or _age_from_dob(payload.get("dob")) or row.age
+            row.location = payload.get("location") or row.location or ""
+            row.lat = payload.get("lat") if payload.get("lat") is not None else row.lat
+            row.lng = payload.get("lng") if payload.get("lng") is not None else row.lng
+            row.dietary_type = payload.get("dietary_type") or "non-vegetarian"
+            row.spice_tolerance = payload.get("spice_tolerance")
+            row.dietary_restrictions = [{"type": "allergy", "value": a} for a in payload.get("allergies", []) if a]
+            row.dietary_goals = [g for g in payload.get("goals", []) if g]
+            foods: dict[str, Any] = {}
+            for f in payload.get("likes", []):
+                if f:
+                    foods[f] = {"preference": "like", "weight": 4}
+            for f in payload.get("dislikes", []):
+                if f:
+                    foods[f] = {"preference": "dislike", "weight": 2}
+            row.food_preferences = foods
+            row.cuisine_preferences = {c: {"preference": "like", "weight": 4} for c in payload.get("cuisines", []) if c}
+            row.onboarded = True
+        # Bridge the saved profile into the knowledge graph.
+        user = self.get_user(user_id)
+        if user:
+            _bridge_to_graph(user_id, user)
+        logger.info(f"Saved onboarding profile for {user_id}")
+        return self.get_profile_dict(user_id)
 
-# Global user service instance
+    def get_profile_dict(self, user_id: str) -> dict[str, Any]:
+        with SessionLocal() as db:
+            row = db.get(UserProfileRow, user_id)
+            if not row:
+                return {"user_id": user_id, "onboarded": False}
+            likes, dislikes = [], []
+            for name, v in (row.food_preferences or {}).items():
+                (likes if v.get("preference") in ("like", "love") else dislikes).append(name)
+            return {
+                "user_id": user_id,
+                "name": row.name,
+                "dob": row.dob,
+                "gender": row.gender,
+                "age": row.age,
+                "location": row.location,
+                "lat": row.lat,
+                "lng": row.lng,
+                "dietary_type": row.dietary_type,
+                "spice_tolerance": row.spice_tolerance,
+                "allergies": [r.get("value") for r in (row.dietary_restrictions or []) if r.get("type") == "allergy"],
+                "goals": list(row.dietary_goals or []),
+                "likes": likes,
+                "dislikes": dislikes,
+                "cuisines": list((row.cuisine_preferences or {}).keys()),
+                "onboarded": bool(row.onboarded),
+            }
+
+    def profile_summary(self, user_id: str) -> str:
+        """Compact LLM context. Separates HARD constraints (diet + allergies, exclude
+        even when uncertain) from SOFT preferences (ranking only). Omits age/gender."""
+        p = self.get_profile_dict(user_id)
+        if not p.get("onboarded"):
+            return ""
+        hard = [f"diet = {p.get('dietary_type', 'non-vegetarian')}"]
+        if p.get("allergies"):
+            hard.append("allergies = " + ", ".join(p["allergies"]))
+        soft = []
+        if p.get("likes"):
+            soft.append("likes " + ", ".join(p["likes"][:8]))
+        if p.get("dislikes"):
+            soft.append("dislikes/avoid " + ", ".join(p["dislikes"]))
+        if p.get("cuisines"):
+            soft.append("favourite cuisines " + ", ".join(p["cuisines"]))
+        if p.get("goals"):
+            soft.append("health goals " + ", ".join(p["goals"]))
+        if p.get("spice_tolerance"):
+            soft.append(f"spice tolerance {p['spice_tolerance']}")
+        try:
+            from .airports import home_airport
+
+            ap = home_airport(p.get("lat"), p.get("lng"), p.get("location"))
+            if ap:
+                soft.append(f"home airport {ap['iata']} ({ap['city']}) — use as default flight origin")
+        except Exception:
+            pass
+        name = p.get("name")
+        loc = p.get("location")
+        head = (
+            "[Diner profile"
+            + (f" for {name}" if name else "")
+            + (f", based in {loc}" if loc else "")
+            + "]"
+        )
+        out = (
+            f"{head} HARD CONSTRAINTS (never recommend anything that violates these; if a "
+            f"dish's ingredients are uncertain, exclude it): " + "; ".join(hard) + "."
+        )
+        if soft:
+            out += " SOFT PREFERENCES (use to rank and suggest, do not exclude on these): " + "; ".join(soft) + "."
+        return out
+
+
 user_service = UserService()

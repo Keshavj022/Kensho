@@ -6,7 +6,8 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 from loguru import logger
 
-from ..services import knowledge_graph_service, user_service
+from ..services.knowledge_graph_service import knowledge_graph_service
+from ..services.user_service import user_service
 from ..models import DietaryType, RestrictionType
 
 router = APIRouter(prefix="/knowledge-graph", tags=["knowledge-graph"])
