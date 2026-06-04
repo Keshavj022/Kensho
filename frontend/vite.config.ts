@@ -6,13 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
-    open: true,
+    open: false,
     proxy: {
-      '/api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-        secure: false,
-      },
+      '/api': { target: 'http://localhost:8000', changeOrigin: true, secure: false },
+      '/health': { target: 'http://localhost:8000', changeOrigin: true, secure: false },
     },
   },
 })

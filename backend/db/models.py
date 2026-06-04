@@ -75,12 +75,18 @@ class UserProfileRow(Base):
     )
     name: Mapped[str] = mapped_column(String(120), nullable=False, default="")
     age: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    dob: Mapped[str | None] = mapped_column(String(20), nullable=True)  # ISO date
+    gender: Mapped[str | None] = mapped_column(String(24), nullable=True)
     location: Mapped[str] = mapped_column(String(255), default="", nullable=False)
+    lat: Mapped[float | None] = mapped_column(Float, nullable=True)
+    lng: Mapped[float | None] = mapped_column(Float, nullable=True)
     dietary_type: Mapped[str] = mapped_column(String(40), default="non-vegetarian", nullable=False)
-    # Flexible JSON blobs mirror the Pydantic User model.
-    dietary_restrictions: Mapped[list] = mapped_column(JSON, default=list)
+    spice_tolerance: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    onboarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    # Flexible JSON blobs mirror the Pydantic User model + onboarding profile.
+    dietary_restrictions: Mapped[list] = mapped_column(JSON, default=list)  # allergies -> [{type,value}]
     dietary_goals: Mapped[list] = mapped_column(JSON, default=list)
-    food_preferences: Mapped[dict] = mapped_column(JSON, default=dict)
+    food_preferences: Mapped[dict] = mapped_column(JSON, default=dict)  # likes/dislikes -> {name:{preference,weight}}
     cuisine_preferences: Mapped[dict] = mapped_column(JSON, default=dict)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, nullable=False)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, onupdate=_utcnow)

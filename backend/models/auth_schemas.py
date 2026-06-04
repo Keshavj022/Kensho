@@ -6,17 +6,15 @@ from typing import Optional
 
 
 class UserRegister(BaseModel):
-    """User registration request"""
-    username: str = Field(..., min_length=3, max_length=50, description="Username")
+    """User registration request (email is the identity — no username)."""
     email: EmailStr = Field(..., description="Email address")
     password: str = Field(..., min_length=8, description="Password (min 8 characters)")
-    user_id: Optional[str] = None
     role: str = Field(default="user", description="User role")
 
 
 class UserLogin(BaseModel):
     """User login request"""
-    username: str = Field(..., description="Username or email")
+    email: EmailStr = Field(..., description="Email address")
     password: str = Field(..., description="Password")
 
 
@@ -57,3 +55,27 @@ class PasswordResetConfirm(BaseModel):
     """Password reset confirmation"""
     token: str
     new_password: str = Field(..., min_length=8)
+
+
+class ProfilePayload(BaseModel):
+    """Onboarding / profile-update payload (flat, frontend-friendly)."""
+    name: str = ""
+    dob: Optional[str] = None
+    gender: Optional[str] = None
+    age: Optional[int] = None
+    location: str = ""
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    dietary_type: str = "non-vegetarian"
+    spice_tolerance: Optional[str] = None
+    allergies: list[str] = Field(default_factory=list)
+    goals: list[str] = Field(default_factory=list)
+    likes: list[str] = Field(default_factory=list)
+    dislikes: list[str] = Field(default_factory=list)
+    cuisines: list[str] = Field(default_factory=list)
+
+
+class ProfileInfo(ProfilePayload):
+    """Profile as returned to the client."""
+    user_id: str = ""
+    onboarded: bool = False

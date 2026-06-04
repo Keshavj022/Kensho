@@ -2,50 +2,144 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================ Base ============================ */
 @layer base {
+  :root {
+    color-scheme: light;
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 text-slate-900;
-    font-family: 'Inter', sans-serif;
+    @apply bg-paper text-ink font-sans;
+    font-feature-settings: "ss01", "cv01";
+    overflow-x: hidden;
+    /* layered warm paper atmosphere */
+    background-image:
+      radial-gradient(120% 80% at 100% 0%, rgba(246, 160, 74, 0.16), transparent 55%),
+      radial-gradient(90% 70% at 0% 100%, rgba(35, 74, 58, 0.1), transparent 55%),
+      radial-gradient(60% 50% at 50% 0%, rgba(224, 83, 31, 0.05), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: #e0531f;
+    color: #fbf7ee;
+  }
+
+  .font-display {
+    font-optical-sizing: auto;
+    font-variation-settings: "SOFT" 0, "WONK" 0;
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d8cdb6;
+    border: 3px solid #f4eee1;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #c2b594;
+  }
+
+  :focus-visible {
+    outline: 2px solid #e0531f;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
+/* ============================ Components ============================ */
+@layer components {
+  .label {
+    @apply font-mono uppercase tracking-label text-[0.68rem] text-ink-faint;
+  }
+
+  .hairline {
+    @apply border-ink-line;
+  }
+
+  .card {
+    @apply bg-paper-card border border-ink-line rounded-xl2 shadow-card;
+  }
+
+  /* animated underline links */
+  .link-grow {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1.5px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.4s var(--ease-out-expo);
+  }
+  .link-grow:hover {
+    background-size: 100% 1.5px;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-ink-line bg-paper-card/70
+      px-3 py-1 text-xs font-mono uppercase tracking-wider text-ink-soft;
+  }
+
+  /* sheen for skeletons */
+  .skeleton {
+    background: linear-gradient(100deg, #ece3d0 30%, #f6efe0 50%, #ece3d0 70%);
+    background-size: 200% 100%;
+    @apply animate-sheen rounded-lg;
+  }
+}
+
+/* ============================ Utilities ============================ */
 @layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600;
+  .text-balance {
+    text-wrap: balance;
   }
-  
-  .glass {
-    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  .text-pretty {
+    text-wrap: pretty;
   }
-  
-  .glass-dark {
-    @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/50;
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
   }
-  
-  .gradient-border {
-    @apply relative;
+
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
-  
-  .gradient-border::before {
-    content: '';
-    @apply absolute inset-0 rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-20 blur-xl -z-10;
+
+  .stroke-text {
+    -webkit-text-stroke: 1.5px #1c1a15;
+    color: transparent;
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-slate-100;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-gradient-to-b from-blue-400 to-purple-500 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply from-blue-500 to-purple-600;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

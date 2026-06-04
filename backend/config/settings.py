@@ -49,11 +49,25 @@ class Settings(BaseSettings):
     GEMINI_EMBEDDING_MODEL: str = "models/gemini-embedding-001"
     GEMINI_TEMPERATURE: float = 0.2
 
+    # ------------------------------------------------------------------ LLM fallback (Ollama, open-source)
+    # When enabled, a local Ollama model is used if a Gemini call fails (or if Gemini
+    # is unconfigured). The chat model MUST support tool-calling for the agents.
+    OLLAMA_ENABLED: bool = False
+    OLLAMA_BASE_URL: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "llama3.1"             # tool-capable model for agents/chat
+    OLLAMA_VISION_MODEL: str = "llama3.2-vision"  # used for menu OCR fallback
+    OLLAMA_TEMPERATURE: float = 0.2
+
     # ------------------------------------------------------------------ Tool backbone
     # Google Places API (New). GOOGLE_MAPS_API_KEY is canonical; legacy fallback below.
     GOOGLE_MAPS_API_KEY: Optional[str] = None
     SERPAPI_API_KEY: Optional[str] = None
     TAVILY_API_KEY: Optional[str] = None
+    # SerpApi localization — without these, results default to the US locale (USD).
+    SERPAPI_GL: str = "in"  # country (in = India)
+    SERPAPI_HL: str = "en"  # language
+    SERPAPI_LOCATION: str = "India"
+    DEFAULT_CURRENCY: str = "INR"
 
     # ------------------------------------------------------------------ Voice
     ELEVENLABS_API_KEY: Optional[str] = None

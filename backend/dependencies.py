@@ -6,7 +6,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from typing import Optional, Callable
 from loguru import logger
 
-from .services import auth_service
+from .services.auth_service import auth_service
 
 security = HTTPBearer()
 

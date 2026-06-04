@@ -38,7 +38,9 @@ class UserProfile(BaseModel):
     """User profile model"""
     name: str
     age: Optional[int] = None
-    location: str
+    location: str = ""
+    dob: Optional[str] = None
+    gender: Optional[str] = None
 
 
 class DietaryInfo(BaseModel):

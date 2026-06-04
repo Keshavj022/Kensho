@@ -16,6 +16,15 @@ from loguru import logger
 
 from .config import settings
 from .api.health_routes import router as health_router
+from .api.chat_routes import router as chat_router
+from .api.restaurant_routes import router as restaurant_router
+from .api.menu_routes import router as menu_router
+from .api.travel_routes import router as travel_router
+from .api.shopping_routes import router as shopping_router
+from .api.voice_routes import router as voice_router
+from .api.auth_routes import router as auth_router
+from .api.knowledge_graph_routes import router as kg_router
+from .api.location_routes import router as location_router
 
 # Configure logging
 logger.remove()
@@ -85,6 +94,16 @@ app.add_middleware(
 
 # Health is mounted at the root (load balancers expect /health).
 app.include_router(health_router)
+# Unified agent entry (supervisor) + per-domain routes under /api/v1.
+app.include_router(chat_router, prefix=settings.API_PREFIX)
+app.include_router(restaurant_router, prefix=settings.API_PREFIX)
+app.include_router(menu_router, prefix=settings.API_PREFIX)
+app.include_router(travel_router, prefix=settings.API_PREFIX)
+app.include_router(shopping_router, prefix=settings.API_PREFIX)
+app.include_router(voice_router, prefix=settings.API_PREFIX)
+app.include_router(auth_router, prefix=settings.API_PREFIX)
+app.include_router(kg_router, prefix=settings.API_PREFIX)
+app.include_router(location_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")
