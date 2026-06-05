@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight, ArrowUpRight, Compass, ScanLine, ShoppingBag, Soup, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import { DemoModal } from "../components/DemoModal"
 import { Mark } from "../components/Logo"
 import { NearYou } from "../components/NearYou"
 import { Magnetic, Marquee, Reveal, Stagger, StaggerItem } from "../components/fx"
@@ -43,20 +44,26 @@ const DOMAINS = [
 ]
 
 export function Home() {
+  const [showDemo, setShowDemo] = useState(false)
+  const openDemo = () => setShowDemo(true)
+  const closeDemo = () => setShowDemo(false)
+
   return (
     <div className="overflow-hidden">
-      <Hero />
+      <Hero onDemo={openDemo} />
       <CuisineStrip />
       <NearYou />
       <Domains />
       <HowItWorks />
       <Keystone />
-      <FinalCTA />
+      <FinalCTA onDemo={openDemo} />
+
+      <AnimatePresence>{showDemo && <DemoModal onClose={closeDemo} />}</AnimatePresence>
     </div>
   )
 }
 
-function Hero() {
+function Hero({ onDemo }: { onDemo: () => void }) {
   const [i, setI] = useState(0)
   const [q, setQ] = useState("")
   const nav = useNavigate()
@@ -125,6 +132,18 @@ function Hero() {
             Ask <ArrowRight className="h-4 w-4" />
           </button>
         </form>
+      </Reveal>
+
+      <Reveal delay={0.42} className="mt-4 flex items-center gap-3">
+        <span className="text-sm text-ink-faint">No account?</span>
+        <button
+          onClick={onDemo}
+          className="group flex items-center gap-1.5 text-sm font-semibold text-saffron transition hover:text-saffron-deep"
+        >
+          <Sparkles className="h-3.5 w-3.5 transition-transform group-hover:rotate-12" />
+          Try the live demo
+          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </button>
       </Reveal>
 
       <Stagger className="mt-14 grid max-w-3xl grid-cols-3 gap-6 border-t border-ink-line pt-8" gap={0.12}>
@@ -314,7 +333,7 @@ function Keystone() {
   )
 }
 
-function FinalCTA() {
+function FinalCTA({ onDemo }: { onDemo: () => void }) {
   return (
     <section className="mx-auto max-w-7xl px-5 pb-12 sm:px-8">
       <Reveal>
@@ -331,6 +350,14 @@ function FinalCTA() {
               <Sparkles className="h-5 w-5" /> Start a conversation
             </Link>
           </Magnetic>
+          <div className="relative mt-5">
+            <button
+              onClick={onDemo}
+              className="text-sm font-medium text-paper-card/60 transition hover:text-paper-card"
+            >
+              or try the demo without signing up →
+            </button>
+          </div>
         </div>
       </Reveal>
     </section>

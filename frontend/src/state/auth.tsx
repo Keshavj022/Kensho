@@ -8,8 +8,10 @@ interface AuthCtx {
   profile: Profile | null
   onboarded: boolean
   ready: boolean
+  isDemoMode: boolean
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string) => Promise<void>
+  startDemo: () => Promise<void>
   saveProfile: (p: ProfilePayload) => Promise<Profile>
   refreshProfile: () => Promise<void>
   logout: () => void
@@ -72,6 +74,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [finishLogin],
   )
 
+  const startDemo = useCallback(async () => {
+    const tok = await api.demoLogin()
+    setToken(tok.access_token)
+    const u = await api.me()
+    setUser(u)
+    setStoredUser(u)
+    await loadProfile()
+  }, [loadProfile])
+
   const saveProfile = useCallback(async (p: ProfilePayload) => {
     const saved = await api.saveProfile(p)
     setProfile(saved)
@@ -93,8 +104,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile,
         onboarded: !!profile?.onboarded,
         ready,
+        isDemoMode: user?.email === "demo@kensho.app",
         login,
         register,
+        startDemo,
         saveProfile,
         refreshProfile: loadProfile,
         logout,

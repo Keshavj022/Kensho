@@ -19,7 +19,7 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [mobile, setMobile] = useState(false)
   const { count, setOpen } = useCart()
-  const { user, profile } = useAuth()
+  const { user, profile, isDemoMode, logout } = useAuth()
   const loc = useLocation()
   const displayName = profile?.name || user?.email?.split("@")[0] || "Account"
 
@@ -38,6 +38,46 @@ export function Nav() {
         scrolled ? "border-b border-ink-line bg-paper/80 backdrop-blur-xl" : "border-b border-transparent",
       )}
     >
+      <AnimatePresence>
+        {isDemoMode && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden bg-saffron"
+          >
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-1.5 sm:px-8">
+              <div className="flex items-center gap-2">
+                <motion.span
+                  animate={{ scale: [1, 1.4, 1] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="h-1.5 w-1.5 rounded-full bg-paper-card"
+                />
+                <span className="text-[0.65rem] font-semibold text-paper-card/90">
+                  Demo mode · Browsing as Arjun Sharma
+                </span>
+              </div>
+              <div className="flex items-center gap-4">
+                <Link
+                  to="/auth"
+                  className="text-[0.65rem] font-semibold text-paper-card underline underline-offset-2 transition hover:text-paper-card/70"
+                >
+                  Sign up for real →
+                </Link>
+                <button
+                  onClick={logout}
+                  className="text-[0.65rem] font-semibold text-paper-card/70 transition hover:text-paper-card"
+                  aria-label="Exit demo"
+                >
+                  Exit ×
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 sm:px-8">
         <Link to="/" aria-label="Kensho home">
           <Logo />
@@ -97,7 +137,16 @@ export function Nav() {
             className="hidden items-center gap-2 rounded-full border border-ink-line bg-paper-card/60 px-3.5 py-2 text-sm font-medium text-ink transition hover:border-ink/40 sm:inline-flex"
           >
             <User className="h-4 w-4" />
-            {user ? displayName : "Sign in"}
+            {isDemoMode ? (
+              <span className="flex items-center gap-1.5">
+                Arjun
+                <span className="rounded-full bg-saffron px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-paper-card">
+                  demo
+                </span>
+              </span>
+            ) : (
+              user ? displayName : "Sign in"
+            )}
           </Link>
 
           <Magnetic className="hidden md:inline-block">

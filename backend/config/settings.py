@@ -98,6 +98,9 @@ class Settings(BaseSettings):
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # ------------------------------------------------------------------ Demo account
+    DEMO_PASSWORD: str = "kensho-demo-guest-2024"
+
     # ------------------------------------------------------------------ Caching / pipeline tuning
     MENU_CACHE_TTL_DAYS: int = 30
     SERPAPI_CACHE_TTL_HOURS: int = 6
