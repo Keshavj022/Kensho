@@ -1,16 +1,8 @@
-import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { api } from "../lib/api"
-import type { Health } from "../lib/types"
 import { Mark } from "./Logo"
 import { Marquee } from "./fx"
 
 export function Footer() {
-  const [health, setHealth] = useState<Health | null>(null)
-  useEffect(() => {
-    api.health().then(setHealth).catch(() => {})
-  }, [])
-
   return (
     <footer className="relative mt-32 overflow-hidden bg-pine-ink text-paper">
       <div className="border-b border-white/10 py-6">
@@ -33,7 +25,8 @@ export function Footer() {
             <span className="font-display text-3xl font-semibold">Kensho</span>
           </div>
           <p className="mt-4 max-w-xs text-pretty text-pine-wash/70">
-            An atlas for taste. Restaurants & menus, travel metasearch, and shopping — guided by one calm assistant.
+            An atlas for taste. Restaurants &amp; menus, travel metasearch, and shopping — guided by one calm assistant
+            that learns what you love.
           </p>
         </div>
 
@@ -47,37 +40,27 @@ export function Footer() {
           ]}
         />
         <FooterCol
-          title="Account"
+          title="Your space"
           links={[
+            ["Dashboard", "/dashboard"],
+            ["Profile", "/profile"],
             ["Sign in", "/auth"],
-            ["Register", "/auth"],
           ]}
         />
         <div>
-          <p className="label text-pine-wash/50">System</p>
-          <div className="mt-4 space-y-2 font-mono text-xs text-pine-wash/70">
-            {health ? (
-              <>
-                <div>
-                  v{health.version} · <span className="text-saffron-glow">{health.status}</span>
-                </div>
-                {Object.entries(health.subsystems).map(([k, v]) => (
-                  <div key={k} className="flex items-center gap-2">
-                    <span className={v === "ok" ? "text-saffron-glow" : "text-pine-wash/40"}>●</span>
-                    {k}: {v}
-                  </div>
-                ))}
-              </>
-            ) : (
-              <div className="text-pine-wash/40">backend offline</div>
-            )}
-          </div>
+          <p className="label text-pine-wash/50">The promise</p>
+          <ul className="mt-4 space-y-2.5 text-sm text-pine-wash/70">
+            <li>Menus read from real photos</li>
+            <li>Cheapest option, the seller, a link</li>
+            <li>Search &amp; metasearch — never a booking or charge</li>
+            <li>Your taste profile stays yours</li>
+          </ul>
         </div>
       </div>
 
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 border-t border-white/10 px-5 py-6 text-xs text-pine-wash/50 sm:flex-row sm:px-8">
         <span>© {new Date().getFullYear()} Kensho · search-only, no bookings or payments</span>
-        <span className="font-mono">LangChain · LangGraph · Gemini · SerpApi</span>
+        <span className="font-display italic text-pine-wash/60">See what to eat, before you decide.</span>
       </div>
     </footer>
   )

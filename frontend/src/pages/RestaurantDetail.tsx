@@ -15,6 +15,7 @@ export function RestaurantDetail() {
   const seed = (loc.state as { restaurant?: Restaurant } | null)?.restaurant
   const [r, setR] = useState<Restaurant | undefined>(seed)
   const [menu, setMenu] = useState<Menu | null>(null)
+  const [photos, setPhotos] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
   const cart = useCart()
 
@@ -22,6 +23,7 @@ export function RestaurantDetail() {
     if (!seed) api.restaurant(placeId).then((d) => d?.status === "ok" && setR(d)).catch(() => {})
     setLoading(true)
     setMenu(null)
+    setPhotos([])
     api
       .menu(placeId, seed?.name || "")
       .then((m) => {
@@ -30,6 +32,15 @@ export function RestaurantDetail() {
       })
       .catch(() => setMenu({ status: "error" } as Menu))
       .finally(() => setLoading(false))
+    // Photo gallery (user-posted) — best-effort, never blocks the page.
+    api.restaurantPhotos(placeId, 12).then((p) => setPhotos(p.photos || [])).catch(() => {})
+    // Record the visit so it powers the dashboard + recommendations.
+    api.track({
+      kind: "view",
+      restaurant_id: placeId,
+      restaurant_name: seed?.name,
+      cuisine: seed?.primary_type || seed?.types?.[0],
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [placeId])
 
@@ -90,6 +101,8 @@ export function RestaurantDetail() {
         </div>
       </motion.div>
 
+      <Gallery photos={photos} />
+
       <VoiceOrderBar placeId={placeId} restaurantName={name} orderUrl={menu?.order_online_url} />
 
       {/* menu */}
@@ -107,6 +120,27 @@ export function RestaurantDetail() {
         {!loading && menu && menu.sections?.length > 0 && <MenuView menu={menu} placeId={placeId} />}
       </div>
     </section>
+  )
+}
+
+function Gallery({ photos }: { photos: string[] }) {
+  if (!photos.length) return null
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8">
+      <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-2 sm:-mx-2 sm:px-2 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: "none" }}>
+        {photos.map((src, i) => (
+          <motion.div
+            key={src + i}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: Math.min(i * 0.05, 0.4) }}
+            className="h-40 w-56 shrink-0 snap-start overflow-hidden rounded-xl2 border border-ink-line bg-paper-deep sm:h-48 sm:w-64"
+          >
+            <img src={src} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-700 hover:scale-105" />
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   )
 }
 

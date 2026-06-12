@@ -142,3 +142,33 @@ def get_menu(place_id: str, restaurant_name: str = "", force: bool = False) -> d
     # 6) persist + embed
     _persist(menu)
     return _result(menu)
+
+
+def is_cached(place_id: str) -> bool:
+    """True if a fresh menu is already cached (skip background re-work)."""
+    return _get_cached(place_id) is not None
+
+
+def prefetch_menus(items: list[dict[str, Any]], cap: int = 8) -> dict[str, Any]:
+    """Best-effort background extraction for a batch of restaurants.
+
+    `items` = [{place_id, name}]. Skips any place whose menu is already cached.
+    Designed to run in a FastAPI BackgroundTask after the Eat page loads, so the
+    'Find a dish' view fills in and dish search lights up — never raises.
+    """
+    done, skipped, failed = 0, 0, 0
+    for it in items[: max(0, int(cap))]:
+        pid = (it or {}).get("place_id")
+        if not pid:
+            continue
+        try:
+            if is_cached(pid):
+                skipped += 1
+                continue
+            get_menu(pid, (it.get("name") or ""))
+            done += 1
+        except Exception as e:  # pragma: no cover - background best-effort
+            failed += 1
+            logger.debug(f"prefetch_menus failed for {pid}: {e}")
+    logger.info(f"menu prefetch: extracted={done} cached={skipped} failed={failed}")
+    return {"extracted": done, "cached": skipped, "failed": failed}

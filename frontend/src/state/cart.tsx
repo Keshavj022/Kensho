@@ -29,14 +29,24 @@ interface CartCtx extends CartState {
 const Ctx = createContext<CartCtx>(null as unknown as CartCtx)
 const KEY = "kensho.cart"
 
-export function CartProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<CartState>(() => {
-    try {
-      return JSON.parse(localStorage.getItem(KEY) || "") as CartState
-    } catch {
-      return { lines: [] }
+function loadCart(): CartState {
+  try {
+    const raw = JSON.parse(localStorage.getItem(KEY) || "null")
+    if (raw && typeof raw === "object" && Array.isArray(raw.lines)) {
+      // Drop any malformed lines so the cart never renders garbage / crashes.
+      const lines: CartLine[] = (raw.lines as Partial<CartLine>[])
+        .filter((l) => l && typeof l.item_id === "string" && typeof l.name === "string")
+        .map((l) => ({ item_id: l.item_id as string, name: l.name as string, price: l.price ?? null, qty: Math.max(1, Number(l.qty) || 1) }))
+      return { ...(raw as CartState), lines }
     }
-  })
+  } catch {
+    /* fall through */
+  }
+  return { lines: [] }
+}
+
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [state, setState] = useState<CartState>(loadCart)
   const [open, setOpen] = useState(false)
 
   useEffect(() => {

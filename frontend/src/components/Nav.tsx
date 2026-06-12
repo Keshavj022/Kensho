@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { Menu, ShoppingBag, Sparkles, User, X } from "lucide-react"
+import { Mic, Menu, ShoppingBag, Sparkles, User, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, NavLink, useLocation } from "react-router-dom"
 import { cn } from "../lib/cn"
 import { useAuth } from "../state/auth"
 import { useCart } from "../state/cart"
+import { useVoice } from "./VoiceAssistant"
 import { Logo } from "./Logo"
 import { Magnetic } from "./fx"
 
@@ -19,9 +20,12 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [mobile, setMobile] = useState(false)
   const { count, setOpen } = useCart()
-  const { user, profile, isDemoMode, logout } = useAuth()
+  const { user, onboarded, profile, isDemoMode, logout } = useAuth()
+  const voice = useVoice()
   const loc = useLocation()
   const displayName = profile?.name || user?.email?.split("@")[0] || "Account"
+  const signedIn = !!user && onboarded
+  const homeTo = signedIn ? "/dashboard" : "/"
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -79,7 +83,7 @@ export function Nav() {
       </AnimatePresence>
 
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 sm:px-8">
-        <Link to="/" aria-label="Kensho home">
+        <Link to={homeTo} aria-label={signedIn ? "Kensho dashboard" : "Kensho home"}>
           <Logo />
         </Link>
 
@@ -113,6 +117,14 @@ export function Nav() {
 
         <div className="flex items-center gap-2">
           <button
+            onClick={() => voice.open()}
+            className="relative rounded-full border border-ink-line bg-paper-card/60 p-2.5 text-ink transition hover:border-saffron hover:text-saffron"
+            aria-label="Talk to Kensho"
+            title="Talk to Kensho"
+          >
+            <Mic className="h-[1.1rem] w-[1.1rem]" />
+          </button>
+          <button
             onClick={() => setOpen(true)}
             className="relative rounded-full border border-ink-line bg-paper-card/60 p-2.5 text-ink transition hover:border-ink/40"
             aria-label="Cart"
@@ -133,13 +145,13 @@ export function Nav() {
           </button>
 
           <Link
-            to="/auth"
+            to={signedIn ? "/profile" : "/auth"}
             className="hidden items-center gap-2 rounded-full border border-ink-line bg-paper-card/60 px-3.5 py-2 text-sm font-medium text-ink transition hover:border-ink/40 sm:inline-flex"
           >
             <User className="h-4 w-4" />
             {isDemoMode ? (
               <span className="flex items-center gap-1.5">
-                Arjun
+                {displayName}
                 <span className="rounded-full bg-saffron px-1.5 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-paper-card">
                   demo
                 </span>
@@ -174,6 +186,12 @@ export function Nav() {
             className="overflow-hidden border-t border-ink-line bg-paper/95 backdrop-blur-xl md:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-4">
+              {signedIn && (
+                <NavLink to="/dashboard" className="flex items-center justify-between rounded-xl px-4 py-3 text-lg font-medium text-ink hover:bg-ink/5">
+                  <span>Dashboard</span>
+                  <span className="font-mono text-xs text-saffron">★</span>
+                </NavLink>
+              )}
               {LINKS.map((l) => (
                 <NavLink
                   key={l.to}
@@ -184,8 +202,14 @@ export function Nav() {
                   <span className="font-mono text-xs text-saffron">{l.n}</span>
                 </NavLink>
               ))}
-              <Link to="/auth" className="mt-2 rounded-xl bg-ink px-4 py-3 text-center font-medium text-paper-card">
-                {user ? `Signed in · ${displayName}` : "Sign in / Register"}
+              <button
+                onClick={() => voice.open()}
+                className="flex items-center gap-2 rounded-xl px-4 py-3 text-left text-lg font-medium text-ink hover:bg-ink/5"
+              >
+                <Mic className="h-5 w-5 text-saffron" /> Talk to Kensho
+              </button>
+              <Link to={signedIn ? "/profile" : "/auth"} className="mt-2 rounded-xl bg-ink px-4 py-3 text-center font-medium text-paper-card">
+                {signedIn ? `Profile · ${displayName}` : "Sign in / Register"}
               </Link>
             </div>
           </motion.div>

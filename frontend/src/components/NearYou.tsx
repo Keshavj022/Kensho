@@ -36,7 +36,13 @@ export function NearYou() {
         min_rating: 4.0,
         max_results: 10,
       })
-      .then((r) => setItems(r.status === "ok" ? r.restaurants : []))
+      .then((r) => {
+        const list = r.status === "ok" ? r.restaurants : []
+        setItems(list)
+        // Warm menus in the background so dish search + featured dishes fill in.
+        const items = list.slice(0, 6).map((x) => ({ place_id: x.id, name: x.name }))
+        if (items.length) api.prefetchMenus(items).catch(() => {})
+      })
       .catch(() => setItems([]))
       .finally(() => setLoading(false))
   }, [user, onboarded, profile])

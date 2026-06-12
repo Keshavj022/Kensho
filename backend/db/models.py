@@ -116,3 +116,24 @@ class Cart(Base):
     items: Mapped[list] = mapped_column(JSON, default=list)  # [{item_id, name, qty, price, notes}]
     order_online_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, onupdate=_utcnow)
+
+
+class UserActivity(Base):
+    """A single user signal — feeds the dashboard + recommendation engine.
+
+    kind ∈ {search, view, dish_view, order}. The payload JSON keeps extra context
+    (e.g. the restaurant rating, search filters, cart total) without schema churn.
+    """
+
+    __tablename__ = "user_activity"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    kind: Mapped[str] = mapped_column(String(24), index=True, nullable=False)
+    query: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    restaurant_id: Mapped[str | None] = mapped_column(String(255), index=True, nullable=True)
+    restaurant_name: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    cuisine: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    domain: Mapped[str] = mapped_column(String(24), default="restaurant", nullable=False)
+    payload: Mapped[dict] = mapped_column(JSON, default=dict)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, index=True, nullable=False)

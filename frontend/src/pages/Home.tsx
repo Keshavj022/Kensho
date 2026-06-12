@@ -148,12 +148,12 @@ function Hero({ onDemo }: { onDemo: () => void }) {
 
       <Stagger className="mt-14 grid max-w-3xl grid-cols-3 gap-6 border-t border-ink-line pt-8" gap={0.12}>
         {[
-          ["3", "specialist agents"],
-          ["187+", "menu items read"],
-          ["0", "bookings · search only"],
+          ["3-in-1", "eat, go & buy in one chat"],
+          ["Tailored", "to your diet, allergies & taste"],
+          ["Search-only", "no bookings, no charges"],
         ].map(([v, k]) => (
           <StaggerItem key={k}>
-            <div className="font-display text-4xl text-ink sm:text-5xl">{v}</div>
+            <div className="font-display text-3xl text-ink sm:text-4xl">{v}</div>
             <div className="label mt-1">{k}</div>
           </StaggerItem>
         ))}

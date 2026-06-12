@@ -9,7 +9,9 @@ import { RequireAuth } from "./components/RequireAuth"
 import { Grain } from "./components/fx"
 import { Assistant } from "./pages/Assistant"
 import { Auth } from "./pages/Auth"
+import { Dashboard } from "./pages/Dashboard"
 import { Home } from "./pages/Home"
+import { Profile } from "./pages/Profile"
 import { RestaurantDetail } from "./pages/RestaurantDetail"
 import { Restaurants } from "./pages/Restaurants"
 import { Shopping } from "./pages/Shopping"
@@ -47,6 +49,8 @@ export default function App() {
             <Routes location={location}>
               <Route path="/" element={<Home />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
               <Route path="/restaurants" element={<RequireAuth><Restaurants /></RequireAuth>} />
               <Route path="/restaurants/:placeId" element={<RequireAuth><RestaurantDetail /></RequireAuth>} />
               <Route path="/travel" element={<RequireAuth><Travel /></RequireAuth>} />

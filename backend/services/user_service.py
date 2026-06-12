@@ -244,6 +244,53 @@ class UserService:
                 "onboarded": bool(row.onboarded),
             }
 
+    def taste_graph(self, user_id: str) -> dict[str, Any]:
+        """A visualisable taste graph for the profile page.
+
+        Derived from the saved profile (always available) and enriched with Neo4j
+        insights when the graph is reachable. Returns radial nodes + edges centred
+        on the diner — never raises.
+        """
+        p = self.get_profile_dict(user_id)
+        center = {"id": "me", "label": p.get("name") or "You", "group": "user"}
+        nodes: list[dict[str, Any]] = [center]
+        edges: list[dict[str, Any]] = []
+
+        def add(node_id: str, label: str, group: str, kind: str, weight: int = 3) -> None:
+            if not label:
+                return
+            nodes.append({"id": node_id, "label": label, "group": group, "weight": weight})
+            edges.append({"source": "me", "target": node_id, "kind": kind})
+
+        if p.get("dietary_type"):
+            add("diet", str(p["dietary_type"]).replace("-", " ").title(), "diet", "eats", 5)
+        for i, c in enumerate(p.get("cuisines") or []):
+            add(f"cuisine:{i}", c.title() if c.islower() else c, "cuisine", "loves_cuisine", 4)
+        for i, f in enumerate((p.get("likes") or [])[:12]):
+            add(f"food:{i}", f, "food", "likes", 4)
+        for i, a in enumerate(p.get("allergies") or []):
+            add(f"allergy:{i}", a, "allergy", "avoids", 5)
+        for i, g in enumerate(p.get("goals") or []):
+            add(f"goal:{i}", g, "goal", "pursues", 3)
+
+        insights: dict[str, Any] = {}
+        try:
+            from .knowledge_graph_service import knowledge_graph_service
+
+            if getattr(knowledge_graph_service, "driver", None):
+                insights = knowledge_graph_service.get_user_insights(user_id) or {}
+        except Exception:
+            insights = {}
+
+        return {
+            "status": "ok",
+            "onboarded": bool(p.get("onboarded")),
+            "center": center,
+            "nodes": nodes,
+            "edges": edges,
+            "insights": insights,
+        }
+
     def profile_summary(self, user_id: str) -> str:
         """Compact LLM context. Separates HARD constraints (diet + allergies, exclude
         even when uncertain) from SOFT preferences (ranking only). Omits age/gender."""

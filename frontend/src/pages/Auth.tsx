@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useEffect, useRef, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Mark } from "../components/Logo"
 import { Onboarding } from "../components/Onboarding"
@@ -15,14 +15,22 @@ export function Auth() {
   const from = st?.from || "/restaurants"
   const [mode, setMode] = useState<"login" | "signup">("login")
 
-  useEffect(() => {
-    if (user && onboarded) nav(from, { replace: true })
-  }, [user, onboarded, from, nav])
-
-  if (user && onboarded) return null // redirecting
-
   const mustComplete = !!user && !onboarded // legacy account finishing onboarding
   const showWizard = mustComplete || mode === "signup"
+  // Freeze the wizard's mode for its whole lifetime. If the user explicitly chose
+  // signup, it stays "signup" even after register() sets `user` mid-completion —
+  // otherwise the steps array would shrink under the current index and the user
+  // would be bounced back to re-enter their basics. Once the wizard has been shown,
+  // navigation is owned solely by its onDone (so the success screen isn't cut off).
+  const wizardMode: "signup" | "complete" = mode === "signup" ? "signup" : "complete"
+  const showedWizard = useRef(false)
+  if (showWizard) showedWizard.current = true
+
+  useEffect(() => {
+    if (user && onboarded && !showedWizard.current) nav(from, { replace: true })
+  }, [user, onboarded, from, nav])
+
+  if (user && onboarded && !showedWizard.current) return null // redirecting
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -55,7 +63,7 @@ export function Auth() {
                 Welcome back, {user?.username}. Let's finish your taste profile so recommendations feel made for you.
               </p>
             )}
-            <Onboarding mode={mustComplete ? "complete" : "signup"} onDone={() => nav(from, { replace: true })} />
+            <Onboarding mode={wizardMode} onDone={() => nav(from, { replace: true })} />
           </Reveal>
         ) : (
           <LoginCard onSubmit={login} onSignup={() => setMode("signup")} />

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion"
 import { Clock, LocateFixed, Loader2, MapPin, Search, Soup, Sparkles, Store } from "lucide-react"
-import { FormEvent, useState } from "react"
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react"
 import { Link } from "react-router-dom"
 import { Button, Chip, PriceTag, Stars, StatusNote } from "../components/ui"
 import { Reveal } from "../components/fx"
@@ -15,6 +15,11 @@ function dietChipFromProfile(t?: string): string | null {
   if (t === "non-vegetarian" || t === "pescatarian") return "Non-veg"
   if (t) return "Vegetarian" // vegetarian / eggetarian / jain
   return null
+}
+function dietForSearch(t?: string): string | undefined {
+  if (t === "vegan") return "vegan"
+  if (t === "vegetarian" || t === "eggetarian" || t === "jain") return "vegetarian"
+  return undefined
 }
 
 const CUISINES = ["Bengali", "Mughlai", "South Indian", "Chinese", "Italian", "Cafe", "Street Food"]
@@ -31,8 +36,8 @@ export function Restaurants() {
           Find a table, <span className="italic text-saffron">read the menu.</span>
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink-soft text-pretty">
-          Search restaurants via Google Maps, then open one to see a menu Kensho extracts from photos — or search for a
-          specific dish across every menu it has read.
+          We load top-rated spots near you the moment you arrive — refine the search, or jump to a specific dish across
+          every menu Kensho has read.
         </p>
       </Reveal>
 
@@ -73,14 +78,49 @@ function PlaceSearch() {
   const [dietary, setDietary] = useState<string | null>(() => dietChipFromProfile(profile?.dietary_type))
   const [openNow, setOpenNow] = useState(false)
   const [results, setResults] = useState<Restaurant[] | null>(null)
+  const [featured, setFeatured] = useState(true) // results are the auto highly-rated view
   const [status, setStatus] = useState<string>()
   const [loading, setLoading] = useState(false)
   const [locating, setLocating] = useState(false)
+  const autoRan = useRef(false)
+
+  // Fire-and-forget: warm menus for the visible places so 'Find a dish' fills in.
+  const prefetch = useCallback((rs: Restaurant[]) => {
+    const items = rs.slice(0, 8).map((r) => ({ place_id: r.id, name: r.name }))
+    if (items.length) api.prefetchMenus(items).catch(() => {})
+  }, [])
+
+  // Auto-load highly-rated places near the diner on first open — no click needed.
+  useEffect(() => {
+    if (autoRan.current) return
+    const hasCoords = profile?.lat != null && profile?.lng != null
+    const where = profile?.location
+    if (!hasCoords && !where) return
+    autoRan.current = true
+    setLoading(true)
+    api
+      .featuredRestaurants({
+        lat: profile?.lat ?? undefined,
+        lng: profile?.lng ?? undefined,
+        location: where || undefined,
+        dietary: dietForSearch(profile?.dietary_type),
+        limit: 18,
+      })
+      .then((r) => {
+        setFeatured(true)
+        setResults(r.status === "ok" ? r.restaurants : [])
+        if (r.status !== "ok") setStatus(r.status)
+        else prefetch(r.restaurants)
+      })
+      .catch(() => setResults([]))
+      .finally(() => setLoading(false))
+  }, [profile, prefetch])
 
   async function run(e?: FormEvent, override?: { lat: number; lng: number; location?: string }) {
     e?.preventDefault()
     const ll = override ?? coords
     setLoading(true)
+    setFeatured(false)
     setStatus(undefined)
     try {
       const r = await api.searchRestaurants({
@@ -96,6 +136,15 @@ function PlaceSearch() {
       })
       setResults(r.restaurants || [])
       if (r.status !== "ok") setStatus(r.status)
+      else {
+        prefetch(r.restaurants || [])
+        api.track({
+          kind: "search",
+          query: query || cuisine || dietary || "restaurants near me",
+          cuisine: cuisine?.toLowerCase(),
+          payload: { location: override?.location ?? location, count: r.restaurants?.length ?? 0 },
+        })
+      }
     } catch {
       setStatus("error")
       setResults([])
@@ -114,6 +163,8 @@ function PlaceSearch() {
       run(undefined, { lat: r.lat, lng: r.lng!, location: r.location })
     }
   }
+
+  const where = profile?.location || location || "you"
 
   return (
     <>
@@ -173,7 +224,15 @@ function PlaceSearch() {
         {!loading && status && <StatusNote status={status} />}
         {!loading && results && results.length > 0 && (
           <>
-            <p className="label mb-4">{results.length} places</p>
+            <p className="label mb-4 flex items-center gap-2">
+              {featured ? (
+                <>
+                  <Sparkles className="h-3.5 w-3.5 text-saffron" /> Top rated near {where}
+                </>
+              ) : (
+                `${results.length} places`
+              )}
+            </p>
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {results.map((r, i) => (
                 <RestaurantCard key={r.id} r={r} i={i} />
@@ -221,7 +280,8 @@ function RestaurantCard({ r, i }: { r: Restaurant; i: number }) {
               <Stars value={r.rating} count={r.rating_count} />
               {r.primary_type && <span className="truncate text-xs text-ink-faint">{r.primary_type}</span>}
             </div>
-            {r.address && <p className="mt-2 line-clamp-1 text-sm text-ink-faint">{r.address}</p>}
+            {r.reason && <p className="mt-2 line-clamp-1 text-xs font-medium text-saffron">{r.reason}</p>}
+            {!r.reason && r.address && <p className="mt-2 line-clamp-1 text-sm text-ink-faint">{r.address}</p>}
             <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-saffron">
               View menu <Sparkles className="h-3.5 w-3.5" />
             </div>
@@ -235,17 +295,39 @@ function RestaurantCard({ r, i }: { r: Restaurant; i: number }) {
 function DishSearch() {
   const [query, setQuery] = useState("")
   const [dishes, setDishes] = useState<Dish[] | null>(null)
+  const [featured, setFeatured] = useState(true)
   const [indexed, setIndexed] = useState<number>()
+  const [note, setNote] = useState<string>()
   const [loading, setLoading] = useState(false)
+  const autoRan = useRef(false)
+
+  // Default view: highly-rated / signature dishes from menus Kensho has read.
+  useEffect(() => {
+    if (autoRan.current) return
+    autoRan.current = true
+    setLoading(true)
+    api
+      .featuredDishes(18)
+      .then((r) => {
+        setFeatured(true)
+        setDishes(r.dishes || [])
+        if (r.status === "empty") setNote(r.message)
+      })
+      .catch(() => setDishes([]))
+      .finally(() => setLoading(false))
+  }, [])
 
   async function run(e?: FormEvent) {
     e?.preventDefault()
     if (!query.trim()) return
     setLoading(true)
+    setFeatured(false)
+    setNote(undefined)
     try {
       const r = await api.searchDishes(query, 18)
       setDishes(r.dishes || [])
       setIndexed(r.indexed_items)
+      api.track({ kind: "search", query, domain: "restaurant", payload: { mode: "dish", count: r.dishes?.length ?? 0 } })
     } finally {
       setLoading(false)
     }
@@ -261,6 +343,11 @@ function DishSearch() {
       {indexed != null && <p className="mt-3 font-mono text-xs text-ink-faint">searching {indexed} indexed items across restaurants</p>}
 
       <div className="mt-8">
+        {featured && !loading && dishes && dishes.length > 0 && (
+          <p className="label mb-4 flex items-center gap-2">
+            <Sparkles className="h-3.5 w-3.5 text-saffron" /> Signature dishes Kensho loves
+          </p>
+        )}
         {loading && <Skeletons rows />}
         {!loading && dishes && dishes.length > 0 && (
           <div className="space-y-3">
@@ -287,7 +374,7 @@ function DishSearch() {
           </div>
         )}
         {!loading && dishes && dishes.length === 0 && (
-          <StatusNote message="No dishes indexed yet — open a few restaurants first so Kensho extracts and embeds their menus, then dish search lights up." />
+          <StatusNote message={note || "No dishes indexed yet — open a few restaurants first so Kensho extracts and embeds their menus, then dish search lights up."} />
         )}
       </div>
     </>

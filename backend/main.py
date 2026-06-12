@@ -25,6 +25,7 @@ from .api.voice_routes import router as voice_router
 from .api.auth_routes import router as auth_router
 from .api.knowledge_graph_routes import router as kg_router
 from .api.location_routes import router as location_router
+from .api.me_routes import router as me_router
 
 # Configure logging
 logger.remove()
@@ -104,6 +105,7 @@ app.include_router(voice_router, prefix=settings.API_PREFIX)
 app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(kg_router, prefix=settings.API_PREFIX)
 app.include_router(location_router, prefix=settings.API_PREFIX)
+app.include_router(me_router, prefix=settings.API_PREFIX)
 
 
 @app.get("/")
