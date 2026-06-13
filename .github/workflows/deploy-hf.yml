@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
 
 env:
-  HF_USERNAME: Keshav022   # ← edit
-  HF_SPACE: kensho                # ← edit (the Space name)
+  HF_USERNAME: Keshav022
+  HF_SPACE: kensho
 
 jobs:
   sync:
