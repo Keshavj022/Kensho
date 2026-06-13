@@ -26,7 +26,6 @@ except ImportError:
 
 from ..config import settings
 
-# Import knowledge graph service for enhanced context
 try:
     from .knowledge_graph_service import knowledge_graph_service
     KG_AVAILABLE = True
@@ -70,7 +69,6 @@ class RAGService:
 
     def _initialize_embeddings(self):
         """Initialize embedding client - Uses Azure OpenAI as primary"""
-        # Try Azure OpenAI first (primary option)
         azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT") or os.getenv("AZURE_OPENAI_ENDPOINT_URL")
         azure_key = os.getenv("AZURE_OPENAI_API_KEY") or os.getenv("AZURE_OPENAI_KEY")
         azure_api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
@@ -88,7 +86,6 @@ class RAGService:
             except Exception as e:
                 logger.warning(f"Could not initialize Azure OpenAI client: {str(e)}")
 
-        # Fallback to OpenAI (for local development only)
         if OPENAI_AVAILABLE:
             api_key = os.getenv("OPENAI_API_KEY")
             if api_key:
@@ -128,10 +125,8 @@ class RAGService:
             return None
 
         try:
-            # Get deployment name from settings or use embedding model name
             deployment_name = settings.AZURE_OPENAI_DEPLOYMENT_NAME or settings.EMBEDDING_MODEL
             
-            # Use the deployment name for Azure OpenAI
             response = self.embedding_client.embeddings.create(
                 model=deployment_name,
                 input=text
@@ -169,7 +164,6 @@ class RAGService:
             if not collection:
                 return False
 
-            # Load restaurant data
             if not data_path:
                 data_path = settings.RESTAURANT_DATA_PATH
 
@@ -180,12 +174,9 @@ class RAGService:
             with open(data_path, "r") as f:
                 data = json.load(f)
 
-            # Handle different data structures
             if "local_results" in data:
-                # Google Maps API format
                 restaurants = data.get("local_results", [])
             elif "restaurants" in data:
-                # Standard format
                 restaurants = data.get("restaurants", [])
             else:
                 restaurants = []
@@ -198,10 +189,8 @@ class RAGService:
             metadatas = []
 
             for idx, restaurant in enumerate(restaurants):
-                # Create document text - handle different formats
                 doc_parts = []
                 
-                # Handle Google Maps format
                 if "title" in restaurant:
                     doc_parts.append(f"Restaurant: {restaurant.get('title', 'Unknown')}")
                     doc_parts.append(f"Type: {restaurant.get('type', 'Unknown')}")
@@ -223,7 +212,6 @@ class RAGService:
                         hours_str = ", ".join([f"{k}: {v}" for k, v in hours.items()])
                         doc_parts.append(f"Hours: {hours_str}")
                 else:
-                    # Standard format
                     doc_parts.append(f"Restaurant: {restaurant.get('name', 'Unknown')}")
                     doc_parts.append(f"Cuisine: {restaurant.get('cuisine', 'Unknown')}")
                     doc_parts.append(f"Location: {restaurant.get('location', 'Unknown')}")
@@ -240,13 +228,10 @@ class RAGService:
 
                 doc_text = " | ".join(doc_parts)
 
-                # Generate embedding
                 embedding = self._generate_embedding(doc_text)
                 if not embedding:
-                    # Skip if embedding generation fails
                     continue
 
-                # Get restaurant name/title for ID
                 restaurant_name = restaurant.get('name') or restaurant.get('title', 'unknown')
                 doc_id = self._create_document_id(f"restaurant_{restaurant_name}", idx)
 
@@ -254,7 +239,6 @@ class RAGService:
                 embeddings.append(embedding)
                 ids.append(doc_id)
                 
-                # Create metadata based on format
                 if "title" in restaurant:
                     metadatas.append({
                         "name": restaurant.get("title", ""),
@@ -274,7 +258,6 @@ class RAGService:
                         "source": "restaurant_data.json"
                     })
 
-            # Add to collection
             if documents:
                 collection.add(
                     documents=documents,
@@ -329,7 +312,6 @@ class RAGService:
                 logger.info(f"Ingesting {len(items)} {data_type} into RAG system...")
 
                 for idx, item in enumerate(items):
-                    # Create document text based on type
                     if data_type == "destinations":
                         doc_parts = [
                             f"Destination: {item.get('name', 'Unknown')}",
@@ -369,7 +351,6 @@ class RAGService:
 
                     doc_text = " | ".join(doc_parts)
 
-                    # Generate embedding
                     embedding = self._generate_embedding(doc_text)
                     if not embedding:
                         continue
@@ -385,7 +366,6 @@ class RAGService:
                         "source": filename
                     })
 
-            # Add to collection
             if all_documents:
                 collection.add(
                     documents=all_documents,
@@ -417,13 +397,11 @@ class RAGService:
                 logger.warning("Restaurant collection not found. Run ingestion first.")
                 return []
 
-            # Enhance query with KG preferences if available
             enhanced_query = query
             if KG_AVAILABLE and knowledge_graph_service and knowledge_graph_service.driver and user_id:
                 try:
                     preferences = knowledge_graph_service.get_user_preferences(user_id)
                     if preferences:
-                        # Add favorite cuisines to query
                         cuisine_prefs = preferences.get("cuisine_preferences", [])
                         favorites = [c["cuisine"] for c in cuisine_prefs if c.get("level") in ["love", "like"]]
                         if favorites:
@@ -431,10 +409,8 @@ class RAGService:
                 except Exception as e:
                     logger.warning(f"Error enhancing query with KG: {str(e)}")
 
-            # Generate query embedding
             query_embedding = self._generate_embedding(enhanced_query)
             if not query_embedding:
-                # Fallback to keyword search
                 results = collection.query(
                     query_texts=[enhanced_query],
                     n_results=max_results
@@ -445,7 +421,6 @@ class RAGService:
                     n_results=max_results
                 )
 
-            # Process results
             retrieved = []
             if results.get("documents") and results["documents"][0]:
                 for i, doc in enumerate(results["documents"][0]):
@@ -459,7 +434,6 @@ class RAGService:
                         "source": metadata.get("source", "restaurant_data.json")
                     })
 
-            # Filter by location/cuisine if provided
             if location or cuisine:
                 filtered = []
                 for item in retrieved:
@@ -490,7 +464,6 @@ class RAGService:
                 logger.warning("Travel collection not found. Run ingestion first.")
                 return []
 
-            # Generate query embedding
             query_embedding = self._generate_embedding(query)
             if not query_embedding:
                 results = collection.query(
@@ -503,14 +476,12 @@ class RAGService:
                     n_results=max_results
                 )
 
-            # Process results
             retrieved = []
             if results.get("documents") and results["documents"][0]:
                 for i, doc in enumerate(results["documents"][0]):
                     metadata = results["metadatas"][0][i] if results.get("metadatas") else {}
                     distance = results["distances"][0][i] if results.get("distances") else 0.0
 
-                    # Filter by data_type if provided
                     if data_type and metadata.get("type") != data_type:
                         continue
 
@@ -537,7 +508,6 @@ class RAGService:
     ) -> str:
         """Build context string for agent using RAG with KG enhancement"""
         try:
-            # Retrieve from RAG
             if agent_type == "restaurant":
                 retrieved = self.retrieve_restaurants(query, max_results=max_chunks)
             elif agent_type == "travel":
@@ -546,31 +516,26 @@ class RAGService:
                 logger.warning(f"Unknown agent type: {agent_type}")
                 return ""
 
-            # Enhance with knowledge graph preferences if available
             kg_context = ""
             if KG_AVAILABLE and knowledge_graph_service and knowledge_graph_service.driver and user_id:
                 try:
-                    # Get user preferences from knowledge graph
                     preferences = knowledge_graph_service.get_user_preferences(user_id)
                     
                     if preferences:
                         kg_parts = []
                         
-                        # Add favorite cuisines
                         cuisine_prefs = preferences.get("cuisine_preferences", [])
                         if cuisine_prefs:
                             favorites = [c["cuisine"] for c in cuisine_prefs if c.get("level") in ["love", "like"]]
                             if favorites:
                                 kg_parts.append(f"User's Favorite Cuisines: {', '.join(favorites[:5])}")
                         
-                        # Add food preferences
                         food_prefs = preferences.get("food_preferences", [])
                         if food_prefs:
                             favorites = [f["food"] for f in food_prefs if f.get("level") in ["love", "like"]]
                             if favorites:
                                 kg_parts.append(f"User's Favorite Foods: {', '.join(favorites[:5])}")
                         
-                        # Add dietary restrictions
                         restrictions = preferences.get("dietary_restrictions", [])
                         if restrictions:
                             rest_list = [r.get("name", "") for r in restrictions]
@@ -586,18 +551,14 @@ class RAGService:
             if not retrieved and not kg_context:
                 return user_context or ""
 
-            # Build context string
             context_parts = []
             
-            # User context (from agent)
             if user_context:
                 context_parts.append(f"User Context:\n{user_context}\n")
             
-            # Knowledge graph preferences
             if kg_context:
                 context_parts.append(f"User Preferences (from Knowledge Graph):\n{kg_context}\n")
 
-            # RAG retrieved information
             if retrieved:
                 context_parts.append("Relevant Information from Knowledge Base:")
                 for i, item in enumerate(retrieved, 1):
@@ -652,5 +613,4 @@ class RAGService:
             return {"error": str(e)}
 
 
-# Global RAG service instance
 rag_service = RAGService()

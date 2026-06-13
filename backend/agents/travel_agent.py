@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from ..services.llm import get_llm
 from ..tools.registry import travel_tools
-from ._factory import make_agent
+from ._factory import RESPONSE_STYLE, make_agent
 
 NAME = "travel_agent"
 
@@ -21,4 +21,6 @@ SYSTEM_PROMPT = (
 
 
 def build_travel_agent(model=None):
-    return make_agent(model or get_llm(), tools=travel_tools(), system_prompt=SYSTEM_PROMPT, name=NAME)
+    return make_agent(
+        model or get_llm(), tools=travel_tools(), system_prompt=SYSTEM_PROMPT + RESPONSE_STYLE, name=NAME
+    )

@@ -38,7 +38,7 @@ export function Shopping() {
     <section className="mx-auto max-w-7xl px-5 pb-24 pt-28 sm:px-8 sm:pt-36">
       <Reveal>
         <span className="label text-plum">03 · Buy</span>
-        <h1 className="mt-3 font-display text-[clamp(2.6rem,6vw,4.6rem)] font-medium leading-[0.95]">
+        <h1 className="mt-3 font-display text-[clamp(2.1rem,6vw,4.6rem)] font-medium leading-[0.98]">
           The best buy, <span className="italic text-plum">found fast.</span>
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink-soft text-pretty">
@@ -112,7 +112,7 @@ function ProductCard({ p, i }: { p: Product; i: number }) {
         </div>
         <div className="mt-auto flex items-end justify-between pt-3">
           <span className="font-display text-2xl text-plum">{p.price_label || money(p.price)}</span>
-          <span className="flex items-center gap-1 text-xs font-semibold text-ink opacity-0 transition group-hover:opacity-100">
+          <span className="flex items-center gap-1 text-xs font-semibold text-ink opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
             View <ExternalLink className="h-3 w-3" />
           </span>
         </div>

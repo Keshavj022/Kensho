@@ -50,7 +50,6 @@ def test_login_me_refresh_logout(client):
     assert ref.status_code == 200 and ref.json()["access_token"]
 
     client.post("/api/v1/auth/logout", headers={"Authorization": f"Bearer {login['access_token']}"})
-    # After logout the refresh token is revoked.
     assert client.post("/api/v1/auth/refresh", json={"refresh_token": login["refresh_token"]}).status_code == 401
 
 
@@ -105,7 +104,8 @@ def test_profile_onboarding(client):
     from backend.services.user_service import user_service
 
     summary = user_service.profile_summary(put["user_id"]).lower()
-    assert "peanuts" in summary and "vegetarian" in summary and "hard constraints" in summary
+    assert "peanuts" in summary and "vegetarian" in summary
+    assert "hard limits" in summary and "silently" in summary
 
 
 def test_profile_requires_auth(client):

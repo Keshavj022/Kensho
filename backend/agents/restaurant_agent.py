@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from ..services.llm import get_llm
 from ..tools.registry import restaurant_tools
-from ._factory import make_agent
+from ._factory import RESPONSE_STYLE, make_agent
 
 NAME = "restaurant_agent"
 
@@ -14,15 +14,18 @@ SYSTEM_PROMPT = (
     "(the `id` field is the place_id).\n"
     "- Use get_menu(place_id) for a restaurant's structured menu, and search_dishes "
     "for cross-restaurant dish search by meaning.\n"
-    "- Use get_user_preferences / recommend_restaurants / track_interaction to "
-    "personalize for a known user_id.\n"
+    "- For a location query (e.g. 'biryani in Kolkata'), ALWAYS use search_restaurants "
+    "with that location — do NOT use recommend_restaurants (which is only for a returning "
+    "user with interaction history and no specified place).\n"
     "FOOD ORDERING IS CART + HANDOFF ONLY: build a cart from the menu and hand off to "
     "the restaurant's order_online link. Never place real orders or take payment.\n"
-    "If the message includes a [Diner profile], honor it: treat ALLERGIES and the diet "
-    "type as HARD constraints (never recommend dishes that violate them), and lean toward "
-    "their likes, favourite cuisines, and health goals. Be concise and friendly."
+    "If the message includes a personalization directive, honor it: treat ALLERGIES and the "
+    "diet type as HARD filters (never suggest anything that violates them), and lean toward "
+    "their tastes — but apply it silently as instructed."
 )
 
 
 def build_restaurant_agent(model=None):
-    return make_agent(model or get_llm(), tools=restaurant_tools(), system_prompt=SYSTEM_PROMPT, name=NAME)
+    return make_agent(
+        model or get_llm(), tools=restaurant_tools(), system_prompt=SYSTEM_PROMPT + RESPONSE_STYLE, name=NAME
+    )

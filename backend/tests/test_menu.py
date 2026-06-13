@@ -31,7 +31,6 @@ def _patch_gemini_vision(monkeypatch):
 
     monkeypatch.setattr(settings, "GEMINI_API_KEY", "k")
     monkeypatch.setattr(ocr_service, "_download_image", lambda url, timeout=15.0: ("ZmFrZQ==", "image/jpeg"))
-    # ocr_service now calls invoke_with_fallback(messages, ...); route it to the fake.
     monkeypatch.setattr(ocr_service, "invoke_with_fallback", lambda messages, **k: _FakeModel().invoke(messages))
 
 
@@ -90,7 +89,6 @@ def test_menu_cascade_and_cache(monkeypatch):
     from backend.services import menu_service, ocr_service
     from backend.tools import serpapi_tools
 
-    # Fresh start for this place_id (DB persists across runs).
     with session_scope() as db:
         row = db.get(MenuCache, "PID_TEST")
         if row:
@@ -124,7 +122,6 @@ def test_menu_cascade_and_cache(monkeypatch):
     assert out["order_online_url"] == "http://order.google/x"
     assert out["sections"][0]["items"][0]["name"] == "Paneer Tikka"
 
-    # Second call hits the cache (no re-OCR).
     out2 = menu_service.get_menu("PID_TEST")
     assert out2["cached"] is True
     assert out2["sections"][0]["items"][0]["name"] == "Paneer Tikka"

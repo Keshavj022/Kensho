@@ -32,6 +32,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  // Fetch the profile, then set user + profile together so `onboarded` is correct on
+  // the first render — no window where the user is signed in but profile is still null.
+  const setSession = useCallback(async (u: UserInfo) => {
+    let p: Profile | null = null
+    try {
+      p = await api.getProfile()
+    } catch {
+      p = null
+    }
+    setStoredUser(u)
+    setProfile(p)
+    setUser(u)
+  }, [])
+
   useEffect(() => {
     if (!getToken()) {
       setReady(true)
@@ -39,29 +53,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     api
       .me()
-      .then(async (u) => {
-        setUser(u)
-        setStoredUser(u)
-        await loadProfile()
-      })
+      .then(setSession)
       .catch(() => {
         setToken(null)
         setStoredUser(null)
         setUser(null)
       })
       .finally(() => setReady(true))
-  }, [loadProfile])
+  }, [setSession])
 
   const finishLogin = useCallback(
     async (email: string, password: string) => {
       const tok = await api.login(email, password)
       setToken(tok.access_token)
-      const u = await api.me()
-      setUser(u)
-      setStoredUser(u)
-      await loadProfile()
+      await setSession(await api.me())
     },
-    [loadProfile],
+    [setSession],
   )
 
   const login = finishLogin
@@ -77,11 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const startDemo = useCallback(async () => {
     const tok = await api.demoLogin()
     setToken(tok.access_token)
-    const u = await api.me()
-    setUser(u)
-    setStoredUser(u)
-    await loadProfile()
-  }, [loadProfile])
+    await setSession(await api.me())
+  }, [setSession])
 
   const saveProfile = useCallback(async (p: ProfilePayload) => {
     const saved = await api.saveProfile(p)

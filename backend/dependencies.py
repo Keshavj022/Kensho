@@ -35,7 +35,6 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Check if user is active
     user_auth = auth_service.get_user_auth(user_id)
     if not user_auth or not user_auth.get("is_active", True):
         raise HTTPException(
@@ -67,7 +66,6 @@ def require_role(required_role: str) -> Callable:
     async def role_checker(current_user: dict = Depends(get_current_user)) -> dict:
         user_role = current_user.get("role", "user")
         
-        # Admin has access to everything
         if user_role == "admin":
             return current_user
         
@@ -89,7 +87,6 @@ def require_roles(*allowed_roles: str) -> Callable:
     async def roles_checker(current_user: dict = Depends(get_current_user)) -> dict:
         user_role = current_user.get("role", "user")
         
-        # Admin has access to everything
         if user_role == "admin":
             return current_user
         

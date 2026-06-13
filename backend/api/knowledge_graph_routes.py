@@ -68,7 +68,6 @@ async def onboard_user(request: UserOnboardingRequest):
                 detail="Knowledge graph service not available. Please configure Neo4j."
             )
 
-        # Create user in knowledge graph
         success = knowledge_graph_service.create_user(
             user_id=request.user_id,
             name=request.name,
@@ -80,7 +79,6 @@ async def onboard_user(request: UserOnboardingRequest):
         if not success:
             raise HTTPException(status_code=500, detail="Failed to create user in knowledge graph")
 
-        # Add dietary restrictions
         for restriction in request.dietary_restrictions:
             knowledge_graph_service.add_dietary_restriction(
                 user_id=request.user_id,
@@ -88,11 +86,9 @@ async def onboard_user(request: UserOnboardingRequest):
                 restriction_value=restriction.get("value", "")
             )
 
-        # Add dietary goals
         for goal in request.dietary_goals:
             knowledge_graph_service.add_dietary_goal(request.user_id, goal)
 
-        # Add food preferences
         for food_name, pref_data in request.food_preferences.items():
             knowledge_graph_service.add_food_preference(
                 user_id=request.user_id,
@@ -101,7 +97,6 @@ async def onboard_user(request: UserOnboardingRequest):
                 weight=pref_data.get("weight", 3)
             )
 
-        # Add cuisine preferences
         for cuisine_name, pref_data in request.cuisine_preferences.items():
             knowledge_graph_service.add_cuisine_preference(
                 user_id=request.user_id,

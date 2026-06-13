@@ -18,7 +18,7 @@ export function Assistant() {
       <div className="grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr]">
         <Reveal className="lg:sticky lg:top-28">
           <span className="label text-saffron">The assistant</span>
-          <h1 className="mt-3 font-display text-[clamp(2.6rem,6vw,4.5rem)] font-medium leading-[0.95]">
+          <h1 className="mt-3 font-display text-[clamp(2.1rem,6vw,4.5rem)] font-medium leading-[0.95]">
             Ask Kensho <span className="italic text-saffron">anything.</span>
           </h1>
           <p className="mt-5 max-w-md text-lg text-ink-soft text-pretty">

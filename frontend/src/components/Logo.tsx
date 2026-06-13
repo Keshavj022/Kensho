@@ -1,7 +1,6 @@
 import { motion } from "framer-motion"
 import { cn } from "../lib/cn"
 
-/** The Kensho mark — a brushy enso (見性, "seeing true nature") with a spice dot. */
 export function Mark({ className, animate = true }: { className?: string; animate?: boolean }) {
   return (
     <svg viewBox="0 0 48 48" className={cn("h-8 w-8", className)} fill="none" aria-hidden>

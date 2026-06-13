@@ -4,8 +4,6 @@ import { api } from "../lib/api"
 import { INR } from "../lib/cn"
 import { useCart } from "../state/cart"
 
-/** Always give the diner a path to order — the Google deep link when we have it,
- * otherwise a Google search for the restaurant's online ordering. */
 function handoffLink(orderUrl?: string | null, restaurantName?: string): string {
   if (orderUrl) return orderUrl
   if (restaurantName) return `https://www.google.com/search?q=${encodeURIComponent(`order ${restaurantName} online`)}`

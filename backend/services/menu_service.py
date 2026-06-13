@@ -1,17 +1,5 @@
-"""
-Menu pipeline orchestration + caching (the keystone feature).
-
-get_menu(place_id) cascade:
-  1. Cache check  — menu_cache row fresh (< MENU_CACHE_TTL_DAYS) -> return it.
-  2. Fetch photos — serpapi get_place_photos(place_id) (user-posted, unlabeled).
-  3. Classify     — Gemini flags which photos are menu images.
-  4. Extract      — Gemini reads menu photo(s) into a structured Menu.
-  5. Fallback     — no usable menu photos -> web search / expose order_online link.
-  6. Persist      — save to menu_cache AND embed items into Chroma (menu_items).
-
-Never re-OCRs a cached menu. Fully graceful: missing keys -> a clear status, never
-a crash.
-"""
+"""Menu pipeline: cache check → photos → classify → OCR extract → persist + embed.
+A place is read at most once; the outcome (success or failure) is cached."""
 from __future__ import annotations
 
 from datetime import datetime, timedelta
@@ -69,7 +57,6 @@ def _persist(menu: Menu) -> None:
         row.source = menu.source
         row.order_online_url = menu.order_online_url
         row.extracted_at = datetime.utcnow()
-    # Embed items into the Gemini menu_items collection (cross-restaurant dish search).
     items = [i.model_dump() for i in menu.all_items()]
     if items:
         add_menu_items(menu.restaurant_id, menu.restaurant_name, items)
@@ -85,21 +72,52 @@ def _result(menu: Menu, cached: bool = False) -> dict[str, Any]:
 def get_menu(place_id: str, restaurant_name: str = "", force: bool = False) -> dict[str, Any]:
     """Run the menu cascade for a place_id. Returns the structured menu dict.
 
-    Cached aggressively: a fresh menu_cache row short-circuits everything.
+    FETCH-ONCE guarantee: a restaurant is read at most once. The cache short-circuits
+    every subsequent open, and the OUTCOME is cached whether the read succeeded, found
+    no menu, or the pipeline crashed — so a broken place is never re-fetched on every
+    open. The one exception is "OCR not configured" (missing keys): that isn't cached,
+    so it retries cheaply (fail-fast, no slow OCR) once you set the keys up. Pass
+    force=True (the menu route's ?refresh=true) to re-scan on demand.
     """
     if not force:
         cached = _get_cached(place_id)
         if cached is not None:
             return cached
 
-    # 2) photos
+    try:
+        return _fetch_and_cache(place_id, restaurant_name)
+    except Exception as e:
+        logger.warning(f"menu pipeline failed for {place_id}: {e}")
+        order_url = None
+        try:
+            order_url = _resolve_order_link(place_id)
+        except Exception:
+            pass
+        menu = Menu(
+            restaurant_id=place_id,
+            restaurant_name=restaurant_name or place_id,
+            sections=[],
+            source="web",
+            order_online_url=order_url,
+        )
+        try:
+            _persist(menu)
+        except Exception as pe:  # pragma: no cover - defensive
+            logger.warning(f"negative-cache persist failed for {place_id}: {pe}")
+        out = _result(menu)
+        out["note"] = "We couldn't read a menu for this place — showing the order link only."
+        return out
+
+
+def _fetch_and_cache(place_id: str, restaurant_name: str) -> dict[str, Any]:
+    """The actual cascade (photos -> classify -> extract -> persist). Wrapped by
+    get_menu so any throw becomes a cached negative."""
     from ..tools import search_tools, serpapi_tools
 
     photos_res = serpapi_tools.get_place_photos.invoke({"place_id": place_id})
     photo_urls = photos_res.get("photos", []) if isinstance(photos_res, dict) else []
     order_url = _resolve_order_link(place_id)
 
-    # 3-4) classify + extract (needs Gemini)
     menu: Optional[Menu] = None
     if photo_urls and ocr_service.is_llm_available():
         menu_photos = ocr_service.classify_menu_images(photo_urls)
@@ -109,13 +127,8 @@ def get_menu(place_id: str, restaurant_name: str = "", force: bool = False) -> d
                 menu.raw_photo_urls = photo_urls[:20]
                 menu.order_online_url = order_url
 
-    # 5) fallback — no usable menu photos / OCR unavailable
     if menu is None:
-        reason = (
-            "not_configured"
-            if not (settings.serpapi_configured and settings.gemini_configured)
-            else "no_menu_found"
-        )
+        configured = settings.serpapi_configured and ocr_service.is_llm_available()
         web_note = None
         if settings.tavily_configured and restaurant_name:
             web = search_tools.web_search.invoke({"query": f"{restaurant_name} menu prices"})
@@ -129,17 +142,16 @@ def get_menu(place_id: str, restaurant_name: str = "", force: bool = False) -> d
             raw_photo_urls=photo_urls[:20],
             order_online_url=order_url or web_note,
         )
-        _persist(menu)
+        if configured:
+            _persist(menu)
+            out = _result(menu)
+            out["note"] = "No readable menu photos found; showing the order link only."
+            return out
         out = _result(menu)
-        out["status"] = reason if reason == "not_configured" else "ok"
-        out["note"] = (
-            "Menu OCR not available (configure SERPAPI_API_KEY + GEMINI_API_KEY)."
-            if reason == "not_configured"
-            else "No readable menu photos found; exposing order link only."
-        )
+        out["status"] = "not_configured"
+        out["note"] = "Menu reading isn't configured yet (needs SERPAPI_API_KEY + a vision LLM like Azure OpenAI or Gemini)."
         return out
 
-    # 6) persist + embed
     _persist(menu)
     return _result(menu)
 

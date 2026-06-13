@@ -1,10 +1,5 @@
-"""
-Voice service — STT + TTS, vendor-swappable.
-
-Providers implement a small interface so the vendor can change without touching
-routes. ElevenLabs (Scribe STT + TTS) is primary; faster-whisper is an offline
-STT fallback. Everything degrades gracefully when nothing is configured.
-"""
+"""STT + TTS behind a small provider interface. ElevenLabs is primary;
+faster-whisper is an offline STT fallback."""
 from __future__ import annotations
 
 from io import BytesIO
@@ -29,7 +24,6 @@ class TTSProvider(Protocol):
     def synthesize(self, text: str, voice_id: Optional[str] = None) -> bytes: ...
 
 
-# ----------------------------------------------------------------- ElevenLabs
 class ElevenLabsProvider:
     name = "elevenlabs"
 
@@ -60,7 +54,6 @@ class ElevenLabsProvider:
             model_id=settings.ELEVENLABS_TTS_MODEL,
             output_format=settings.ELEVENLABS_OUTPUT_FORMAT,
         )
-        # convert() returns an iterator of byte chunks.
         if isinstance(audio, (bytes, bytearray)):
             return bytes(audio)
         return b"".join(audio)
@@ -75,7 +68,6 @@ class ElevenLabsProvider:
         return [{"voice_id": getattr(v, "voice_id", None), "name": getattr(v, "name", None)} for v in voices]
 
 
-# ----------------------------------------------------------------- faster-whisper (offline)
 class WhisperProvider:
     name = "faster-whisper"
 
@@ -102,12 +94,10 @@ class WhisperProvider:
         return self._model
 
     def transcribe(self, audio: bytes, language: Optional[str] = None) -> str:
-        # segments is a lazy generator — iterate to actually run transcription.
         segments, _info = self._model_().transcribe(BytesIO(audio), language=language)
         return "".join(seg.text for seg in segments).strip()
 
 
-# ----------------------------------------------------------------- service
 class VoiceService:
     def __init__(self) -> None:
         self._elevenlabs = ElevenLabsProvider()

@@ -1,15 +1,5 @@
-"""
-Trip planner (rebuilt).
-
-The legacy version was synchronous but called async coroutines without awaiting
-them (a hard bug). This rewrite is fully synchronous and composes the new tool
-layer (SerpApi flights/hotels + Tavily activities) — search-only, no booking.
-Every section degrades independently: a missing key disables that section but the
-day-by-day skeleton is still returned.
-
-Callers (the /travel/itinerary route, the plan_trip tool) wrap plan_trip in a
-threadpool so the event loop is never blocked.
-"""
+"""Synchronous trip planner over the SerpApi/Tavily tools — search-only, no booking.
+Each section degrades independently; the day-by-day skeleton is always returned."""
 from __future__ import annotations
 
 import uuid
@@ -20,7 +10,6 @@ from loguru import logger
 
 from ..tools import search_tools, serpapi_tools
 
-# Activities scheduled per day, by pace (preserved from the legacy logic).
 ACTIVITIES_PER_DAY = {"relaxed": 2, "moderate": 3, "packed": 4}
 _TIME_SLOTS = ["09:00", "13:00", "18:00", "20:30"]
 _MEALS = [
@@ -59,7 +48,6 @@ class ItineraryService:
         nights = max(0, (end - start).days)
         total_days = max(1, nights if nights > 0 else 1)
 
-        # --- Flights (optional; requires origin + SerpApi) ---
         flights: dict[str, Any] = {"status": "skipped", "reason": "no origin provided"}
         if origin:
             flights = serpapi_tools.search_flights.invoke(
@@ -72,12 +60,10 @@ class ItineraryService:
                 }
             )
 
-        # --- Hotels (SerpApi) ---
         hotels = serpapi_tools.search_hotels.invoke(
             {"location": destination, "check_in": start_date, "check_out": end_date, "guests": travelers}
         )
 
-        # --- Activities (Tavily web search) ---
         interest_str = " ".join(interests) if interests else ""
         act = search_tools.web_search.invoke(
             {"query": f"top attractions and things to do in {destination} {interest_str}".strip()}
@@ -89,7 +75,6 @@ class ItineraryService:
             else []
         )
 
-        # --- Build day-by-day plan ---
         per_day = ACTIVITIES_PER_DAY.get(pace, 3)
         daily = []
         for day_num in range(total_days):
@@ -110,7 +95,6 @@ class ItineraryService:
                 }
             )
 
-        # --- Cost estimate (best-effort, search-derived) ---
         est = 0.0
         currency = "INR"
         if isinstance(flights, dict) and flights.get("cheapest"):

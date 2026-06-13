@@ -10,7 +10,6 @@ from backend.tools import kg_tools, places_tools, rag_tools, search_tools, serpa
 SERP = "https://serpapi.com/search"
 
 
-# ----------------------------------------------------------------- Places via SerpApi google_maps
 @respx.mock
 def test_search_restaurants_via_serpapi_maps(monkeypatch):
     monkeypatch.setattr(settings, "SERPAPI_API_KEY", "k")
@@ -48,7 +47,6 @@ def test_search_restaurants_not_configured(monkeypatch):
     assert out["status"] == "not_configured" and out["restaurants"] == []
 
 
-# ----------------------------------------------------------------- SerpApi flights
 @respx.mock
 def test_search_flights_two_call_flow(monkeypatch):
     monkeypatch.setattr(settings, "SERPAPI_API_KEY", "k")
@@ -101,7 +99,6 @@ def test_resolve_booking_options(monkeypatch):
     assert out["options"][0]["deep_link"] == "https://indigo/book"
 
 
-# ----------------------------------------------------------------- SerpApi hotels / shopping
 @respx.mock
 def test_search_hotels_cheapest_provider(monkeypatch):
     monkeypatch.setattr(settings, "SERPAPI_API_KEY", "k")
@@ -189,7 +186,6 @@ def test_get_place_photos_resolves_data_id(monkeypatch):
     assert out["photos"] == ["http://img1", "http://img2"]
 
 
-# ----------------------------------------------------------------- Tavily / KG / RAG
 def test_web_search(monkeypatch):
     monkeypatch.setattr(settings, "TAVILY_API_KEY", "k")
 

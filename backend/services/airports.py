@@ -9,7 +9,6 @@ from __future__ import annotations
 from math import asin, cos, radians, sin, sqrt
 from typing import Any, Optional
 
-# (iata, city, name, lat, lng)
 AIRPORTS: list[dict[str, Any]] = [
     {"iata": "DEL", "city": "Delhi", "name": "Indira Gandhi Intl", "lat": 28.5562, "lng": 77.1000},
     {"iata": "BOM", "city": "Mumbai", "name": "Chhatrapati Shivaji Intl", "lat": 19.0896, "lng": 72.8656},
@@ -41,7 +40,6 @@ AIRPORTS: list[dict[str, Any]] = [
     {"iata": "BDQ", "city": "Vadodara", "name": "Vadodara", "lat": 22.3362, "lng": 73.2263},
     {"iata": "IXM", "city": "Madurai", "name": "Madurai", "lat": 9.8345, "lng": 78.0934},
     {"iata": "GAY", "city": "Gaya", "name": "Gaya Intl", "lat": 24.7443, "lng": 84.9512},
-    # International hubs
     {"iata": "DXB", "city": "Dubai", "name": "Dubai Intl", "lat": 25.2528, "lng": 55.3644},
     {"iata": "SIN", "city": "Singapore", "name": "Changi", "lat": 1.3592, "lng": 103.9894},
     {"iata": "BKK", "city": "Bangkok", "name": "Suvarnabhumi", "lat": 13.6900, "lng": 100.7501},

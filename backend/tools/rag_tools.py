@@ -1,12 +1,5 @@
-"""
-RAG / retrieval tools (ChromaDB).
-
-- get_restaurant_context: relevant restaurant docs from the knowledge base.
-- search_dishes: semantic dish search across all restaurants' indexed menus
-  (the Gemini-embedded `menu_items` collection populated by the menu pipeline).
-
-Degrades gracefully when Chroma / Gemini embeddings aren't available.
-"""
+"""Retrieval tools: restaurant context and cross-restaurant dish search over the
+indexed menu items. Degrades gracefully when the vector index is unavailable."""
 from __future__ import annotations
 
 from typing import Any, Optional

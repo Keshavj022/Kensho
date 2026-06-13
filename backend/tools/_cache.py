@@ -1,11 +1,5 @@
-"""
-Lightweight in-process TTL cache for expensive external calls (SerpApi travel,
-Places lookups). Menu OCR is cached durably in the menu_cache DB table; this cache
-is for per-process reuse of volatile search results (cache by route+dates, etc.).
-
-Thread-safe (the agent graph runs in a threadpool). Swap the backend later without
-touching call sites: tools use @cached(namespace, ttl) or get_cache().get/set.
-"""
+"""Thread-safe in-process TTL cache for expensive external calls (SerpApi, Places).
+Used via @cached(namespace, ttl) or get_cache().get/set."""
 from __future__ import annotations
 
 import functools

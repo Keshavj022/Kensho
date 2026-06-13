@@ -1,10 +1,5 @@
-"""
-Health endpoints.
-
-`GET /health` always returns 200 with an overall status plus a per-subsystem
-snapshot, so a missing optional service never makes the app look "down".
-Per-subsystem checks live under /health/{db,kg,rag,llm}.
-"""
+"""Health endpoints — /health returns an overall + per-subsystem snapshot (always
+200), with per-subsystem checks under /health/{db,kg,rag,llm,azure}."""
 from __future__ import annotations
 
 from fastapi import APIRouter
@@ -55,17 +50,37 @@ def _check_rag() -> dict:
 
 
 def _check_llm() -> dict:
-    if not settings.gemini_configured:
-        return {"status": "not_configured", "detail": "GEMINI_API_KEY not set"}
+    """Reports the active chat provider (Azure OpenAI → Gemini → Ollama)."""
     try:
-        from ..services.llm import get_llm  # available from milestone 2
+        from ..services.llm import providers_in_order
 
-        get_llm()  # builds a client object; does not call the API
-        return {"status": "ok", "detail": f"Gemini ready ({settings.GEMINI_MODEL})"}
-    except ModuleNotFoundError:
-        return {"status": "configured", "detail": "GEMINI_API_KEY set"}
+        order = providers_in_order()
+        if not order:
+            return {"status": "not_configured", "detail": "Set AZURE_OPENAI_* or GEMINI_API_KEY, or enable Ollama"}
+        provider = order[0]
+        label = {
+            "azure": f"Azure OpenAI ({settings.AZURE_OPENAI_DEPLOYMENT})",
+            "gemini": f"Gemini ({settings.GEMINI_MODEL})",
+            "ollama": f"Ollama ({settings.OLLAMA_MODEL})",
+        }.get(provider, provider)
+        return {"status": "ok", "detail": f"{label} ready", "provider": provider, "fallbacks": order[1:]}
     except Exception as e:
         return {"status": "error", "detail": str(e)}
+
+
+def _check_azure() -> dict:
+    bits = []
+    if settings.azure_openai_configured:
+        bits.append("openai")
+    if settings.azure_vision_configured:
+        bits.append("vision")
+    if settings.azure_language_configured:
+        bits.append("language")
+    if settings.azure_translator_configured:
+        bits.append("translator")
+    if not bits:
+        return {"status": "not_configured", "detail": "No AZURE_* services configured"}
+    return {"status": "ok", "detail": "configured: " + ", ".join(bits)}
 
 
 @router.get("")
@@ -80,6 +95,7 @@ async def health() -> dict:
             "kg": _check_kg()["status"],
             "rag": _check_rag()["status"],
             "llm": _check_llm()["status"],
+            "azure": _check_azure()["status"],
         },
     }
 
@@ -102,3 +118,8 @@ async def health_rag() -> dict:
 @router.get("/llm")
 async def health_llm() -> dict:
     return _check_llm()
+
+
+@router.get("/azure")
+async def health_azure() -> dict:
+    return _check_azure()

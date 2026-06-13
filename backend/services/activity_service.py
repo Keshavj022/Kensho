@@ -1,11 +1,5 @@
-"""
-User activity log — the signal source for the dashboard + recommendation engine.
-
-Every meaningful action (a restaurant search, opening a place, a voice/cart order)
-is appended here. It is intentionally lightweight and degrades to a no-op if the
-write fails — analytics must never break a user-facing request. Reads power the
-dashboard and seed the recommender.
-"""
+"""User activity log feeding the dashboard and the recommender. Writes are
+best-effort and never raise into a request."""
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -46,7 +40,6 @@ def record(
                     payload=payload or {},
                 )
             )
-        # Mirror restaurant interactions into the knowledge graph (best-effort).
         if kind in ("view", "order") and restaurant_id:
             try:
                 from .knowledge_graph_service import knowledge_graph_service
@@ -156,7 +149,6 @@ def signal(user_id: str) -> dict[str, Any]:
         if r["kind"] in ("view", "order") and r.get("restaurant_id"):
             viewed_ids.append(r["restaurant_id"])
     top_cuisines = [c for c, _ in sorted(cuisines.items(), key=lambda kv: kv[1], reverse=True)]
-    # De-dupe queries preserving recency order.
     seen: set[str] = set()
     uniq_queries: list[str] = []
     for q in queries:

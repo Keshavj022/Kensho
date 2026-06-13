@@ -1,10 +1,5 @@
-"""
-Kensho backend (v2) — FastAPI app.
-
-LangChain 1.0 + LangGraph multi-agent platform (restaurants/food, travel, shopping).
-Boots with any subset of API keys configured; missing keys degrade gracefully.
-Routers are added milestone by milestone; this file owns app creation + lifespan.
-"""
+"""FastAPI app — LangChain + LangGraph platform for food, travel and shopping.
+Boots with any subset of keys; missing ones degrade gracefully."""
 from __future__ import annotations
 
 import sys
@@ -26,8 +21,8 @@ from .api.auth_routes import router as auth_router
 from .api.knowledge_graph_routes import router as kg_router
 from .api.location_routes import router as location_router
 from .api.me_routes import router as me_router
+from .api.azure_routes import router as azure_router
 
-# Configure logging
 logger.remove()
 logger.add(
     sys.stderr,
@@ -44,7 +39,6 @@ async def lifespan(app: FastAPI):
     """Initialize durable + optional subsystems; nothing here may crash the app."""
     logger.info(f"Starting {settings.APP_NAME} v{settings.APP_VERSION}...")
 
-    # Relational DB — durable source of truth (always available).
     try:
         from .db.database import init_db
 
@@ -52,7 +46,6 @@ async def lifespan(app: FastAPI):
     except Exception as e:  # pragma: no cover - defensive
         logger.error(f"DB init failed: {e}")
 
-    # Knowledge graph (optional).
     if settings.neo4j_configured:
         try:
             from .services.knowledge_graph_service import knowledge_graph_service
@@ -68,7 +61,6 @@ async def lifespan(app: FastAPI):
 
     yield
 
-    # Shutdown
     logger.info(f"Shutting down {settings.APP_NAME}...")
     try:
         from .services.knowledge_graph_service import knowledge_graph_service
@@ -93,9 +85,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Health is mounted at the root (load balancers expect /health).
 app.include_router(health_router)
-# Unified agent entry (supervisor) + per-domain routes under /api/v1.
 app.include_router(chat_router, prefix=settings.API_PREFIX)
 app.include_router(restaurant_router, prefix=settings.API_PREFIX)
 app.include_router(menu_router, prefix=settings.API_PREFIX)
@@ -106,10 +96,10 @@ app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(kg_router, prefix=settings.API_PREFIX)
 app.include_router(location_router, prefix=settings.API_PREFIX)
 app.include_router(me_router, prefix=settings.API_PREFIX)
+app.include_router(azure_router, prefix=settings.API_PREFIX)
 
 
-@app.get("/")
-async def root() -> dict:
+def _api_info() -> dict:
     return {
         "name": settings.APP_NAME,
         "version": settings.APP_VERSION,
@@ -119,6 +109,47 @@ async def root() -> dict:
         "health": "/health",
         "api": settings.API_PREFIX,
     }
+
+
+@app.get("/api")
+async def api_info() -> dict:
+    """Always-JSON service info (the SPA owns '/')."""
+    return _api_info()
+
+
+import os
+
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+
+_FRONTEND_DIST = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+
+
+def _mount_frontend() -> bool:
+    """Serve the built SPA from FastAPI (single origin, no CORS). Skipped when the
+    build is absent (local dev runs Vite separately)."""
+    if not (settings.SERVE_FRONTEND and os.path.isdir(_FRONTEND_DIST)):
+        return False
+    assets = os.path.join(_FRONTEND_DIST, "assets")
+    if os.path.isdir(assets):
+        app.mount("/assets", StaticFiles(directory=assets), name="assets")
+    index = os.path.join(_FRONTEND_DIST, "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def spa(full_path: str):
+        candidate = os.path.join(_FRONTEND_DIST, full_path)
+        if full_path and os.path.isfile(candidate):
+            return FileResponse(candidate)
+        return FileResponse(index)
+
+    logger.info(f"Serving frontend from {_FRONTEND_DIST}")
+    return True
+
+
+if not _mount_frontend():
+    @app.get("/")
+    async def root() -> dict:
+        return _api_info()
 
 
 if __name__ == "__main__":

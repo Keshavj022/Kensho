@@ -13,7 +13,6 @@ from loguru import logger
 
 
 def _kg():
-    # Lazy import so the Neo4j connection isn't opened until a tool is actually used.
     from ..services.knowledge_graph_service import knowledge_graph_service
 
     return knowledge_graph_service

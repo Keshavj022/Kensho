@@ -21,7 +21,6 @@ def _get_tavily():
     """Build + cache a TavilySearch instance (reads TAVILY_API_KEY from the env)."""
     global _tavily
     if _tavily is None:
-        # TavilySearch reads the key from the environment; mirror our setting there.
         if settings.TAVILY_API_KEY:
             os.environ.setdefault("TAVILY_API_KEY", settings.TAVILY_API_KEY)
         from langchain_tavily import TavilySearch

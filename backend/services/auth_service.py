@@ -1,17 +1,5 @@
-"""
-Authentication service (DB-backed).
-
-Migrated from the legacy JSON store to SQLAlchemy (user_auth + refresh_tokens).
-Public method signatures are preserved so dependencies/routes keep working.
-
-Key fixes vs legacy:
-- register_user atomically creates the auth row AND a durable profile row (sharing
-  user_id) and bridges to Neo4j — fixing the 3-store disconnect.
-- Refresh tokens are stored HASHED (sha256) as a server-side allowlist for
-  revocation, never in plaintext.
-- change_password / list_users are real service methods (no route-level reaching
-  into internals).
-"""
+"""JWT auth backed by SQLAlchemy. register_user creates the auth row + profile row
+and bridges to Neo4j; refresh tokens are stored hashed."""
 from __future__ import annotations
 
 import hashlib
@@ -29,9 +17,6 @@ from ..config import settings
 from ..db.database import SessionLocal, session_scope
 from ..db.models import RefreshToken, UserAuth, UserProfileRow
 
-# pbkdf2_sha256 (pure-Python) avoids the passlib<->bcrypt 72-byte self-test break on
-# Python 3.13 with bcrypt 4.x. Secure, native-dependency-free. bcrypt kept for
-# verifying any pre-existing bcrypt hashes during migration.
 pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 
 
@@ -51,18 +36,15 @@ def _auth_dict(row: UserAuth) -> dict[str, Any]:
 
 
 class AuthService:
-    # ------------------------------------------------------------ passwords
     def hash_password(self, password: str) -> str:
         return pwd_context.hash(password)
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         return pwd_context.verify(plain_password, hashed_password)
 
-    # ------------------------------------------------------------ JWT
     def create_access_token(self, data: dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
         to_encode = data.copy()
         expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES))
-        # jti makes every token unique even when issued in the same second.
         to_encode.update({"exp": expire, "type": "access", "jti": uuid.uuid4().hex})
         return jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
@@ -83,7 +65,6 @@ class AuthService:
             logger.warning(f"JWT verification failed: {e}")
             return None
 
-    # ------------------------------------------------------------ registration (the fix)
     def _derive_username(self, db, email: str) -> str:
         """A stable, unique handle from the email local-part (no user-facing username)."""
         import re
@@ -117,7 +98,6 @@ class AuthService:
                         is_active=True,
                     )
                 )
-                # Durable profile row created together with auth (fixes the disconnect).
                 db.add(
                     UserProfileRow(
                         user_id=new_id,
@@ -131,10 +111,8 @@ class AuthService:
                     )
                 )
         except IntegrityError:
-            # Lost a race on the email/username UNIQUE constraint -> treat as a duplicate (400, not 500).
             raise ValueError("Email already exists")
 
-        # Bridge to Neo4j (best-effort; relational rows are already durable).
         try:
             from .knowledge_graph_service import knowledge_graph_service
 
@@ -145,7 +123,6 @@ class AuthService:
         logger.info(f"Registered {email} ({new_id}) — auth + profile + graph")
         return {"user_id": new_id, "username": username, "email": email, "role": role}
 
-    # ------------------------------------------------------------ auth
     def authenticate_user(self, username: str, password: str) -> Optional[dict[str, Any]]:
         with SessionLocal() as db:
             row = db.execute(
@@ -171,7 +148,6 @@ class AuthService:
         }
         access_token = self.create_access_token(token_data)
         refresh_token = self.create_refresh_token(token_data)
-        # Store the refresh token HASH (allowlist for revocation).
         with session_scope() as db:
             db.add(
                 RefreshToken(
@@ -226,7 +202,6 @@ class AuthService:
             db.query(RefreshToken).filter_by(user_id=user_id).delete(synchronize_session=False)
         return True
 
-    # ------------------------------------------------------------ reads / admin
     def get_user_auth(self, user_id: str) -> Optional[dict[str, Any]]:
         with SessionLocal() as db:
             row = db.get(UserAuth, user_id)

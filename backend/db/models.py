@@ -1,15 +1,4 @@
-"""
-ORM models — durable relational state.
-
-- user_auth        : migrated from the legacy JSON auth store
-- refresh_tokens   : hashed refresh tokens (server-side allowlist for revocation)
-- user_profiles    : profile + dietary + preferences (1:1 with user_auth, shared user_id)
-- menu_cache       : structured menus keyed by place_id (mirrors the Pydantic Menu)
-- carts            : voice/ordering cart keyed by user_id OR session_id
-
-Registration must write user_auth + user_profiles here AND a Neo4j node, all
-sharing the same user_id (fixes the legacy 3-store disconnect).
-"""
+"""ORM models: auth users, refresh tokens, profiles, menu cache, carts, activity."""
 from __future__ import annotations
 
 from datetime import datetime, timezone
@@ -59,7 +48,6 @@ class RefreshToken(Base):
     user_id: Mapped[str] = mapped_column(
         String(64), ForeignKey("user_auth.user_id", ondelete="CASCADE"), index=True
     )
-    # Store a hash of the refresh token, never the token itself.
     token_hash: Mapped[str] = mapped_column(String(128), index=True, nullable=False)
     expires_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=_utcnow, nullable=False)
@@ -83,7 +71,6 @@ class UserProfileRow(Base):
     dietary_type: Mapped[str] = mapped_column(String(40), default="non-vegetarian", nullable=False)
     spice_tolerance: Mapped[str | None] = mapped_column(String(20), nullable=True)
     onboarded: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    # Flexible JSON blobs mirror the Pydantic User model + onboarding profile.
     dietary_restrictions: Mapped[list] = mapped_column(JSON, default=list)  # allergies -> [{type,value}]
     dietary_goals: Mapped[list] = mapped_column(JSON, default=list)
     food_preferences: Mapped[dict] = mapped_column(JSON, default=dict)  # likes/dislikes -> {name:{preference,weight}}
@@ -109,7 +96,6 @@ class Cart(Base):
     __tablename__ = "carts"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    # owner_key holds a user_id (authenticated) or a session_id (anonymous).
     owner_key: Mapped[str] = mapped_column(String(128), index=True, nullable=False)
     restaurant_id: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
     restaurant_name: Mapped[str] = mapped_column(String(255), default="", nullable=False)

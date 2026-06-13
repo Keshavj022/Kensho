@@ -8,7 +8,6 @@ import { money, cn } from "../lib/cn"
 import type { Flight, FlightSearch, HotelSearch, TripPlan } from "../lib/types"
 import { useAuth } from "../state/auth"
 
-/** Resolve the user's home airport (nearest to their saved location) once. */
 function useHomeAirport(): string | null {
   const { profile } = useAuth()
   const [iata, setIata] = useState<string | null>(null)
@@ -36,7 +35,7 @@ export function Travel() {
     <section className="mx-auto max-w-7xl px-5 pb-24 pt-28 sm:px-8 sm:pt-36">
       <Reveal>
         <span className="label text-pine">02 · Go</span>
-        <h1 className="mt-3 font-display text-[clamp(2.6rem,6vw,4.6rem)] font-medium leading-[0.95]">
+        <h1 className="mt-3 font-display text-[clamp(2.1rem,6vw,4.6rem)] font-medium leading-[0.98]">
           Search the world, <span className="italic text-pine">skip the booking.</span>
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink-soft text-pretty">
@@ -66,7 +65,6 @@ export function Travel() {
   )
 }
 
-/* ----------------------------------------------------------------- flights */
 function Flights() {
   const [f, setF] = useState({ origin: "CCU", destination: "DEL", departure_date: future(14), return_date: "", adults: 1 })
   const [res, setRes] = useState<FlightSearch | null>(null)
@@ -137,7 +135,6 @@ function FlightCard({ f, best, cur }: { f: Flight; best?: boolean; cur?: string 
   )
 }
 
-/* ----------------------------------------------------------------- hotels */
 function Hotels() {
   const [f, setF] = useState({ location: "Goa", check_in: future(14), check_out: future(17), guests: 2 })
   const [res, setRes] = useState<HotelSearch | null>(null)
@@ -192,7 +189,6 @@ function Hotels() {
   )
 }
 
-/* ----------------------------------------------------------------- planner */
 function Planner() {
   const [f, setF] = useState({ destination: "Goa", origin: "CCU", start_date: future(20), end_date: future(23), travelers: 2, pace: "moderate", interests: ["food", "beaches"] })
   const [plan, setPlan] = useState<TripPlan | null>(null)

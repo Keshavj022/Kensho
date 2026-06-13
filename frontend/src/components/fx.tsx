@@ -2,7 +2,6 @@ import { motion, useInView, type Variants } from "framer-motion"
 import { useRef, type ReactNode } from "react"
 import { cn } from "../lib/cn"
 
-/** Fixed film-grain overlay for warmth + texture. */
 export function Grain() {
   return <div className="grain" aria-hidden />
 }
@@ -14,7 +13,6 @@ const revealVariants: Variants = {
   show: { opacity: 1, y: 0, filter: "blur(0px)" },
 }
 
-/** Scroll-triggered staggered reveal. */
 export function Reveal({
   children,
   delay = 0,
@@ -48,7 +46,6 @@ export function Reveal({
   )
 }
 
-/** Container that staggers its <Stagger.Item> children on view. */
 export function Stagger({ children, className, gap = 0.08 }: { children: ReactNode; className?: string; gap?: number }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: "-10% 0px" })
@@ -72,7 +69,6 @@ export function StaggerItem({ children, className }: { children: ReactNode; clas
   )
 }
 
-/** Infinite horizontal marquee. */
 export function Marquee({ items, className, reverse }: { items: ReactNode[]; className?: string; reverse?: boolean }) {
   const row = [...items, ...items]
   return (
@@ -92,7 +88,6 @@ export function Marquee({ items, className, reverse }: { items: ReactNode[]; cla
   )
 }
 
-/** Magnetic hover wrapper — element drifts toward the cursor. */
 export function Magnetic({ children, className, strength = 0.4 }: { children: ReactNode; className?: string; strength?: number }) {
   const ref = useRef<HTMLDivElement>(null)
   return (

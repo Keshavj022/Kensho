@@ -1,17 +1,6 @@
-"""
-Recommendation engine — restaurants + dishes personalised to a diner.
-
-Signal sources, blended and all optional:
-  • the saved taste profile (diet, allergies, liked foods, favourite cuisines),
-  • the behavioural log (recent searches, viewed places, orders) via activity_service,
-  • the Neo4j knowledge graph (hybrid collaborative/content recs) when reachable,
-  • the Chroma `menu_items` index for cross-restaurant dish search.
-
-Restaurant recs are grounded in live SerpApi/Maps results so they're always real
-places near the user. Dish recs come from menus Kensho has already extracted.
-Everything degrades gracefully: with no signal we fall back to highly-rated places
-near the user; with no menus indexed, dish recs return empty with a clear status.
-"""
+"""Restaurant + dish recommendations, blending the taste profile, the activity log,
+the knowledge graph, and the dish index. Restaurant recs are grounded in live Maps
+results; everything degrades to a sensible fallback."""
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -19,6 +8,7 @@ from typing import Any, Optional
 from loguru import logger
 
 from . import activity_service
+from .diet import diet_allows
 from .user_service import user_service
 
 
@@ -88,7 +78,6 @@ def recommend_restaurants(
         return {"status": "no_location", "restaurants": [], "message": "Set your location to get recommendations."}
 
     intents = _intents(profile, sig)
-    # Always include a generic "great places near you" pass as a backstop.
     intents.append((None, "Highly rated near you"))  # type: ignore[arg-type]
 
     out: list[dict[str, Any]] = []
@@ -146,6 +135,7 @@ def recommend_dishes(user_id: str, limit: int = 12) -> dict[str, Any]:
     if not queries:
         queries = ["popular signature dish"]
 
+    dt = profile.get("dietary_type")
     allergies = {a.lower() for a in (profile.get("allergies") or [])}
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -153,31 +143,30 @@ def recommend_dishes(user_id: str, limit: int = 12) -> dict[str, Any]:
         if len(out) >= limit:
             break
         try:
-            hits = search_menu_items(q, max_results=6)
+            hits = search_menu_items(q, max_results=8)
         except Exception:
             hits = []
         for h in hits:
             hid = h.get("id")
             if not hid or hid in seen:
                 continue
-            name = (h.get("name") or "").lower()
-            if allergies and any(a and a in name for a in allergies):
+            name = (h.get("name") or "")
+            if not diet_allows(dt, name, h.get("dietary_flags")):
+                continue
+            if allergies and any(a and a in name.lower() for a in allergies):
                 continue
             seen.add(hid)
             out.append({**h, "reason": f"Matches “{q}”"})
 
     out.sort(key=lambda d: (d.get("score") or 0), reverse=True)
     if not out:
-        return featured_dishes(limit)
+        return featured_dishes(limit, dt)
     return {"status": "ok", "count": len(out[:limit]), "dishes": out[:limit]}
 
 
-def featured_dishes(limit: int = 12) -> dict[str, Any]:
-    """Highly-rated / signature dishes pulled from recently extracted menus.
-
-    Used as the default 'Find a dish' view and as a fallback for personalised recs.
-    Prefers priced items and spreads picks across different restaurants.
-    """
+def featured_dishes(limit: int = 12, dietary_type: Optional[str] = None) -> dict[str, Any]:
+    """Highly-rated / signature dishes pulled from recently extracted menus, filtered
+    to the diner's diet. Spreads picks across different restaurants."""
     from ..db.database import SessionLocal
     from ..db.models import MenuCache
 
@@ -195,13 +184,14 @@ def featured_dishes(limit: int = 12) -> dict[str, Any]:
         menus = []
 
     picks: list[dict[str, Any]] = []
-    # Round-robin one priced item per restaurant first, for variety.
     pools: list[list[dict[str, Any]]] = []
     for place_id, rname, menu_json in menus:
         items: list[dict[str, Any]] = []
         for section in (menu_json or {}).get("sections", []):
             for it in section.get("items", []):
                 if not it.get("name"):
+                    continue
+                if not diet_allows(dietary_type, it.get("name"), it.get("dietary_flags")):
                     continue
                 items.append(
                     {

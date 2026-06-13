@@ -32,7 +32,7 @@ export function Restaurants() {
     <section className="mx-auto max-w-7xl px-5 pb-24 pt-28 sm:px-8 sm:pt-36">
       <Reveal>
         <span className="label text-saffron">01 · Eat</span>
-        <h1 className="mt-3 font-display text-[clamp(2.6rem,6vw,4.6rem)] font-medium leading-[0.95]">
+        <h1 className="mt-3 font-display text-[clamp(2.1rem,6vw,4.6rem)] font-medium leading-[0.98]">
           Find a table, <span className="italic text-saffron">read the menu.</span>
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink-soft text-pretty">
@@ -84,13 +84,11 @@ function PlaceSearch() {
   const [locating, setLocating] = useState(false)
   const autoRan = useRef(false)
 
-  // Fire-and-forget: warm menus for the visible places so 'Find a dish' fills in.
   const prefetch = useCallback((rs: Restaurant[]) => {
     const items = rs.slice(0, 8).map((r) => ({ place_id: r.id, name: r.name }))
     if (items.length) api.prefetchMenus(items).catch(() => {})
   }, [])
 
-  // Auto-load highly-rated places near the diner on first open — no click needed.
   useEffect(() => {
     if (autoRan.current) return
     const hasCoords = profile?.lat != null && profile?.lng != null
@@ -293,6 +291,8 @@ function RestaurantCard({ r, i }: { r: Restaurant; i: number }) {
 }
 
 function DishSearch() {
+  const { profile } = useAuth()
+  const diet = profile?.dietary_type || undefined
   const [query, setQuery] = useState("")
   const [dishes, setDishes] = useState<Dish[] | null>(null)
   const [featured, setFeatured] = useState(true)
@@ -301,13 +301,12 @@ function DishSearch() {
   const [loading, setLoading] = useState(false)
   const autoRan = useRef(false)
 
-  // Default view: highly-rated / signature dishes from menus Kensho has read.
   useEffect(() => {
     if (autoRan.current) return
     autoRan.current = true
     setLoading(true)
     api
-      .featuredDishes(18)
+      .featuredDishes(18, diet)
       .then((r) => {
         setFeatured(true)
         setDishes(r.dishes || [])
@@ -315,7 +314,7 @@ function DishSearch() {
       })
       .catch(() => setDishes([]))
       .finally(() => setLoading(false))
-  }, [])
+  }, [diet])
 
   async function run(e?: FormEvent) {
     e?.preventDefault()
@@ -324,7 +323,7 @@ function DishSearch() {
     setFeatured(false)
     setNote(undefined)
     try {
-      const r = await api.searchDishes(query, 18)
+      const r = await api.searchDishes(query, 18, undefined, diet)
       setDishes(r.dishes || [])
       setIndexed(r.indexed_items)
       api.track({ kind: "search", query, domain: "restaurant", payload: { mode: "dish", count: r.dishes?.length ?? 0 } })

@@ -1,10 +1,5 @@
-"""
-Shared graph state.
-
-`create_supervisor` / `create_agent` manage their own message state, so this
-TypedDict documents the extra context we thread through (user_id, thread_id) and
-is available if we later hand-roll a StateGraph router.
-"""
+"""Shared graph state — the extra context (user_id, thread_id) threaded alongside
+the message list."""
 from __future__ import annotations
 
 from typing import Annotated, Optional

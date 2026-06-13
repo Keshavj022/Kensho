@@ -33,8 +33,6 @@ export function VoiceProvider({ children }: { children: ReactNode }) {
   )
 }
 
-/** Full-screen, conversational voice experience: speak → transcribe → route through
- *  the supervisor → speak the reply back, with a living orb that reacts to state. */
 function VoiceOverlay({ onClose }: { onClose: () => void }) {
   const { user } = useAuth()
   const [status, setStatus] = useState<Status>("idle")

@@ -1,10 +1,5 @@
-"""
-Restaurant search & details via SerpApi's google_maps engine.
-
-Maps/places run entirely on SerpApi (no Google Places API key needed). Results are
-normalized to a consistent restaurant shape. Degrades gracefully when SERPAPI_API_KEY
-is unset.
-"""
+"""Restaurant search & details via SerpApi's google_maps engine, normalized to a
+consistent shape."""
 from __future__ import annotations
 
 import re
@@ -119,7 +114,6 @@ def _search_restaurants(
         raw = [data["place_results"]]
     restaurants = [_normalize_maps(r) for r in (raw or [])]
 
-    # Client-side filters (google_maps search doesn't filter these server-side).
     if min_rating is not None:
         restaurants = [r for r in restaurants if (r.get("rating") or 0) >= float(min_rating)]
     if price_level is not None:

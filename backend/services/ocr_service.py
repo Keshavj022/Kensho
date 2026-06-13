@@ -1,16 +1,6 @@
-"""
-Gemini-vision OCR service — the only OCR engine (no separate OCR library).
-
-Two steps the menu pipeline needs:
-  1. classify_menu_images: flag which user-posted photos are actually MENUS.
-  2. extract_menu: read the menu photo(s) into a structured Menu.
-
-Uses a FLAT extraction schema (a single items list, each item carrying its
-section) because Gemini's structured output flattens deeply-nested schemas. Items
-are then grouped into Menu.sections. Flash by default; escalates to Pro for hard
-or low-yield photos. Multilingual (English + Hindi/Bengali/regional scripts).
-Fully graceful: returns [] / None when GEMINI_API_KEY is unset or a call fails.
-"""
+"""Vision OCR for the menu pipeline: classify which photos are menus, then read
+them into a structured Menu. Multilingual; escalates to a stronger model on hard
+photos; returns []/None when no vision LLM is available."""
 from __future__ import annotations
 
 import base64
@@ -39,7 +29,6 @@ class _ExtractedItem(BaseModel):
     confidence: float = 0.8
 
 
-# ----------------------------------------------------------------- helpers
 def _download_image(url: str, timeout: float = 15.0) -> Optional[tuple[str, str]]:
     """Download an image -> (base64, mime_type), or None on failure."""
     try:
@@ -55,7 +44,6 @@ def _download_image(url: str, timeout: float = 15.0) -> Optional[tuple[str, str]
 
 
 def _image_block(b64: str, mime: str) -> dict[str, Any]:
-    # Universal/legacy content block (max compatibility across providers/versions).
     return {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}}
 
 
@@ -77,14 +65,34 @@ def _parse_json(text: str) -> Optional[Any]:
     return None
 
 
-# ----------------------------------------------------------------- classify
+def _classify_with_azure_vision(photo_urls: list[str], max_images: int) -> Optional[list[str]]:
+    """Deterministic menu classification via Azure Vision OCR density. Returns the
+    menu subset, or None when Azure Vision is unavailable (so the caller falls back
+    to the multimodal LLM classifier)."""
+    from .azure_vision_service import azure_vision_service
+
+    if not azure_vision_service.available:
+        return None
+    kept = [u for u in photo_urls[:max_images] if azure_vision_service.looks_like_menu(u)]
+    logger.info(f"Menu classification (Azure Vision): {len(kept)}/{min(len(photo_urls), max_images)} are menus")
+    return kept
+
+
 def classify_menu_images(photo_urls: list[str], max_images: int = _MAX_CLASSIFY_IMAGES) -> list[str]:
     """Return the subset of photo_urls that are photos of a printed/written MENU.
 
-    User-posted photos aren't labeled; Gemini decides which show a menu (item names
-    + prices) vs dishes/interiors/people. Returns [] if Gemini isn't configured.
+    User-posted photos aren't labeled. Azure Vision (OCR density) classifies them
+    when configured; otherwise a multimodal LLM (Azure OpenAI / Gemini) decides.
+    Returns [] when no vision/LLM provider is available.
     """
-    if not is_llm_available() or not photo_urls:
+    if not photo_urls:
+        return []
+
+    azure_result = _classify_with_azure_vision(photo_urls, max_images)
+    if azure_result:
+        return azure_result
+
+    if not is_llm_available():
         return []
     from langchain_core.messages import HumanMessage
 
@@ -117,7 +125,6 @@ def classify_menu_images(photo_urls: list[str], max_images: int = _MAX_CLASSIFY_
         return []
 
 
-# ----------------------------------------------------------------- extract
 _EXTRACT_PROMPT = (
     "You are an expert menu transcriber. Read EVERY food and drink item from the menu "
     "image(s) and return ONLY JSON (no prose, no code fences) matching exactly:\n"

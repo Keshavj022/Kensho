@@ -51,6 +51,23 @@ def test_provider_order_and_default(monkeypatch):
 def test_embeddings_require_gemini(monkeypatch):
     monkeypatch.setattr(llm.settings, "GEMINI_API_KEY", None)
     monkeypatch.setattr(llm, "ollama_available", lambda: True)
-    # Ollama doesn't provide the Gemini embedding space.
     assert llm.embeddings_available() is False
     assert llm.is_llm_available() is True  # chat still available via Ollama
+
+
+def test_azure_is_preferred_when_configured(monkeypatch):
+    monkeypatch.setattr(llm.settings, "AZURE_OPENAI_API_KEY", "k")
+    monkeypatch.setattr(llm.settings, "AZURE_OPENAI_ENDPOINT", "https://x.openai.azure.com/")
+    monkeypatch.setattr(llm.settings, "GEMINI_API_KEY", "g")
+    monkeypatch.setattr(llm, "ollama_available", lambda: True)
+    assert llm.providers_in_order() == ["azure", "gemini", "ollama"]
+    assert llm.default_provider() == "azure"
+    assert llm.embeddings_available() is True
+
+
+def test_azure_embeddings_can_be_forced_off(monkeypatch):
+    monkeypatch.setattr(llm.settings, "AZURE_OPENAI_API_KEY", "k")
+    monkeypatch.setattr(llm.settings, "AZURE_OPENAI_ENDPOINT", "https://x.openai.azure.com/")
+    monkeypatch.setattr(llm.settings, "AZURE_OPENAI_EMBEDDING_DEPLOYMENT", "")
+    monkeypatch.setattr(llm.settings, "GEMINI_API_KEY", "g")
+    assert llm.settings.azure_embeddings_configured is False

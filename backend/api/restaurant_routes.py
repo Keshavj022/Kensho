@@ -31,6 +31,7 @@ class DishSearchBody(BaseModel):
     query: str
     max_results: int = 10
     restaurant_id: Optional[str] = None
+    dietary: Optional[str] = None
 
 
 class PrefetchItem(BaseModel):
@@ -66,15 +67,27 @@ async def featured_restaurants(
 
 @router.post("/dishes/search")
 async def search_dishes(body: DishSearchBody) -> dict:
-    return await run_in_threadpool(rag_tools.search_dishes.invoke, body.model_dump())
+    res = await run_in_threadpool(
+        rag_tools.search_dishes.invoke,
+        {"query": body.query, "max_results": body.max_results, "restaurant_id": body.restaurant_id},
+    )
+    if body.dietary and isinstance(res, dict) and res.get("dishes"):
+        from ..services.diet import diet_allows
+
+        res["dishes"] = [d for d in res["dishes"] if diet_allows(body.dietary, d.get("name"), d.get("dietary_flags"))]
+        res["count"] = len(res["dishes"])
+    return res
 
 
 @router.get("/dishes/featured")
-async def featured_dishes(limit: int = Query(12, ge=1, le=24)) -> dict:
+async def featured_dishes(
+    limit: int = Query(12, ge=1, le=24),
+    dietary: Optional[str] = None,
+) -> dict:
     """Highly-rated / signature dishes from menus Kensho has already read."""
     from ..services import recommend_service
 
-    return await run_in_threadpool(recommend_service.featured_dishes, limit)
+    return await run_in_threadpool(recommend_service.featured_dishes, limit, dietary)
 
 
 @router.post("/menu/prefetch")

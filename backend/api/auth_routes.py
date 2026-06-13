@@ -1,10 +1,4 @@
-"""
-Auth routes (DB-backed).
-
-register now creates the auth row + a durable profile row + a Neo4j node atomically
-(via auth_service.register_user) — fixing the legacy 3-store disconnect. change-password
-and list-users go through real service methods (no reaching into internals).
-"""
+"""Auth routes — register/login/refresh/logout/me, profile, and admin user ops."""
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -164,7 +158,6 @@ async def activate_user(user_id: str, current_user: dict = Depends(require_role(
     return {"message": "User activated successfully"}
 
 
-# ── Demo account ──────────────────────────────────────────────────────────────
 
 _DEMO_EMAIL = "demo@kensho.app"
 

@@ -15,7 +15,6 @@ function Splash() {
   )
 }
 
-/** Gates a route: must be signed in AND onboarded. */
 export function RequireAuth({ children }: { children: ReactNode }) {
   const { user, onboarded, ready } = useAuth()
   const loc = useLocation()

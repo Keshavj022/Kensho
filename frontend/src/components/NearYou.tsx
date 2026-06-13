@@ -15,7 +15,6 @@ function dietForSearch(t?: string): string | undefined {
   return undefined
 }
 
-/** Home-page rail of restaurants near the signed-in diner's saved location. */
 export function NearYou() {
   const { user, onboarded, profile } = useAuth()
   const [items, setItems] = useState<Restaurant[] | null>(null)
@@ -39,7 +38,6 @@ export function NearYou() {
       .then((r) => {
         const list = r.status === "ok" ? r.restaurants : []
         setItems(list)
-        // Warm menus in the background so dish search + featured dishes fill in.
         const items = list.slice(0, 6).map((x) => ({ place_id: x.id, name: x.name }))
         if (items.length) api.prefetchMenus(items).catch(() => {})
       })

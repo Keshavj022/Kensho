@@ -54,8 +54,6 @@ export function Onboarding({ mode, onDone }: { mode: Mode; onDone: () => void })
   const [err, setErr] = useState<string>()
   const [done, setDone] = useState(false)
 
-  // Seed every field from the existing profile in "complete" mode so re-onboarding
-  // edits rather than wipes saved data (saveProfile PUTs the whole payload).
   const [d, setD] = useState<Data>({
     email: "",
     password: "",
@@ -101,8 +99,6 @@ export function Onboarding({ mode, onDone }: { mode: Mode; onDone: () => void })
   async function next() {
     if (!valid(step)) return
     if (step === "account") {
-      // Verify the email isn't already registered before advancing. The inputs are
-      // disabled while `checking`, so the value can't change mid-request (no race).
       setChecking(true)
       setEmailErr(undefined)
       try {
@@ -111,9 +107,7 @@ export function Onboarding({ mode, onDone }: { mode: Mode; onDone: () => void })
           setEmailErr("That email is already registered — sign in instead.")
           return
         }
-      } catch {
-        /* network hiccup — let them proceed; register() re-checks at submit */
-      } finally {
+      } catch {} finally {
         setChecking(false)
       }
     }
@@ -199,7 +193,6 @@ export function Onboarding({ mode, onDone }: { mode: Mode; onDone: () => void })
                 value={d.dietary_type}
                 onPick={(k) => {
                   const allowed = foodsForDiet(k)
-                  // Drop any liked common-foods that the new diet excludes; keep custom ones.
                   set({ dietary_type: k, likes: d.likes.filter((l) => allowed.includes(l) || !ALL_FOOD_NAMES.includes(l)) })
                 }}
               />
@@ -253,7 +246,6 @@ export function Onboarding({ mode, onDone }: { mode: Mode; onDone: () => void })
   )
 }
 
-/* ----------------------------------------------------------------- steps */
 function AccountStep({ d, set, emailErr, clearErr, checking }: { d: Data; set: (p: Partial<Data>) => void; emailErr?: string; clearErr: () => void; checking?: boolean }) {
   return (
     <div className="space-y-4">
@@ -432,8 +424,6 @@ function TastesStep({ d, set }: { d: Data; set: (p: Partial<Data>) => void }) {
   const toggleCui = (c: string) => set({ cuisines: d.cuisines.includes(c) ? d.cuisines.filter((x) => x !== c) : [...d.cuisines, c] })
   const foods = foodsForDiet(d.dietary_type) // diet-aware list
   const dietLabel = DIET_TYPES.find((t) => t.key === d.dietary_type)?.label
-  // Anything liked but not in the current diet's list (custom-added OR diet-excluded)
-  // renders as a removable pill, so a like is never invisible.
   const customLikes = d.likes.filter((l) => !foods.includes(l))
   return (
     <div className="space-y-6">
@@ -584,7 +574,6 @@ function Success({ name }: { name?: string }) {
   )
 }
 
-/* ----------------------------------------------------------------- bits */
 function Labelled({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="block">

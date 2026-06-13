@@ -33,15 +33,12 @@ function loadCart(): CartState {
   try {
     const raw = JSON.parse(localStorage.getItem(KEY) || "null")
     if (raw && typeof raw === "object" && Array.isArray(raw.lines)) {
-      // Drop any malformed lines so the cart never renders garbage / crashes.
       const lines: CartLine[] = (raw.lines as Partial<CartLine>[])
         .filter((l) => l && typeof l.item_id === "string" && typeof l.name === "string")
         .map((l) => ({ item_id: l.item_id as string, name: l.name as string, price: l.price ?? null, qty: Math.max(1, Number(l.qty) || 1) }))
       return { ...(raw as CartState), lines }
     }
-  } catch {
-    /* fall through */
-  }
+  } catch {}
   return { lines: [] }
 }
 
@@ -67,15 +64,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return { ...s, lines }
     })
 
-  const setQty: CartCtx["setQty"] = (item_id, qty) =>
-    setState((s) => ({
-      ...s,
-      lines: qty <= 0 ? s.lines.filter((l) => l.item_id !== item_id) : s.lines.map((l) => (l.item_id === item_id ? { ...l, qty } : l)),
-    }))
+  // An empty cart drops the restaurant context too, so the drawer reads "Empty".
+  const withLines = (s: CartState, lines: CartLine[]): CartState => (lines.length ? { ...s, lines } : { lines: [] })
 
-  const remove: CartCtx["remove"] = (item_id) => setState((s) => ({ ...s, lines: s.lines.filter((l) => l.item_id !== item_id) }))
-  const clear = () => setState((s) => ({ ...s, lines: [] }))
-  const replaceLines: CartCtx["replaceLines"] = (lines) => setState((s) => ({ ...s, lines }))
+  const setQty: CartCtx["setQty"] = (item_id, qty) =>
+    setState((s) =>
+      withLines(s, qty <= 0 ? s.lines.filter((l) => l.item_id !== item_id) : s.lines.map((l) => (l.item_id === item_id ? { ...l, qty } : l))),
+    )
+
+  const remove: CartCtx["remove"] = (item_id) => setState((s) => withLines(s, s.lines.filter((l) => l.item_id !== item_id)))
+  const clear = () => setState({ lines: [] })
+  const replaceLines: CartCtx["replaceLines"] = (lines) => setState((s) => withLines(s, lines))
 
   const count = useMemo(() => state.lines.reduce((a, l) => a + l.qty, 0), [state.lines])
   const total = useMemo(() => state.lines.reduce((a, l) => a + (l.price || 0) * l.qty, 0), [state.lines])

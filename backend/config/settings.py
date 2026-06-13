@@ -1,10 +1,5 @@
-"""
-Configuration settings for Kensho (v2 rewrite).
-
-All secrets and volatile model IDs are environment-driven (never hardcoded).
-Every external integration is optional: a missing key disables only that tool,
-the app still boots and serves every other route (graceful degradation).
-"""
+"""Settings from environment / .env. Every external integration is optional — a
+missing key disables that tool but the app still boots."""
 from __future__ import annotations
 
 import os
@@ -20,14 +15,12 @@ class Settings(BaseSettings):
     """Application settings, loaded from environment / .env."""
 
     model_config = SettingsConfigDict(
-        # Look for a .env at the repo root first, then backend/.env.
         env_file=(os.path.join(_REPO_ROOT, ".env"), os.path.join(_BACKEND_DIR, ".env")),
         env_file_encoding="utf-8",
         case_sensitive=True,
         extra="ignore",  # tolerate stray legacy env vars without crashing
     )
 
-    # ------------------------------------------------------------------ App
     APP_NAME: str = "Kensho"
     APP_VERSION: str = "2.0.0"
     DEBUG: bool = True
@@ -36,97 +29,96 @@ class Settings(BaseSettings):
     API_PORT: int = 8000
     API_PREFIX: str = "/api/v1"
 
-    # CORS is a plain comma-separated string in .env; use .cors_origins for the list.
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
-    # ------------------------------------------------------------------ LLM (Gemini)
     GEMINI_API_KEY: Optional[str] = None
-    # Default to a current GA Flash model; override via .env (e.g. gemini-3.5-flash).
     GEMINI_MODEL: str = "gemini-2.5-flash"
-    # Stronger model used to escalate hard / low-quality menu OCR.
     GEMINI_PRO_MODEL: str = "gemini-2.5-pro"
-    # Gemini embedding model used for all Chroma collections (one vector space).
     GEMINI_EMBEDDING_MODEL: str = "models/gemini-embedding-001"
     GEMINI_TEMPERATURE: float = 0.2
 
-    # ------------------------------------------------------------------ LLM fallback (Ollama, open-source)
-    # When enabled, a local Ollama model is used if a Gemini call fails (or if Gemini
-    # is unconfigured). The chat model MUST support tool-calling for the agents.
     OLLAMA_ENABLED: bool = False
     OLLAMA_BASE_URL: str = "http://localhost:11434"
     OLLAMA_MODEL: str = "llama3.1"             # tool-capable model for agents/chat
     OLLAMA_VISION_MODEL: str = "llama3.2-vision"  # used for menu OCR fallback
     OLLAMA_TEMPERATURE: float = 0.2
 
-    # ------------------------------------------------------------------ Tool backbone
-    # Google Places API (New). GOOGLE_MAPS_API_KEY is canonical; legacy fallback below.
+    AZURE_OPENAI_ENDPOINT: Optional[str] = None      # https://<resource>.openai.azure.com/
+    AZURE_OPENAI_API_KEY: Optional[str] = None
+    AZURE_OPENAI_DEPLOYMENT: str = "gpt-4o-mini"      # tool-capable, multimodal (chat + menu OCR)
+    AZURE_OPENAI_PRO_DEPLOYMENT: str = "gpt-4o"       # escalation for hard menu OCR
+    AZURE_OPENAI_API_VERSION: str = "2024-10-21"      # GA version supporting tools + vision
+    AZURE_OPENAI_TEMPERATURE: float = 0.2
+    AZURE_OPENAI_EMBEDDING_DEPLOYMENT: Optional[str] = "text-embedding-3-small"
+
+    AZURE_VISION_ENDPOINT: Optional[str] = None
+    AZURE_VISION_KEY: Optional[str] = None
+
+    AZURE_LANGUAGE_ENDPOINT: Optional[str] = None
+    AZURE_LANGUAGE_KEY: Optional[str] = None
+
+    AZURE_TRANSLATOR_ENDPOINT: str = "https://api.cognitive.microsofttranslator.com"
+    AZURE_TRANSLATOR_KEY: Optional[str] = None
+    AZURE_TRANSLATOR_REGION: Optional[str] = None
+
     GOOGLE_MAPS_API_KEY: Optional[str] = None
     SERPAPI_API_KEY: Optional[str] = None
     TAVILY_API_KEY: Optional[str] = None
-    # SerpApi localization — without these, results default to the US locale (USD).
     SERPAPI_GL: str = "in"  # country (in = India)
     SERPAPI_HL: str = "en"  # language
     SERPAPI_LOCATION: str = "India"
     DEFAULT_CURRENCY: str = "INR"
 
-    # ------------------------------------------------------------------ Voice
     ELEVENLABS_API_KEY: Optional[str] = None
     ELEVENLABS_VOICE_ID: str = "JBFqnCBsd6RMkjVDRZzb"  # default ElevenLabs voice
     ELEVENLABS_TTS_MODEL: str = "eleven_multilingual_v2"
     ELEVENLABS_STT_MODEL: str = "scribe_v2"
     ELEVENLABS_OUTPUT_FORMAT: str = "mp3_44100_128"
-    # Offline STT fallback (faster-whisper). Disabled unless the package is installed.
     WHISPER_MODEL: str = "small"
     WHISPER_DEVICE: str = "cpu"
     WHISPER_COMPUTE_TYPE: str = "int8"
 
-    # ------------------------------------------------------------------ Knowledge graph (Neo4j)
     NEO4J_URI: Optional[str] = "bolt://localhost:7687"
     NEO4J_USERNAME: Optional[str] = "neo4j"
     NEO4J_PASSWORD: Optional[str] = None
 
-    # ------------------------------------------------------------------ Vector store (Chroma)
     CHROMA_PATH: str = os.path.join(_REPO_ROOT, "chroma_data")
+    EMBEDDING_DIM: int = 1536
 
-    # ------------------------------------------------------------------ Relational DB + checkpointer
     DATABASE_URL: str = "sqlite:///./kensho.db"
     CHECKPOINTER_DB_PATH: str = os.path.join(_REPO_ROOT, "kensho_checkpoints.db")
+    SERVE_FRONTEND: bool = True
 
-    # ------------------------------------------------------------------ Auth / JWT
     JWT_SECRET_KEY: str = "dev-insecure-change-me"  # MUST be overridden in production
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
-    # ------------------------------------------------------------------ Demo account
     DEMO_PASSWORD: str = "kensho-demo-guest-2024"
 
-    # ------------------------------------------------------------------ Caching / pipeline tuning
     MENU_CACHE_TTL_DAYS: int = 30
     SERPAPI_CACHE_TTL_HOURS: int = 6
     PLACES_CACHE_TTL_HOURS: int = 24
 
-    # ------------------------------------------------------------------ Legacy-compat fields
-    # Consumed by services not yet migrated (rag_service / kg_service / auth / user).
     DATA_DIR: str = os.path.join(_BACKEND_DIR, "data")
     USER_DATA_PATH: str = os.path.join(_BACKEND_DIR, "data", "user_data.json")
     RESTAURANT_DATA_PATH: str = os.path.join(_BACKEND_DIR, "data", "restaurant_data.json")
     CHROMADB_PATH: Optional[str] = None  # filled from CHROMA_PATH in __init__
     EMBEDDING_MODEL: str = "models/gemini-embedding-001"
     GOOGLE_PLACES_API_KEY: Optional[str] = None  # legacy name; falls back to GOOGLE_MAPS_API_KEY
-    # Azure OpenAI deployment name referenced by the un-migrated rag_service (unused now).
     AZURE_OPENAI_DEPLOYMENT_NAME: Optional[str] = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Keep the legacy CHROMADB_PATH alias pointed at the canonical path.
+        if not os.path.isabs(self.CHROMA_PATH):
+            self.CHROMA_PATH = os.path.abspath(os.path.join(_REPO_ROOT, self.CHROMA_PATH))
         if not self.CHROMADB_PATH:
             self.CHROMADB_PATH = self.CHROMA_PATH
-        # Allow GOOGLE_PLACES_API_KEY to satisfy the Places key if MAPS not set.
+        elif not os.path.isabs(self.CHROMADB_PATH):
+            self.CHROMADB_PATH = os.path.abspath(os.path.join(_REPO_ROOT, self.CHROMADB_PATH))
         if not self.GOOGLE_MAPS_API_KEY and self.GOOGLE_PLACES_API_KEY:
             self.GOOGLE_MAPS_API_KEY = self.GOOGLE_PLACES_API_KEY
 
-    # ------------------------------------------------------------------ Derived helpers
     @property
     def cors_origins(self) -> list[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
@@ -135,7 +127,18 @@ class Settings(BaseSettings):
     def places_api_key(self) -> Optional[str]:
         return self.GOOGLE_MAPS_API_KEY or self.GOOGLE_PLACES_API_KEY
 
-    # Per-integration configuration flags (used by tools/health for graceful degradation).
+    @property
+    def is_postgres(self) -> bool:
+        return self.DATABASE_URL.startswith("postgres")
+
+    @property
+    def pg_conninfo(self) -> str:
+        """Raw libpq URL (strip any SQLAlchemy +driver) for psycopg / LangGraph saver."""
+        url = self.DATABASE_URL
+        return url.replace("postgresql+psycopg://", "postgresql://").replace(
+            "postgresql+psycopg2://", "postgresql://"
+        )
+
     @property
     def gemini_configured(self) -> bool:
         return bool(self.GEMINI_API_KEY)
@@ -160,6 +163,25 @@ class Settings(BaseSettings):
     def neo4j_configured(self) -> bool:
         return bool(self.NEO4J_PASSWORD)
 
+    @property
+    def azure_openai_configured(self) -> bool:
+        return bool(self.AZURE_OPENAI_API_KEY and self.AZURE_OPENAI_ENDPOINT)
 
-# Global settings instance
+    @property
+    def azure_embeddings_configured(self) -> bool:
+        return bool(self.azure_openai_configured and self.AZURE_OPENAI_EMBEDDING_DEPLOYMENT)
+
+    @property
+    def azure_vision_configured(self) -> bool:
+        return bool(self.AZURE_VISION_KEY and self.AZURE_VISION_ENDPOINT)
+
+    @property
+    def azure_language_configured(self) -> bool:
+        return bool(self.AZURE_LANGUAGE_KEY and self.AZURE_LANGUAGE_ENDPOINT)
+
+    @property
+    def azure_translator_configured(self) -> bool:
+        return bool(self.AZURE_TRANSLATOR_KEY and self.AZURE_TRANSLATOR_REGION)
+
+
 settings = Settings()

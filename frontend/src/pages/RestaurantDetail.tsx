@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowLeft, ExternalLink, Globe, Mic, Phone, Plus, ScanLine, Send, Square } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
+import { ArrowLeft, ExternalLink, Globe, Mic, Phone, Plus, RefreshCw, ScanLine, Send, Square } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Link, useLocation, useParams } from "react-router-dom"
 import { PriceTag, Spinner, Stars, StatusNote } from "../components/ui"
 import { api } from "../lib/api"
@@ -17,24 +17,35 @@ export function RestaurantDetail() {
   const [menu, setMenu] = useState<Menu | null>(null)
   const [photos, setPhotos] = useState<string[]>([])
   const [loading, setLoading] = useState(true)
+  const [rescanning, setRescanning] = useState(false)
   const cart = useCart()
+
+  const fetchMenu = useCallback(
+    (refresh: boolean) => {
+      setLoading(true)
+      setRescanning(refresh)
+      api
+        .menu(placeId, seed?.name || "", refresh)
+        .then((m) => {
+          setMenu(m)
+          if (m.order_online_url) cart.setRestaurant(placeId, m.restaurant_name, m.order_online_url)
+        })
+        .catch(() => setMenu({ status: "error" } as Menu))
+        .finally(() => {
+          setLoading(false)
+          setRescanning(false)
+        })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [placeId],
+  )
 
   useEffect(() => {
     if (!seed) api.restaurant(placeId).then((d) => d?.status === "ok" && setR(d)).catch(() => {})
-    setLoading(true)
     setMenu(null)
     setPhotos([])
-    api
-      .menu(placeId, seed?.name || "")
-      .then((m) => {
-        setMenu(m)
-        if (m.order_online_url) cart.setRestaurant(placeId, m.restaurant_name, m.order_online_url)
-      })
-      .catch(() => setMenu({ status: "error" } as Menu))
-      .finally(() => setLoading(false))
-    // Photo gallery (user-posted) — best-effort, never blocks the page.
+    fetchMenu(false)
     api.restaurantPhotos(placeId, 12).then((p) => setPhotos(p.photos || [])).catch(() => {})
-    // Record the visit so it powers the dashboard + recommendations.
     api.track({
       kind: "view",
       restaurant_id: placeId,
@@ -64,7 +75,7 @@ export function RestaurantDetail() {
               </span>
             )}
           </div>
-          <h1 className="mt-3 font-display text-[clamp(2.4rem,5.5vw,4rem)] font-medium leading-[0.95]">{name}</h1>
+          <h1 className="mt-3 font-display text-[clamp(2rem,5.5vw,4rem)] font-medium leading-[0.95]">{name}</h1>
           {r?.address && <p className="mt-3 text-ink-soft">{r.address}</p>}
           <div className="mt-4 flex flex-wrap gap-2">
             {r?.types?.slice(0, 4).map((t) => (
@@ -107,16 +118,26 @@ export function RestaurantDetail() {
 
       {/* menu */}
       <div className="mt-12">
-        {loading && <MenuLoading />}
-        {!loading && menu && menu.source === "web" && (
-          <StatusNote
-            message={
-              menu.note ||
-              "No readable menu photos were found for this place — the order-online link above is your fastest path."
-            }
-          />
+        {loading && <MenuLoading rescan={rescanning} />}
+        {!loading && menu && !menu.sections?.length && (menu.source === "web" || menu.status === "not_configured" || menu.status === "error") && (
+          <div className="space-y-3">
+            <StatusNote
+              status={menu.status === "not_configured" ? "not_configured" : undefined}
+              message={
+                menu.status === "not_configured"
+                  ? undefined
+                  : menu.note ||
+                    "No readable menu was found for this place — the order-online link above is your fastest path."
+              }
+            />
+            <button
+              onClick={() => fetchMenu(true)}
+              className="inline-flex items-center gap-2 rounded-full border border-ink-line px-4 py-2 text-sm font-medium text-ink-soft transition hover:border-saffron hover:text-saffron"
+            >
+              <RefreshCw className="h-3.5 w-3.5" /> Re-scan menu
+            </button>
+          </div>
         )}
-        {!loading && menu && menu.status === "not_configured" && <StatusNote status="not_configured" />}
         {!loading && menu && menu.sections?.length > 0 && <MenuView menu={menu} placeId={placeId} />}
       </div>
     </section>
@@ -337,15 +358,15 @@ function VoiceOrderBar({ placeId, restaurantName, orderUrl }: { placeId: string;
   )
 }
 
-function MenuLoading() {
+function MenuLoading({ rescan }: { rescan?: boolean }) {
   return (
     <div className="card flex flex-col items-center gap-4 px-6 py-16 text-center">
       <Spinner className="h-7 w-7" />
       <div>
-        <p className="font-display text-xl">Reading the menu…</p>
+        <p className="font-display text-xl">{rescan ? "Re-scanning the menu…" : "Reading the menu…"}</p>
         <p className="mt-1 max-w-sm text-pretty text-sm text-ink-faint">
-          Kensho is gathering photos, classifying which are menus, and extracting items with Gemini vision. First read
-          can take a moment — it's cached after.
+          Kensho gathers photos, decides which are menus, and extracts items with vision AI. The first read can take a
+          moment — after that it's cached, so opening this place again is instant.
         </p>
       </div>
       <div className="mt-2 flex gap-2">

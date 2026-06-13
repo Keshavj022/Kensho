@@ -27,7 +27,6 @@ def test_resolve_order_fuzzy_only_real_ids():
 
 
 def test_resolve_order_llm_rejects_invalid_ids(monkeypatch):
-    # Includes a hallucinated id ("ghost") that must be dropped.
     json_out = '[{"item_id":"item_bbb","qty":2},{"item_id":"item_aaa","qty":1},{"item_id":"ghost","qty":1}]'
     monkeypatch.setattr(order_service, "is_llm_available", lambda: True)
     monkeypatch.setattr(order_service, "invoke_with_fallback", lambda prompt, **k: _Resp(json_out))
@@ -40,7 +39,6 @@ def test_process_voice_order_builds_cart(monkeypatch):
     owner = "test_session_voice"
     place = "PID_VOICE"
 
-    # Clean any cart left from a previous run.
     from backend.db.database import session_scope
     from backend.db.models import Cart
 
@@ -56,6 +54,5 @@ def test_process_voice_order_builds_cart(monkeypatch):
     assert out["order_online_url"] == "http://order.google/x"
     assert {m["item_id"] for m in out["matched"]} == {"item_aaa", "item_bbb"}
     assert out["cart"]["total"] == 570  # 250 + 320
-    # Cart persists and is retrievable.
     cart = order_service.get_cart(owner, place)
     assert cart["status"] == "ok" and cart["total"] == 570

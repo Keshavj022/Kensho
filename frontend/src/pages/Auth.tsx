@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react"
-import { FormEvent, useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Mark } from "../components/Logo"
 import { Onboarding } from "../components/Onboarding"
@@ -15,22 +15,18 @@ export function Auth() {
   const from = st?.from || "/restaurants"
   const [mode, setMode] = useState<"login" | "signup">("login")
 
+  const isSignup = mode === "signup"
   const mustComplete = !!user && !onboarded // legacy account finishing onboarding
-  const showWizard = mustComplete || mode === "signup"
-  // Freeze the wizard's mode for its whole lifetime. If the user explicitly chose
-  // signup, it stays "signup" even after register() sets `user` mid-completion —
-  // otherwise the steps array would shrink under the current index and the user
-  // would be bounced back to re-enter their basics. Once the wizard has been shown,
-  // navigation is owned solely by its onDone (so the success screen isn't cut off).
-  const wizardMode: "signup" | "complete" = mode === "signup" ? "signup" : "complete"
-  const showedWizard = useRef(false)
-  if (showWizard) showedWizard.current = true
+  const showWizard = mustComplete || isSignup
+  const wizardMode: "signup" | "complete" = isSignup ? "signup" : "complete"
 
+  // Send an already-onboarded user on to the app — but never mid-signup, where the
+  // wizard's onDone owns navigation (so the success screen isn't cut off).
   useEffect(() => {
-    if (user && onboarded && !showedWizard.current) nav(from, { replace: true })
-  }, [user, onboarded, from, nav])
+    if (user && onboarded && !isSignup) nav(from, { replace: true })
+  }, [user, onboarded, isSignup, from, nav])
 
-  if (user && onboarded && !showedWizard.current) return null // redirecting
+  if (user && onboarded && !isSignup) return null // redirecting
 
   return (
     <div className="relative min-h-screen overflow-hidden">

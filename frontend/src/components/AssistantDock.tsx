@@ -9,7 +9,6 @@ export function AssistantDock() {
   const [open, setOpen] = useState(false)
   const loc = useLocation()
   const { user, onboarded } = useAuth()
-  // Only available to signed-in, onboarded diners (chat is personalized).
   if (!user || !onboarded || loc.pathname.startsWith("/assistant")) return null
 
   return (

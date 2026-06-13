@@ -113,7 +113,6 @@ export function Stars({ value, count }: { value?: number | null; count?: number 
 }
 
 export function PriceTag({ level, range }: { level?: number | null; range?: string | null }) {
-  // Indian Maps prices are ranges ("₹800–1,000") — show them verbatim when present.
   if (range && /\d/.test(range)) return <span className="whitespace-nowrap font-mono text-sm text-pine">{range}</span>
   if (level == null) return null
   return (

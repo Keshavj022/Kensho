@@ -9,7 +9,6 @@ from backend.main import app
 
 @pytest.fixture()
 def client() -> TestClient:
-    # `with` triggers the FastAPI lifespan (DB init, subsystem probes).
     with TestClient(app) as c:
         yield c
 
@@ -36,6 +35,10 @@ def _neutralize_keys(monkeypatch):
     for key in (
         "GEMINI_API_KEY", "SERPAPI_API_KEY", "GOOGLE_MAPS_API_KEY", "GOOGLE_PLACES_API_KEY",
         "TAVILY_API_KEY", "ELEVENLABS_API_KEY", "NEO4J_PASSWORD",
+        "AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT",
+        "AZURE_VISION_KEY", "AZURE_VISION_ENDPOINT",
+        "AZURE_LANGUAGE_KEY", "AZURE_LANGUAGE_ENDPOINT",
+        "AZURE_TRANSLATOR_KEY", "AZURE_TRANSLATOR_REGION",
     ):
         monkeypatch.setattr(settings, key, None, raising=False)
     monkeypatch.setattr(settings, "OLLAMA_ENABLED", False, raising=False)

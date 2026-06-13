@@ -81,6 +81,7 @@ class ChatResponse(BaseModel):
     """Chat response model"""
     message: str
     thread_id: str
+    references: Optional[List[Dict[str, Any]]] = None
     recommendations: Optional[List[Dict[str, Any]]] = None
     follow_up_questions: Optional[List[str]] = None
 

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from ..services.llm import get_llm
 from ..tools.registry import shopping_tools
-from ._factory import make_agent
+from ._factory import RESPONSE_STYLE, make_agent
 
 NAME = "shopping_agent"
 
@@ -18,4 +18,6 @@ SYSTEM_PROMPT = (
 
 
 def build_shopping_agent(model=None):
-    return make_agent(model or get_llm(), tools=shopping_tools(), system_prompt=SYSTEM_PROMPT, name=NAME)
+    return make_agent(
+        model or get_llm(), tools=shopping_tools(), system_prompt=SYSTEM_PROMPT + RESPONSE_STYLE, name=NAME
+    )

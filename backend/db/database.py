@@ -1,10 +1,5 @@
-"""
-SQLAlchemy engine / session factory.
-
-DATABASE_URL drives the backend: sqlite:///./kensho.db for dev, a postgres://
-URL for prod. The relational DB is the durable source of truth for auth users,
-profiles, menu cache, and carts. Neo4j (graph) and Chroma (vectors) stay separate.
-"""
+"""SQLAlchemy engine / session factory. DATABASE_URL selects SQLite (dev) or
+Postgres (prod)."""
 from __future__ import annotations
 
 from contextlib import contextmanager
@@ -23,7 +18,6 @@ class Base(DeclarativeBase):
 
 def _make_engine():
     url = settings.DATABASE_URL
-    # SQLite needs check_same_thread=False to be usable across FastAPI's threadpool.
     connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
     return create_engine(url, connect_args=connect_args, pool_pre_ping=True, future=True)
 
@@ -34,7 +28,6 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, futu
 
 def init_db() -> None:
     """Create all tables. Idempotent; safe to call on every startup."""
-    # Import models so they register on Base.metadata before create_all.
     from . import models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)

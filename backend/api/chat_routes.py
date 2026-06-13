@@ -1,12 +1,4 @@
-"""
-Unified chat entry — runs the LangGraph supervisor.
-
-POST /api/v1/chat  body: {message, user_id?, thread_id?}
-                   -> {message, thread_id, ...}
-
-thread_id maps to a checkpointer thread (conversation persistence). If the LLM is
-not configured, returns a clear message instead of erroring (graceful degradation).
-"""
+"""POST /chat — runs the supervisor and returns {message, thread_id, references}."""
 from __future__ import annotations
 
 import uuid
@@ -30,7 +22,6 @@ async def chat(req: ChatRequest) -> ChatResponse:
             thread_id=thread_id,
         )
 
-    # Personalize: prepend the diner profile so the model honors diet + allergies.
     message = req.message
     if req.user_id:
         try:
@@ -45,8 +36,12 @@ async def chat(req: ChatRequest) -> ChatResponse:
     try:
         from ..agents.supervisor import run_chat
 
-        reply = await run_chat(message, thread_id=thread_id, user_id=req.user_id)
-        return ChatResponse(message=reply, thread_id=thread_id)
+        result = await run_chat(message, thread_id=thread_id, user_id=req.user_id)
+        return ChatResponse(
+            message=result["message"],
+            thread_id=thread_id,
+            references=result.get("references") or None,
+        )
     except Exception as e:
         logger.exception("chat failed")
         return ChatResponse(

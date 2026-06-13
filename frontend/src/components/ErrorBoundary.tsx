@@ -8,8 +8,6 @@ interface State {
   error: Error | null
 }
 
-/** App-wide safety net — a render error in any route shows a calm recovery screen
- *  instead of a white page. */
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { error: null }
 

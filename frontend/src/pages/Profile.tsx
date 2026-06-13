@@ -124,7 +124,6 @@ function PillFact({ label, items, tone, icon, empty }: { label: string; items: s
   )
 }
 
-/* ----------------------------------------------------- taste graph viz */
 const GROUP_COLORS: Record<string, string> = {
   user: "#E0531F",
   diet: "#2f6b4f",
@@ -148,7 +147,6 @@ function TasteGraphView() {
     const cx = 300, cy = 300, R = 215
     const placed = others.map((n, i) => {
       const angle = (i / Math.max(1, others.length)) * Math.PI * 2 - Math.PI / 2
-      // Two-ring stagger keeps labels from colliding when there are many nodes.
       const r = R - (i % 2) * 64
       return { ...n, x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r, angle }
     })

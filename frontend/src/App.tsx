@@ -26,8 +26,6 @@ function ScrollTop() {
   return null
 }
 
-/** The landing page is for guests. Signed-in, onboarded diners get their dashboard.
- *  Render nothing until auth resolves so the landing never flashes before redirect. */
 function HomeGate() {
   const { user, onboarded, ready } = useAuth()
   if (!ready) return null
@@ -42,7 +40,7 @@ export default function App() {
   return (
     <>
       <Grain />
-      <Nav />
+      {!isAuth && <Nav />}
       <ScrollTop />
       <CartDrawer />
       <AssistantDock />

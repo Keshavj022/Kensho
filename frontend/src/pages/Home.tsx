@@ -88,7 +88,7 @@ function Hero({ onDemo }: { onDemo: () => void }) {
         <span className="hidden font-mono text-xs text-ink-faint sm:inline">22.57°N 88.36°E · an atlas for taste</span>
       </motion.div>
 
-      <h1 className="mt-6 max-w-5xl font-display text-[clamp(3rem,9vw,7.5rem)] font-medium leading-[0.92] tracking-[-0.02em] text-balance">
+      <h1 className="mt-6 max-w-5xl font-display text-[clamp(2.5rem,9vw,7.5rem)] font-medium leading-[0.95] tracking-[-0.02em] text-balance">
         <Word delay={0.05}>See what to</Word>{" "}
         <span className="relative inline-block">
           <AnimatePresence mode="wait">
@@ -339,7 +339,7 @@ function FinalCTA({ onDemo }: { onDemo: () => void }) {
       <Reveal>
         <div className="relative overflow-hidden rounded-[2.5rem] bg-saffron px-8 py-20 text-center text-paper-card sm:px-16">
           <div className="pointer-events-none absolute inset-0 opacity-20 [background:radial-gradient(circle_at_20%_20%,#fff,transparent_40%),radial-gradient(circle_at_80%_70%,#fff,transparent_35%)]" />
-          <h2 className="relative mx-auto max-w-3xl font-display text-[clamp(2.4rem,6vw,4.5rem)] font-medium leading-[0.95] text-balance">
+          <h2 className="relative mx-auto max-w-3xl font-display text-[clamp(2rem,6vw,4.5rem)] font-medium leading-[0.98] text-balance">
             Tell Kensho what you're hungry for.
           </h2>
           <Magnetic className="relative mt-10 inline-block">

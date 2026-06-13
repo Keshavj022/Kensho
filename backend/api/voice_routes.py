@@ -1,10 +1,4 @@
-"""
-Voice routes — STT, TTS, voice ordering (audio -> cart), and voice listing.
-
-STT: ElevenLabs Scribe (faster-whisper fallback). TTS: ElevenLabs.
-Ordering: audio -> transcript -> resolve to real menu item_ids -> cart -> handoff
-to the order_online link. No order placement, no payment.
-"""
+"""Voice routes — STT, TTS, voice ordering (audio → cart), and voice listing."""
 from __future__ import annotations
 
 from typing import Optional

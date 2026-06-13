@@ -3,7 +3,7 @@ from __future__ import annotations
 
 
 def test_root(client):
-    r = client.get("/")
+    r = client.get("/api")
     assert r.status_code == 200
     body = r.json()
     assert body["name"] == "Kensho"
@@ -15,16 +15,13 @@ def test_health_overall(client):
     assert r.status_code == 200
     body = r.json()
     assert body["status"] == "ok"
-    # DB is the durable source of truth and must always be reachable.
     assert body["subsystems"]["db"] == "ok"
-    # Optional subsystems are present in the snapshot regardless of config.
     for sub in ("kg", "rag", "llm"):
         assert sub in body["subsystems"]
 
 
 def test_health_subsystem_endpoints(client):
     assert client.get("/health/db").json()["status"] == "ok"
-    # Without keys these degrade but never error the request.
     for sub in ("kg", "rag", "llm"):
         r = client.get(f"/health/{sub}")
         assert r.status_code == 200

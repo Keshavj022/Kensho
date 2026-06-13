@@ -1,11 +1,4 @@
-"""
-Menu schema (the keystone feature) — Pydantic v2.
-
-A structured menu per restaurant, cached by place_id, that powers:
-  (a) website display, (b) cross-restaurant dish search, (c) voice ordering.
-
-`MenuCache` ORM (db/models.py) mirrors this; `menu_json` stores Menu.model_dump().
-"""
+"""Menu schema (Pydantic v2). The MenuCache ORM row stores Menu.model_dump()."""
 from __future__ import annotations
 
 import hashlib
@@ -50,14 +43,12 @@ class Menu(BaseModel):
     restaurant_id: str  # = place_id
     restaurant_name: str
     currency: str = "INR"
-    # Stored as list[dict] per spec; MenuSection documents the shape.
     sections: list[dict] = Field(default_factory=list)  # [{ "name": str, "items": [MenuItem...] }]
     source: Source = "ocr"
     extracted_at: datetime = Field(default_factory=_now)
     raw_photo_urls: list[str] = Field(default_factory=list)
     order_online_url: Optional[str] = None  # food.google.com/chooseprovider link
 
-    # ---- helpers -------------------------------------------------------------
     def all_items(self) -> list[MenuItem]:
         """Flatten every section's items into one list of MenuItem."""
         out: list[MenuItem] = []

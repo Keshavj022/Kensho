@@ -1,9 +1,4 @@
-# Kensho backend (v2) — LangChain 1.0 + LangGraph multi-agent stack.
-# All Azure dependencies removed. Pin to current majors; minimums encode the
-# verified-current API surface (LangChain 1.x, langchain-google-genai 2.x+,
-# chromadb 1.x, elevenlabs 2.x).
-
-# --- Web / API ---
+# Web / API
 fastapi>=0.115.0
 uvicorn[standard]>=0.32.0
 python-multipart>=0.0.20
@@ -11,39 +6,45 @@ pydantic>=2.10.0
 pydantic-settings>=2.7.0
 email-validator>=2.2.0
 
-# --- LLM / Agents (LangChain 1.x + LangGraph) ---
+# LLM / agents
 langchain>=1.0.0
 langgraph>=1.0.0
 langgraph-supervisor>=0.0.27
 langchain-google-genai>=2.0.0
 langchain-ollama>=0.2.0
+langchain-openai>=0.2.0
 langchain-tavily>=0.1.0
 langchain-chroma>=0.2.0
 langgraph-checkpoint-sqlite>=1.0.0
 
-# --- External tools ---
-# SerpApi is called via httpx against serpapi.com/search (no SDK lock-in).
+# Azure AI (optional, lazily imported)
+azure-ai-vision-imageanalysis>=1.0.0
+azure-ai-textanalytics>=5.3.0
+azure-core>=1.30.0
+
 httpx>=0.28.0
 
-# --- Data stores ---
+# Data stores
 neo4j>=5.27.0
 chromadb>=0.6.0
 sqlalchemy>=2.0.0
 
-# --- Auth ---
+# Postgres + pgvector (used when DATABASE_URL is postgres://)
+psycopg[binary]>=3.2.0
+psycopg-pool>=3.2.0
+langgraph-checkpoint-postgres>=2.0.0
+
+# Auth
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 
-# --- Voice ---
+# Voice (faster-whisper is an optional offline STT fallback, install on demand)
 elevenlabs>=2.0.0
-# Optional offline STT fallback (heavy: pulls ctranslate2). Install on demand:
-#   pip install "faster-whisper>=1.0.0"
 
-# --- Utils ---
 loguru>=0.7.3
 python-dotenv>=1.0.0
 
-# --- Tests ---
+# Tests
 pytest>=8.3.0
 pytest-asyncio>=0.24.0
 respx>=0.21.0

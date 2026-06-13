@@ -1,10 +1,5 @@
-"""
-SerpApi tools — travel metasearch (flights, hotels), shopping, and place photos.
-
-TRAVEL IS SEARCH-ONLY: return the cheapest option, the provider offering it, a
-deep link, and price context. No booking, no payments. Expensive calls are cached.
-Degrades gracefully when SERPAPI_API_KEY is unset.
-"""
+"""SerpApi tools — flights, hotels, shopping, and place photos. Search-only (no
+booking); expensive calls are cached and missing keys degrade gracefully."""
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -25,7 +20,6 @@ def _locale(extra: dict[str, Any]) -> dict[str, Any]:
     return {"gl": settings.SERPAPI_GL, "hl": settings.SERPAPI_HL, **extra}
 
 
-# ----------------------------------------------------------------- flights
 def _normalize_flight(f: dict[str, Any]) -> dict[str, Any]:
     legs = f.get("flights", []) or []
     airlines = sorted({leg.get("airline") for leg in legs if leg.get("airline")})
@@ -75,7 +69,6 @@ def _search_flights(origin, destination, departure_date, return_date, adults, so
 
     best = [_normalize_flight(f) for f in data.get("best_flights", [])]
     others = [_normalize_flight(f) for f in data.get("other_flights", [])]
-    # Google only marks "best" sometimes — merge so the UI always has results, sorted by price.
     combined = best + others
     combined.sort(key=lambda f: (f.get("price") is None, f.get("price") or 0))
     top = combined[:20]
@@ -137,7 +130,6 @@ def _resolve_flight_booking_options(booking_token, origin, destination, departur
         "booking_token": booking_token,
         "currency": DEFAULT_CURRENCY,
     }
-    # SerpApi requires the original search context alongside booking_token.
     if origin:
         params["departure_id"] = origin
     if destination:
@@ -189,7 +181,6 @@ def resolve_flight_booking_options(
     return _resolve_flight_booking_options(booking_token, origin, destination, departure_date, return_date)
 
 
-# ----------------------------------------------------------------- hotels
 def _cheapest_option(prop: dict[str, Any]) -> Optional[dict[str, Any]]:
     best = None
     for src in (prop.get("featured_prices") or []) + (prop.get("prices") or []):
@@ -260,7 +251,6 @@ def search_hotels(location: str, check_in: str, check_out: str, guests: int = 1)
     return _search_hotels(location, check_in, check_out, guests)
 
 
-# ----------------------------------------------------------------- shopping
 @cached("serpapi.shopping", _TTL)
 def _search_products(query, max_results):
     data = _serpapi.serpapi_search(
@@ -297,10 +287,8 @@ def search_products(query: str, max_results: int = 20) -> dict[str, Any]:
     return _search_products(query, max_results)
 
 
-# ----------------------------------------------------------------- place photos (menu pipeline)
 @cached("serpapi.maps_photos", _TTL)
 def _get_place_photos(place_id):
-    # google_maps_photos needs a Maps data_id, NOT a place_id. Resolve it first.
     lookup = _serpapi.serpapi_search({"engine": "google_maps", "place_id": place_id})
     if lookup.get("_error"):
         return {"status": lookup["_error"], "message": lookup.get("_message"), "photos": []}

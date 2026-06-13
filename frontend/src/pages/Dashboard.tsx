@@ -36,7 +36,7 @@ export function Dashboard() {
     <section className="mx-auto max-w-7xl px-5 pb-24 pt-28 sm:px-8 sm:pt-32">
       <Reveal>
         <span className="label text-saffron">Your space</span>
-        <h1 className="mt-3 font-display text-[clamp(2.4rem,6vw,4.2rem)] font-medium leading-[0.95]">
+        <h1 className="mt-3 font-display text-[clamp(2rem,6vw,4.2rem)] font-medium leading-[0.95]">
           Welcome back, <span className="italic text-saffron">{name}.</span>
         </h1>
         <p className="mt-4 max-w-xl text-lg text-ink-soft text-pretty">

@@ -1,11 +1,5 @@
-"""
-Voice ordering — resolve a transcript against a restaurant's menu, build a cart,
-hand off to the Google order_online link. NO real order placement, NO payment.
-
-Matching is CONSTRAINED: items are only ever mapped to real menu item_ids
-(Gemini disambiguation when available, fuzzy fallback otherwise) — the model can
-never invent an item.
-"""
+"""Voice ordering: resolve a transcript to real menu item_ids, build a cart, and hand
+off to the order_online link. Matching only ever maps to existing items, never invents."""
 from __future__ import annotations
 
 from difflib import SequenceMatcher

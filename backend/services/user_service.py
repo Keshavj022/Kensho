@@ -1,11 +1,4 @@
-"""
-User profile service (DB-backed).
-
-Profiles now live durably in the user_profiles table (was in-memory only) and are
-bridged to Neo4j on write. Maps the relational row <-> the Pydantic User model.
-Public signatures preserved (get_user / create_user / update_user / learn_preference
-/ get_personalized_preferences / get_user_context).
-"""
+"""User profiles backed by the user_profiles table and bridged to Neo4j on write."""
 from __future__ import annotations
 
 from typing import Any, Optional
@@ -136,7 +129,6 @@ class UserService:
                 row.cuisine_preferences = prefs
             else:
                 return False
-        # Bridge into the graph (best-effort).
         try:
             from .knowledge_graph_service import knowledge_graph_service
 
@@ -180,7 +172,6 @@ class UserService:
             context += "- Favorite Foods: " + ", ".join(liked[:5]) + "\n"
         return context
 
-    # ------------------------------------------------------------ onboarding
     def save_profile(self, user_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         """Persist the full onboarding profile and bridge it to Neo4j."""
         with session_scope() as db:
@@ -210,7 +201,6 @@ class UserService:
             row.food_preferences = foods
             row.cuisine_preferences = {c: {"preference": "like", "weight": 4} for c in payload.get("cuisines", []) if c}
             row.onboarded = True
-        # Bridge the saved profile into the knowledge graph.
         user = self.get_user(user_id)
         if user:
             _bridge_to_graph(user_id, user)
@@ -292,48 +282,65 @@ class UserService:
         }
 
     def profile_summary(self, user_id: str) -> str:
-        """Compact LLM context. Separates HARD constraints (diet + allergies, exclude
-        even when uncertain) from SOFT preferences (ranking only). Omits age/gender."""
+        """A SILENT personalization directive for the LLM.
+
+        Tells the assistant to apply the diner's diet/allergies as hard filters and
+        lean toward their tastes — without announcing it, restating the profile, or
+        using the diner's name (so replies feel naturally tailored, not robotic). The
+        diner's home city is only a fallback: an explicitly-named place always wins.
+        """
         p = self.get_profile_dict(user_id)
         if not p.get("onboarded"):
             return ""
-        hard = [f"diet = {p.get('dietary_type', 'non-vegetarian')}"]
+
+        diet = (p.get("dietary_type") or "non-vegetarian").strip()
+        limits: list[str] = []
+        if diet and diet != "non-vegetarian":
+            limits.append(f"the diner is {diet} — only ever suggest {diet}-friendly food")
         if p.get("allergies"):
-            hard.append("allergies = " + ", ".join(p["allergies"]))
-        soft = []
+            limits.append("never suggest anything containing " + ", ".join(p["allergies"]) + " (allergy — exclude if unsure)")
+
+        leanings: list[str] = []
         if p.get("likes"):
-            soft.append("likes " + ", ".join(p["likes"][:8]))
+            leanings.append("enjoys " + ", ".join(p["likes"][:8]))
         if p.get("dislikes"):
-            soft.append("dislikes/avoid " + ", ".join(p["dislikes"]))
+            leanings.append("would rather avoid " + ", ".join(p["dislikes"]))
         if p.get("cuisines"):
-            soft.append("favourite cuisines " + ", ".join(p["cuisines"]))
+            leanings.append("favourite cuisines: " + ", ".join(p["cuisines"]))
         if p.get("goals"):
-            soft.append("health goals " + ", ".join(p["goals"]))
+            leanings.append("health goals: " + ", ".join(p["goals"]))
         if p.get("spice_tolerance"):
-            soft.append(f"spice tolerance {p['spice_tolerance']}")
+            leanings.append(f"spice tolerance: {p['spice_tolerance']}")
+
+        loc = p.get("location")
+        loc_line = ""
+        if loc:
+            loc_line = (
+                f" If the user names a city, area, or place, search exactly there. "
+                f"Only when they give no location, assume they're near {loc}."
+            )
+        airport_line = ""
         try:
             from .airports import home_airport
 
-            ap = home_airport(p.get("lat"), p.get("lng"), p.get("location"))
+            ap = home_airport(p.get("lat"), p.get("lng"), loc)
             if ap:
-                soft.append(f"home airport {ap['iata']} ({ap['city']}) — use as default flight origin")
+                airport_line = f" For flights, default the origin to {ap['iata']} ({ap['city']}) only when the user doesn't name one."
         except Exception:
             pass
-        name = p.get("name")
-        loc = p.get("location")
-        head = (
-            "[Diner profile"
-            + (f" for {name}" if name else "")
-            + (f", based in {loc}" if loc else "")
-            + "]"
-        )
-        out = (
-            f"{head} HARD CONSTRAINTS (never recommend anything that violates these; if a "
-            f"dish's ingredients are uncertain, exclude it): " + "; ".join(hard) + "."
-        )
-        if soft:
-            out += " SOFT PREFERENCES (use to rank and suggest, do not exclude on these): " + "; ".join(soft) + "."
-        return out
+
+        body: list[str] = []
+        if limits:
+            body.append("Hard limits: " + "; ".join(limits) + ".")
+        if leanings:
+            body.append("Leanings (use to rank and suggest, don't force): " + "; ".join(leanings) + ".")
+        if not body and not loc_line and not airport_line:
+            return ""
+        return (
+            "[Personalize SILENTLY: apply the diner's tastes to what you suggest, but do NOT "
+            "announce that you're personalizing, do NOT restate this profile, and do NOT use "
+            "the diner's name.] " + " ".join(body) + loc_line + airport_line
+        ).strip()
 
 
 user_service = UserService()

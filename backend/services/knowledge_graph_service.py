@@ -35,11 +35,14 @@ class KnowledgeGraphService:
     def _connect(self):
         """Connect to Neo4j"""
         try:
-            self.driver = GraphDatabase.driver(
-                self.uri,
-                auth=(self.username, self.password)
-            )
-            # Test connection
+            try:
+                self.driver = GraphDatabase.driver(
+                    self.uri,
+                    auth=(self.username, self.password),
+                    notifications_min_severity="OFF",
+                )
+            except Exception:  # older driver without the kwarg
+                self.driver = GraphDatabase.driver(self.uri, auth=(self.username, self.password))
             with self.driver.session() as session:
                 session.run("RETURN 1")
             logger.info(f"Connected to Neo4j at {self.uri}")
@@ -73,7 +76,6 @@ class KnowledgeGraphService:
         except Exception as e:
             logger.error(f"Error creating constraints: {str(e)}")
 
-    # ==================== USER MANAGEMENT ====================
 
     def create_user(
         self,
@@ -167,7 +169,6 @@ class KnowledgeGraphService:
             logger.error(f"Error adding goal: {str(e)}")
             return False
 
-    # ==================== FOOD PREFERENCES ====================
 
     def add_food_preference(
         self,
@@ -277,7 +278,6 @@ class KnowledgeGraphService:
             logger.error(f"Error adding cuisine preference: {str(e)}")
             return False
 
-    # ==================== INTERACTION TRACKING ====================
 
     def track_restaurant_interaction(
         self,
@@ -410,7 +410,6 @@ class KnowledgeGraphService:
             logger.error(f"Error tracking search: {str(e)}")
             return False
 
-    # ==================== PERSONALIZATION ====================
 
     def get_user_preferences(self, user_id: str) -> Dict[str, Any]:
         """Get comprehensive user preferences from graph"""
@@ -465,7 +464,6 @@ class KnowledgeGraphService:
         if not self.driver:
             return []
 
-        # Complex query using collaborative filtering and preference matching
         query = """
         MATCH (u:User {user_id: $user_id})
 
@@ -548,7 +546,6 @@ class KnowledgeGraphService:
             logger.error(f"Error getting insights: {str(e)}")
             return {}
 
-    # ==================== TEMPORAL ANALYSIS ====================
 
     def analyze_preference_trends(
         self,
@@ -643,7 +640,6 @@ class KnowledgeGraphService:
             logger.error(f"Error getting preference evolution: {str(e)}")
             return []
 
-    # ==================== ADVANCED RECOMMENDATION ALGORITHMS ====================
 
     def get_collaborative_filtering_recommendations(
         self,
@@ -722,41 +718,31 @@ class KnowledgeGraphService:
 
         query = """
         MATCH (u:User {user_id: $user_id})
-        
-        // Get user's favorite cuisines and foods
-        MATCH (u)-[pc:LIKES_CUISINE]->(fav_cuisine:Cuisine)
+
+        // Collect the user's loved/liked cuisine NAMES into a list (not nodes).
+        OPTIONAL MATCH (u)-[pc:LIKES_CUISINE]->(fc:Cuisine)
         WHERE pc.level IN ['love', 'like']
-        
-        MATCH (u)-[pf:PREFERS]->(fav_food:Food)
-        WHERE pf.level IN ['love', 'like']
-        
-        // Find restaurants serving similar content
+        WITH u, collect(DISTINCT {name: fc.name, weight: coalesce(pc.weight, 3)}) AS fav_cuisines
+        WITH u, fav_cuisines, [c IN fav_cuisines | c.name] AS fav_cuisine_names
+
+        // Restaurants serving any favourite cuisine that the user hasn't interacted with.
         MATCH (r:Restaurant)-[:SERVES]->(c:Cuisine)
-        WHERE c IN fav_cuisine OR EXISTS {
-            MATCH (r)-[:SERVES]->(c2:Cuisine)<-[:SERVES]-(similar_r:Restaurant)
-            WHERE (u)-[:INTERACTED_WITH {rating: 4.0}]->(similar_r)
-        }
-        
-        // Calculate content similarity score
-        WITH u, r, c,
-             CASE WHEN c IN fav_cuisine THEN pc.weight ELSE 0 END as cuisine_score,
-             count(DISTINCT fav_food) as food_match_score
-        
-        WHERE NOT (u)-[:INTERACTED_WITH]->(r)
-        
-        // Aggregate scores
-        WITH r, sum(cuisine_score) as total_cuisine_score, food_match_score
-        
-        // Filter by dietary restrictions
+        WHERE c.name IN fav_cuisine_names AND NOT (u)-[:INTERACTED_WITH]->(r)
+
+        // Score by the matched cuisine's weight; drop anything matching a restriction name.
         OPTIONAL MATCH (u)-[:HAS_RESTRICTION]->(restriction:DietaryRestriction)
-        WHERE NOT (r.name =~ '.*' + restriction.name + '.*')
-        
-        RETURN DISTINCT r.restaurant_id as id,
-               r.name as name,
-               r.cuisine as cuisine,
-               (total_cuisine_score + food_match_score * 2) as score,
-               total_cuisine_score,
-               food_match_score
+        WITH r, c, fav_cuisines, restriction
+        WHERE restriction IS NULL
+           OR NOT toLower(coalesce(r.name, '')) CONTAINS toLower(coalesce(restriction.name, ''))
+        WITH r,
+             reduce(s = 0, fcw IN fav_cuisines | CASE WHEN fcw.name = c.name THEN s + fcw.weight ELSE s END) AS cuisine_score
+
+        RETURN DISTINCT r.restaurant_id AS id,
+               r.name AS name,
+               r.cuisine AS cuisine,
+               sum(cuisine_score) AS score,
+               sum(cuisine_score) AS total_cuisine_score,
+               0 AS food_match_score
         ORDER BY score DESC
         LIMIT $limit
         """
@@ -793,11 +779,9 @@ class KnowledgeGraphService:
         if not self.driver:
             return []
 
-        # Get recommendations from both algorithms
         collaborative = self.get_collaborative_filtering_recommendations(user_id, limit * 2)
         content_based = self.get_content_based_recommendations(user_id, limit * 2)
 
-        # Combine and score
         combined = {}
         for rec in collaborative:
             restaurant_id = rec["id"]
@@ -825,7 +809,6 @@ class KnowledgeGraphService:
                 }
             combined[restaurant_id]["content_score"] = rec["score"]
 
-        # Normalize scores and calculate hybrid score
         max_collab = max([r["collaborative_score"] for r in combined.values() if r["collaborative_score"] > 0], default=1)
         max_content = max([r["content_score"] for r in combined.values() if r["content_score"] > 0], default=1)
 
@@ -837,7 +820,6 @@ class KnowledgeGraphService:
                 norm_content * (1 - collaborative_weight)
             )
 
-        # Sort by hybrid score and return top results
         recommendations = sorted(
             combined.values(),
             key=lambda x: x["hybrid_score"],
@@ -907,7 +889,6 @@ class KnowledgeGraphService:
             logger.error(f"Error finding similar users: {str(e)}")
             return []
 
-    # ==================== UTILITY ====================
 
     def close(self):
         """Close Neo4j connection"""
@@ -916,5 +897,4 @@ class KnowledgeGraphService:
             logger.info("Neo4j connection closed")
 
 
-# Global knowledge graph service instance
 knowledge_graph_service = KnowledgeGraphService()

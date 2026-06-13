@@ -1,17 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowUp, RefreshCw } from "lucide-react"
+import { ArrowUp, Compass, ExternalLink, RefreshCw, ShoppingBag, Soup } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { api } from "../lib/api"
+import { Link } from "react-router-dom"
 import { cn } from "../lib/cn"
-import { getThreadId, newThread } from "../lib/session"
-import { useAuth } from "../state/auth"
+import type { ChatReference } from "../lib/types"
+import { useChat } from "../state/chat"
 import { Mark } from "./Logo"
-
-interface Msg {
-  id: string
-  role: "user" | "assistant"
-  content: string
-}
 
 const SUGGESTIONS = [
   "Best biryani in Kolkata",
@@ -20,21 +14,17 @@ const SUGGESTIONS = [
   "Noise-cancelling headphones under ₹10k",
 ]
 
-const GREETING: Msg = {
-  id: "greet",
-  role: "assistant",
-  content:
-    "I'm Kensho. Tell me what you're in the mood for — a place to eat, a trip to take, or something to buy — and I'll route it to the right specialist.",
-}
-
 export function Chat({ variant = "page", initial }: { variant?: "page" | "dock"; initial?: string }) {
-  const [messages, setMessages] = useState<Msg[]>([GREETING])
+  const { messages, busy, send, reset } = useChat()
   const [input, setInput] = useState("")
-  const [busy, setBusy] = useState(false)
-  const [thread, setThread] = useState(getThreadId())
   const scroller = useRef<HTMLDivElement>(null)
   const sentInitial = useRef(false)
-  const { user } = useAuth()
+
+  const submit = (text: string) => {
+    if (!text.trim() || busy) return
+    setInput("")
+    send(text)
+  }
 
   useEffect(() => {
     if (initial && initial.trim() && !sentInitial.current) {
@@ -47,31 +37,6 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: "smooth" })
   }, [messages, busy])
-
-  async function send(text: string) {
-    const q = text.trim()
-    if (!q || busy) return
-    setInput("")
-    const userMsg: Msg = { id: "u" + Date.now(), role: "user", content: q }
-    setMessages((m) => [...m, userMsg])
-    setBusy(true)
-    try {
-      const res = await api.chat(q, thread, user?.user_id)
-      setMessages((m) => [...m, { id: "a" + Date.now(), role: "assistant", content: res.message || "…" }])
-    } catch (e: any) {
-      setMessages((m) => [
-        ...m,
-        { id: "e" + Date.now(), role: "assistant", content: "The assistant is unreachable right now — is the backend running on :8000?" },
-      ])
-    } finally {
-      setBusy(false)
-    }
-  }
-
-  function reset() {
-    setThread(newThread())
-    setMessages([GREETING])
-  }
 
   return (
     <div className={cn("flex flex-col", variant === "page" ? "h-[min(72vh,640px)]" : "h-[28rem]")}>
@@ -90,15 +55,20 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
                   <Mark className="h-5 w-5 text-paper" animate={false} />
                 </div>
               )}
-              <div
-                className={cn(
-                  "max-w-[82%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-[0.95rem] leading-relaxed",
-                  m.role === "user"
-                    ? "rounded-tr-sm bg-ink text-paper-card"
-                    : "rounded-tl-sm border border-ink-line bg-paper-card text-ink",
+              <div className={cn("flex max-w-[88%] flex-col gap-2", m.role === "user" ? "items-end" : "items-start")}>
+                <div
+                  className={cn(
+                    "whitespace-pre-wrap rounded-2xl px-4 py-3 text-[0.95rem] leading-relaxed",
+                    m.role === "user"
+                      ? "rounded-tr-sm bg-ink text-paper-card"
+                      : "rounded-tl-sm border border-ink-line bg-paper-card text-ink",
+                  )}
+                >
+                  {m.content}
+                </div>
+                {m.role === "assistant" && m.references && m.references.length > 0 && (
+                  <RefCards refs={m.references} />
                 )}
-              >
-                {m.content}
               </div>
             </motion.div>
           ))}
@@ -127,7 +97,7 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
           {SUGGESTIONS.map((s) => (
             <button
               key={s}
-              onClick={() => send(s)}
+              onClick={() => submit(s)}
               className="rounded-full border border-ink-line bg-paper-card/70 px-3 py-1.5 text-xs text-ink-soft transition hover:border-saffron hover:text-ink"
             >
               {s}
@@ -139,7 +109,7 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
       <form
         onSubmit={(e) => {
           e.preventDefault()
-          send(input)
+          submit(input)
         }}
         className="flex items-end gap-2 rounded-2xl border border-ink-line bg-paper-card p-2"
       >
@@ -152,7 +122,7 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault()
-              send(input)
+              submit(input)
             }
           }}
           rows={1}
@@ -168,6 +138,55 @@ export function Chat({ variant = "page", initial }: { variant?: "page" | "dock";
           <ArrowUp className="h-5 w-5" />
         </motion.button>
       </form>
+    </div>
+  )
+}
+
+const REF_ICON: Record<string, typeof Soup> = {
+  restaurant: Soup,
+  dish: Soup,
+  product: ShoppingBag,
+  hotel: Compass,
+}
+
+function RefCards({ refs }: { refs: ChatReference[] }) {
+  return (
+    <div className="flex w-full flex-wrap gap-2">
+      {refs.map((r, i) => {
+        const Icon = REF_ICON[r.type] || Soup
+        const inner = (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: Math.min(i * 0.04, 0.3) }}
+            className="group flex max-w-[15rem] items-center gap-2.5 rounded-xl border border-ink-line bg-paper px-3 py-2 transition hover:border-saffron hover:bg-saffron-wash/40"
+          >
+            {r.image ? (
+              <img src={r.image} alt="" loading="lazy" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+            ) : (
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-saffron-wash text-saffron-deep">
+                <Icon className="h-4 w-4" />
+              </span>
+            )}
+            <span className="min-w-0">
+              <span className="flex items-center gap-1 truncate text-sm font-semibold text-ink">
+                {r.title}
+                {r.external && <ExternalLink className="h-3 w-3 shrink-0 text-ink-faint" />}
+              </span>
+              {r.subtitle && <span className="block truncate text-xs text-ink-faint">{r.subtitle}</span>}
+            </span>
+          </motion.div>
+        )
+        return r.external ? (
+          <a key={i} href={r.link} target="_blank" rel="noreferrer">
+            {inner}
+          </a>
+        ) : (
+          <Link key={i} to={r.link}>
+            {inner}
+          </Link>
+        )
+      })}
     </div>
   )
 }

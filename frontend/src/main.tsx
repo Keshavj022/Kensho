@@ -6,6 +6,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary.tsx"
 import { VoiceProvider } from "./components/VoiceAssistant.tsx"
 import { AuthProvider } from "./state/auth.tsx"
 import { CartProvider } from "./state/cart.tsx"
+import { ChatProvider } from "./state/chat.tsx"
 import "./index.css"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -14,9 +15,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <ErrorBoundary>
         <AuthProvider>
           <CartProvider>
-            <VoiceProvider>
-              <App />
-            </VoiceProvider>
+            <ChatProvider>
+              <VoiceProvider>
+                <App />
+              </VoiceProvider>
+            </ChatProvider>
           </CartProvider>
         </AuthProvider>
       </ErrorBoundary>

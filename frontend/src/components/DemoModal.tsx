@@ -186,7 +186,7 @@ function TastesFrame() {
       </div>
       <div>
         {label("Spice tolerance")}
-        <div className="flex gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {[{ key: "mild", emoji: "🌤", label: "Mild" }, { key: "medium", emoji: "🌶", label: "Medium" }, { key: "spicy", emoji: "🔥", label: "Spicy" }, { key: "fiery", emoji: "🌋", label: "Fiery" }].map((s, i) => (
             <Tile key={s.key} emoji={s.emoji} label={s.label} selected={s.key === DEMO.spice.key} delay={0.6 + i * 0.06} />
           ))}
