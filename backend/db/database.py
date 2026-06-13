@@ -18,6 +18,12 @@ class Base(DeclarativeBase):
 
 def _make_engine():
     url = settings.DATABASE_URL
+    # Pin the psycopg (v3) driver — we ship psycopg, not psycopg2, but SQLAlchemy
+    # defaults a bare postgresql:// URL to psycopg2.
+    if url.startswith("postgresql://"):
+        url = "postgresql+psycopg://" + url[len("postgresql://"):]
+    elif url.startswith("postgres://"):
+        url = "postgresql+psycopg://" + url[len("postgres://"):]
     connect_args = {"check_same_thread": False} if url.startswith("sqlite") else {}
     return create_engine(url, connect_args=connect_args, pool_pre_ping=True, future=True)
 

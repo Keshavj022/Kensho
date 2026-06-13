@@ -1,0 +1,45 @@
+name: Deploy to Hugging Face Space
+
+# Mirrors this repo to a Hugging Face Docker Space on every push to main, so the
+# Space rebuilds automatically. The Space's README must carry the HF frontmatter
+# (sdk: docker, app_port: 7860), so we swap in deploy/huggingface-space-README.md
+# as README.md before pushing — the GitHub README stays untouched.
+#
+# Setup (one time):
+#   1. Create a Hugging Face write token: https://huggingface.co/settings/tokens
+#   2. Add it as a repo secret named HF_TOKEN (Settings → Secrets → Actions).
+#   3. Edit HF_USERNAME / HF_SPACE below to match your Space.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  HF_USERNAME: your-hf-username   # ← edit
+  HF_SPACE: kensho                # ← edit (the Space name)
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          if [ -z "$HF_TOKEN" ]; then
+            echo "::error::HF_TOKEN repo secret is not set."; exit 1
+          fi
+          # Use the Space's README (with the HF Docker frontmatter) as README.md.
+          cp deploy/huggingface-space-README.md README.md
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f README.md
+          git commit -m "ci: sync to Hugging Face Space" || echo "nothing to commit"
+          git push --force \
+            "https://${HF_USERNAME}:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/${HF_SPACE}" \
+            HEAD:main

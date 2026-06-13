@@ -1,142 +1,58 @@
-# Frontend - Kensho
+# Kensho — frontend
 
-> **Note**: For complete project documentation, see the [main README](../README.md)
+The web client for Kensho — an AI atlas for taste. A React single-page app that talks
+to the FastAPI backend and renders the four experiences: **Eat**, **Go**, **Buy**, and
+the conversational **assistant**.
 
-A beautiful, modern, and animated frontend for an AI-powered e-commerce platform with multiple agent services.
+> For the product overview and architecture, see the [main README](../README.md).
 
-## Features
+## Stack
 
-- 🎨 **Modern UI/UX**: Beautiful, aesthetic design with smooth animations
-- 🚀 **Fast Performance**: Built with Vite and React for optimal performance
-- 🎭 **Animations**: Framer Motion for smooth, eye-catching animations
-- 📱 **Responsive**: Fully responsive design that works on all devices
-- 🎯 **Three Main Services**:
-  - **Food Recommendations**: AI-powered restaurant discovery
-  - **Travel Agent**: Intelligent itinerary planning and bookings
-  - **E-Commerce**: Smart shopping with personalized recommendations
+- **React 18** + **TypeScript**
+- **Vite** — dev server and build
+- **Tailwind CSS** — styling
+- **Framer Motion** — animation
+- **React Router** — routing
+- **Lucide** — icons
 
-## Tech Stack
+## Getting started
 
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Styling
-- **Framer Motion** - Animations
-- **React Router** - Navigation
-- **Lucide React** - Icons
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ and npm/yarn/pnpm
-
-### Installation
-
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
+npm run dev        # → http://localhost:5173
 ```
 
-3. Start the development server:
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+The dev server proxies `/api` and `/health` to the backend on `http://localhost:8000`,
+so run the backend (see the main README) alongside it.
+
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run build` | Type-check (`tsc`) and build to `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | ESLint |
+
+## Configuration
+
+The API base URL is resolved from `VITE_API_BASE_URL`:
+
+- **Local dev** — leave it unset; requests go to `/api/v1` and Vite proxies to `:8000`.
+- **Split hosting** — set `VITE_API_BASE_URL` to the backend's origin at build time
+  (when the frontend is served from a different host than the API).
+
+In the default deployment the backend serves this app from the same origin, so no base
+URL is needed.
+
+## Structure
+
 ```
-
-4. Open your browser and visit `http://localhost:5173`
-
-### Build for Production
-
-```bash
-npm run build
-# or
-yarn build
-# or
-pnpm build
+src/
+├── pages/        # Home, Auth, Dashboard, Profile, Restaurants, RestaurantDetail,
+│                 #   Travel, Shopping, Assistant
+├── components/   # Nav, Chat, CartDrawer, VoiceAssistant, Onboarding, UI kit, fx…
+├── state/        # auth, cart, chat context providers
+├── lib/          # API client, types, helpers
+└── index.css     # Tailwind layers + design tokens
 ```
-
-The built files will be in the `dist` directory.
-
-## Project Structure
-
-```
-frontend/
-├── src/
-│   ├── components/     # Reusable components
-│   │   └── Layout.tsx  # Main layout with navigation
-│   ├── pages/          # Page components
-│   │   ├── Home.tsx              # Landing page
-│   │   ├── FoodRecommendations.tsx
-│   │   ├── TravelAgent.tsx
-│   │   └── ECommerce.tsx
-│   ├── utils/          # Utility functions
-│   ├── App.tsx         # Main app component with routing
-│   ├── main.tsx        # Entry point
-│   └── index.css       # Global styles
-├── index.html
-├── package.json
-├── tsconfig.json
-├── tailwind.config.js
-└── vite.config.ts
-```
-
-## Features Overview
-
-### Landing Page
-- Animated hero section with gradient backgrounds
-- Feature showcase cards
-- Statistics section
-- Smooth scroll animations
-
-### Food Recommendations
-- Search functionality with voice input UI
-- Filter by dietary preferences and cuisine
-- Restaurant cards with ratings and details
-- Image upload UI for multimodal support
-
-### Travel Agent
-- Flight and hotel search
-- Interactive itinerary planning
-- Booking management
-- Tab-based navigation
-
-### E-Commerce
-- Product search and filtering
-- Shopping cart functionality
-- Favorites/wishlist
-- AI recommendations banner
-- Category-based browsing
-
-## Design Philosophy
-
-The frontend is designed to be:
-- **Beautiful**: Modern, aesthetic design with gradients and glassmorphism
-- **Animated**: Smooth animations throughout for better UX
-- **Independent**: Completely standalone, no backend connections
-- **Accessible**: Clean, readable code with proper semantic HTML
-
-## Future Enhancements
-
-When connecting to the backend:
-- API integration for real data
-- Authentication and user profiles
-- Real-time chat interfaces
-- Voice input/output functionality
-- Image analysis features
-
-## License
-
-This project is part of the Kensho platform.
