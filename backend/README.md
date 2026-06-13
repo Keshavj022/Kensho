@@ -5,8 +5,7 @@ each request to one of three specialist agents — **restaurant**, **travel**, *
 which call real tools (Maps, Flights, Hotels, Shopping, web search, menus) and answer in
 natural language, personalized to the diner.
 
-> For the product overview and architecture, see the [main README](../README.md). For
-> hosting, see [`../docs/DEPLOY_HUGGINGFACE.md`](../docs/DEPLOY_HUGGINGFACE.md).
+> For the product overview and architecture, see the [main README](../README.md).
 
 ## Stack
 
