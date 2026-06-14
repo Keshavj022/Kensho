@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { Mic, Menu, ShoppingBag, Sparkles, User, X } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Link, NavLink, useLocation } from "react-router-dom"
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom"
 import { cn } from "../lib/cn"
 import { useAuth } from "../state/auth"
 import { useCart } from "../state/cart"
@@ -20,12 +20,17 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [mobile, setMobile] = useState(false)
   const { count, setOpen } = useCart()
-  const { user, onboarded, profile, isDemoMode, logout } = useAuth()
+  const { user, onboarded, profile, isDemoMode, startDemo, logout } = useAuth()
   const voice = useVoice()
   const loc = useLocation()
+  const nav = useNavigate()
   const displayName = profile?.name || user?.email?.split("@")[0] || "Account"
   const signedIn = !!user && onboarded
   const homeTo = signedIn ? "/dashboard" : "/"
+  const enterDemo = () => {
+    startDemo()
+    nav("/dashboard")
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -59,7 +64,7 @@ export function Nav() {
                   className="h-1.5 w-1.5 rounded-full bg-paper-card"
                 />
                 <span className="text-[0.65rem] font-semibold text-paper-card/90">
-                  Demo mode · Browsing as Arjun Sharma
+                  Demo mode · every feature is live · nothing is saved
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -144,6 +149,17 @@ export function Nav() {
             </AnimatePresence>
           </button>
 
+          {!signedIn && (
+            <button
+              onClick={enterDemo}
+              className="hidden items-center gap-1.5 rounded-full border border-saffron bg-saffron-wash px-3.5 py-2 text-sm font-semibold text-saffron-deep transition hover:bg-saffron hover:text-paper-card sm:inline-flex"
+              title="Explore everything — no sign-up, nothing saved"
+            >
+              <Sparkles className="h-4 w-4" />
+              Demo
+            </button>
+          )}
+
           <Link
             to={signedIn ? "/profile" : "/auth"}
             className="hidden items-center gap-2 rounded-full border border-ink-line bg-paper-card/60 px-3.5 py-2 text-sm font-medium text-ink transition hover:border-ink/40 sm:inline-flex"
@@ -208,6 +224,14 @@ export function Nav() {
               >
                 <Mic className="h-5 w-5 text-saffron" /> Talk to Kensho
               </button>
+              {!signedIn && (
+                <button
+                  onClick={enterDemo}
+                  className="mt-2 flex items-center justify-center gap-2 rounded-xl border border-saffron bg-saffron-wash px-4 py-3 font-semibold text-saffron-deep"
+                >
+                  <Sparkles className="h-5 w-5" /> Explore the live demo
+                </button>
+              )}
               <Link to={signedIn ? "/profile" : "/auth"} className="mt-2 rounded-xl bg-ink px-4 py-3 text-center font-medium text-paper-card">
                 {signedIn ? `Profile · ${displayName}` : "Sign in / Register"}
               </Link>

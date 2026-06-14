@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight, ArrowUpRight, Compass, ScanLine, ShoppingBag, Soup, Sparkles } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { DemoModal } from "../components/DemoModal"
 import { Mark } from "../components/Logo"
 import { NearYou } from "../components/NearYou"
 import { Magnetic, Marquee, Reveal, Stagger, StaggerItem } from "../components/fx"
 import { cn } from "../lib/cn"
+import { useAuth } from "../state/auth"
 
 const ROTATE = ["eat", "wander", "savour", "buy", "explore"]
 
@@ -44,21 +44,22 @@ const DOMAINS = [
 ]
 
 export function Home() {
-  const [showDemo, setShowDemo] = useState(false)
-  const openDemo = () => setShowDemo(true)
-  const closeDemo = () => setShowDemo(false)
+  const { startDemo } = useAuth()
+  const nav = useNavigate()
+  const enterDemo = () => {
+    startDemo()
+    nav("/dashboard")
+  }
 
   return (
     <div className="overflow-hidden">
-      <Hero onDemo={openDemo} />
+      <Hero onDemo={enterDemo} />
       <CuisineStrip />
       <NearYou />
       <Domains />
       <HowItWorks />
       <Keystone />
-      <FinalCTA onDemo={openDemo} />
-
-      <AnimatePresence>{showDemo && <DemoModal onClose={closeDemo} />}</AnimatePresence>
+      <FinalCTA onDemo={enterDemo} />
     </div>
   )
 }

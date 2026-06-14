@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react"
 import { api } from "../lib/api"
+import { DEMO_USER, endDemoSession, getDemoProfile, isDemo, setDemoProfile, startDemoSession } from "../lib/demo"
 import { getStoredUser, getToken, setStoredUser, setToken } from "../lib/session"
 import type { Profile, ProfilePayload, UserInfo } from "../lib/types"
 
@@ -11,7 +12,7 @@ interface AuthCtx {
   isDemoMode: boolean
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string) => Promise<void>
-  startDemo: () => Promise<void>
+  startDemo: () => void
   saveProfile: (p: ProfilePayload) => Promise<Profile>
   refreshProfile: () => Promise<void>
   logout: () => void
@@ -20,11 +21,18 @@ interface AuthCtx {
 const Ctx = createContext<AuthCtx>(null as unknown as AuthCtx)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserInfo | null>(getStoredUser())
-  const [profile, setProfile] = useState<Profile | null>(null)
+  // An ephemeral demo session is only honored when there's no real token (real auth always wins).
+  const demoActive = isDemo() && !getToken()
+  const [user, setUser] = useState<UserInfo | null>(() => (demoActive ? DEMO_USER : getStoredUser()))
+  const [profile, setProfile] = useState<Profile | null>(() => (demoActive ? getDemoProfile() : null))
+  const [demo, setDemo] = useState(demoActive)
   const [ready, setReady] = useState(false)
 
   const loadProfile = useCallback(async () => {
+    if (isDemo()) {
+      setProfile(getDemoProfile())
+      return
+    }
     try {
       setProfile(await api.getProfile())
     } catch {
@@ -47,23 +55,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!getToken()) {
-      setReady(true)
+    if (getToken()) {
+      endDemoSession() // a real token supersedes any stale demo flag
+      api
+        .me()
+        .then(setSession)
+        .catch(() => {
+          setToken(null)
+          setStoredUser(null)
+          setUser(null)
+        })
+        .finally(() => setReady(true))
       return
     }
-    api
-      .me()
-      .then(setSession)
-      .catch(() => {
-        setToken(null)
-        setStoredUser(null)
-        setUser(null)
-      })
-      .finally(() => setReady(true))
+    if (isDemo()) {
+      // Restore the ephemeral guest after a refresh (sessionStorage survives reloads, not tab close).
+      setUser(DEMO_USER)
+      setProfile(getDemoProfile())
+      setDemo(true)
+    }
+    setReady(true)
   }, [setSession])
 
   const finishLogin = useCallback(
     async (email: string, password: string) => {
+      endDemoSession() // leaving the demo for a real account
+      setDemo(false)
       const tok = await api.login(email, password)
       setToken(tok.access_token)
       await setSession(await api.me())
@@ -81,19 +98,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [finishLogin],
   )
 
-  const startDemo = useCallback(async () => {
-    const tok = await api.demoLogin()
-    setToken(tok.access_token)
-    await setSession(await api.me())
-  }, [setSession])
+  // Enter the live demo: a client-only guest. No backend account, no token, nothing persisted.
+  const startDemo = useCallback(() => {
+    setToken(null)
+    setStoredUser(null)
+    const p = startDemoSession()
+    setUser(DEMO_USER)
+    setProfile(p)
+    setDemo(true)
+    setReady(true)
+  }, [])
 
   const saveProfile = useCallback(async (p: ProfilePayload) => {
+    if (isDemo()) {
+      const saved = setDemoProfile(p as Partial<Profile>)
+      setProfile(saved)
+      return saved
+    }
     const saved = await api.saveProfile(p)
     setProfile(saved)
     return saved
   }, [])
 
   const logout = useCallback(() => {
+    if (isDemo()) {
+      endDemoSession()
+      setDemo(false)
+      setUser(null)
+      setProfile(null)
+      return
+    }
     api.logout().catch(() => {})
     setToken(null)
     setStoredUser(null)
@@ -108,7 +142,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profile,
         onboarded: !!profile?.onboarded,
         ready,
-        isDemoMode: user?.email === "demo@kensho.app",
+        isDemoMode: demo,
         login,
         register,
         startDemo,

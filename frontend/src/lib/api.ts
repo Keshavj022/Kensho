@@ -1,3 +1,12 @@
+import {
+  demoDashboard,
+  demoTasteGraph,
+  getDemoActivity,
+  getDemoProfile,
+  isDemo,
+  pushDemoActivity,
+  setDemoProfile,
+} from "./demo"
 import { getToken } from "./session"
 import type {
   Cart,
@@ -118,17 +127,32 @@ export const api = {
 
   register: (email: string, password: string) => post<UserInfo>("/auth/register", { email, password }),
   login: (email: string, password: string) => post<TokenResponse>("/auth/login", { email, password }),
-  demoLogin: () => post<TokenResponse>("/auth/demo"),
   checkEmail: (email: string) =>
     get<{ email: string; available: boolean }>(`/auth/check-email?email=${encodeURIComponent(email)}`),
   me: () => get<UserInfo>("/auth/me"),
   logout: () => post<{ message: string }>("/auth/logout"),
-  getProfile: () => get<Profile>("/auth/profile"),
-  saveProfile: (p: ProfilePayload) => req<Profile>("/auth/profile", { method: "PUT", body: JSON.stringify(p) }),
+  // Personalized surfaces: in the ephemeral demo these are served from sessionStorage and the
+  // public diet-filtered `featured` endpoints — no `/me` calls, nothing persisted server-side.
+  getProfile: () => (isDemo() ? Promise.resolve(getDemoProfile()) : get<Profile>("/auth/profile")),
+  saveProfile: (p: ProfilePayload) =>
+    isDemo()
+      ? Promise.resolve(setDemoProfile(p as Partial<Profile>))
+      : req<Profile>("/auth/profile", { method: "PUT", body: JSON.stringify(p) }),
 
-  dashboard: () => get<Dashboard>("/me/dashboard"),
-  myActivity: (limit = 30) => get<{ status: string; count: number; items: Activity[] }>(`/me/activity?limit=${limit}`),
+  dashboard: () => (isDemo() ? Promise.resolve(demoDashboard()) : get<Dashboard>("/me/dashboard")),
+  myActivity: (limit = 30) =>
+    isDemo()
+      ? Promise.resolve({ status: "ok", count: getDemoActivity().length, items: getDemoActivity().slice(0, limit) })
+      : get<{ status: string; count: number; items: Activity[] }>(`/me/activity?limit=${limit}`),
   recommendations: (p?: { lat?: number | null; lng?: number | null; location?: string; limit?: number }) => {
+    if (isDemo()) {
+      const dietary = getDemoProfile().dietary_type
+      const limit = p?.limit ?? 12
+      return Promise.all([
+        api.featuredRestaurants({ lat: p?.lat, lng: p?.lng, location: p?.location, dietary, limit }),
+        api.featuredDishes(limit, dietary),
+      ]).then(([restaurants, dishes]) => ({ status: "ok", restaurants, dishes }) as Recommendations)
+    }
     const q = new URLSearchParams()
     if (p?.lat != null) q.set("lat", String(p.lat))
     if (p?.lng != null) q.set("lng", String(p.lng))
@@ -136,8 +160,22 @@ export const api = {
     if (p?.limit) q.set("limit", String(p.limit))
     return get<Recommendations>(`/me/recommendations?${q.toString()}`)
   },
-  tasteGraph: () => get<TasteGraph>("/me/taste-graph"),
-  track: (body: TrackBody) => post<{ status: string }>("/me/track", body).catch(() => ({ status: "skipped" })),
+  tasteGraph: () => (isDemo() ? Promise.resolve(demoTasteGraph()) : get<TasteGraph>("/me/taste-graph")),
+  track: (body: TrackBody) => {
+    if (isDemo()) {
+      pushDemoActivity({
+        kind: body.kind,
+        query: body.query ?? null,
+        restaurant_id: body.restaurant_id ?? null,
+        restaurant_name: body.restaurant_name ?? null,
+        cuisine: body.cuisine ?? null,
+        domain: body.domain ?? "restaurant",
+        payload: body.payload ?? {},
+      })
+      return Promise.resolve({ status: "ok" })
+    }
+    return post<{ status: string }>("/me/track", body).catch(() => ({ status: "skipped" }))
+  },
 
   reverseGeocode: (lat: number, lng: number) =>
     get<{ status: string; location?: string; city?: string; lat?: number; lng?: number }>(

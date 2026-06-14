@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from loguru import logger
 
-from ..config import settings
 from ..dependencies import get_current_active_user, get_current_user, require_role
 from ..models.auth_schemas import (
     PasswordChangeRequest,
@@ -156,60 +155,3 @@ async def activate_user(user_id: str, current_user: dict = Depends(require_role(
     if not auth_service.activate_user(user_id):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return {"message": "User activated successfully"}
-
-
-
-_DEMO_EMAIL = "demo@kensho.app"
-
-_DEMO_PROFILE = {
-    "name": "Arjun",
-    "dob": "2001-03-15",
-    "age": 24,
-    "gender": "male",
-    "location": "Park Street, Kolkata",
-    "lat": 22.5726,
-    "lng": 88.3639,
-    "dietary_type": "non-vegetarian",
-    "spice_tolerance": "spicy",
-    "allergies": ["peanuts"],
-    "goals": ["high-protein", "muscle-gain"],
-    "likes": ["Biryani", "Butter Chicken", "Sushi", "Pizza", "Ramen"],
-    "cuisines": ["indian", "japanese", "italian", "korean"],
-}
-
-
-@router.post("/demo", response_model=TokenResponse)
-async def demo_login():
-    """
-    Return a real session for the demo guest account.
-    Creates the account and seeds a full taste profile on first call; idempotent thereafter.
-    No sign-up required — intended for portfolio / recruiter demos.
-    """
-    try:
-        if not auth_service.email_exists(_DEMO_EMAIL):
-            auth_service.register_user(email=_DEMO_EMAIL, password=settings.DEMO_PASSWORD)
-
-        user_data = auth_service.authenticate_user(_DEMO_EMAIL, settings.DEMO_PASSWORD)
-        if not user_data:
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Demo account unavailable",
-            )
-
-        user_service.save_profile(user_data["user_id"], _DEMO_PROFILE)
-
-        tokens = auth_service.create_tokens(user_data)
-        return TokenResponse(
-            access_token=tokens["access_token"],
-            refresh_token=tokens["refresh_token"],
-            token_type=tokens["token_type"],
-            expires_in=60 * 30,
-        )
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Demo login failed: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Demo login failed",
-        )
